@@ -1093,7 +1093,7 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
     Dim forceVal     As Double 'none
     Dim dblAdjustedIpd As Double   'dgnuarin copied
     
-    On Error GoTo errHandler        ' Trap driver errors
+    On Error GoTo ErrHandler        ' Trap driver errors
         
     If (RelayMode <> TL_C_RELAYPOWERED) Then
         ' Set the Settling Timer for the user specified settling time
@@ -1196,9 +1196,9 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
         If Arg_AdjustIpd = "YES" Then
                'dblAdjustedIpd = sampleAvg - GetBaseIpd(siteList(siteIndex))
                dblAdjustedIpd = Abs(1 / SampleAvg) + Abs(1 / GetBaseIpd(siteList(siteIndex)))
-               TheExec.DataLog.WriteComment (Space(55) & "                    Isnk  = " & GetBaseIpd(siteList(siteIndex)))
-               TheExec.DataLog.WriteComment (Space(55) & "                    Isrc  = " & SampleAvg)
-               TheExec.DataLog.WriteComment (Space(55) & "Abs(1/Isnk) + Abs(1/Isrc) = " & dblAdjustedIpd)
+               TheExec.Datalog.WriteComment (Space(55) & "                    Isnk  = " & GetBaseIpd(siteList(siteIndex)))
+               TheExec.Datalog.WriteComment (Space(55) & "                    Isrc  = " & SampleAvg)
+               TheExec.Datalog.WriteComment (Space(55) & "Abs(1/Isnk) + Abs(1/Isrc) = " & dblAdjustedIpd)
         Else
                'dblAdjustedIpd = Abs(1 / sampleAvg) 'Do not adjust this measurement
                dblAdjustedIpd = SampleAvg 'Do not adjust this measurement
@@ -1249,7 +1249,7 @@ NoSitesActive:
     On Error GoTo 0
     Exit Function
     
-errHandler:
+ErrHandler:
     ' count errors
     ReturnStatus = ReturnStatus + 1
     Resume Next
@@ -1290,19 +1290,19 @@ Private Sub Local_tl_tm_LogResultReportStatus(ByVal ChannelNumber As Long, chtyp
 '    ' the HiLoLimitValid flag .
     Select Case HiLoLimitValid
       Case TL_C_HILIM1LOLIM1 ' Hi and Lo limits defined.
-        Call TheExec.DataLog.WriteParametricResult(thisSite, testnumber, _
+        Call TheExec.Datalog.WriteParametricResult(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
                 lowLimit, SampleAvg, highLimit, units, forceValue, forceUnits, loc)
       Case TL_C_HILIM1LOLIM0 ' Only Hi limit defined.
-        Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
+        Call TheExec.Datalog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
                 SampleAvg, units, forceValue, forceUnits, , highLimit, loc)
       Case TL_C_HILIM0LOLIM1 ' Only Lo limit defined.
-        Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
+        Call TheExec.Datalog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
                 SampleAvg, units, forceValue, forceUnits, lowLimit, , loc)
       Case TL_C_HILIM0LOLIM0 ' Neither Hi or Lo limit defined.
-        Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
+        Call TheExec.Datalog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
                 SampleAvg, units, forceValue, forceUnits, , , loc)
     End Select
@@ -1314,7 +1314,7 @@ Private Sub Local_tl_tm_LogResultReportStatus(ByVal ChannelNumber As Long, chtyp
     If blnDebug Then
         Dim lngResult As Long
         'ps_t print out the mode of the test on the datalog
-        If TheExec.DataLog.IsCurrentParaTestLogging(testnumber, lngResult) Then
+        If TheExec.Datalog.IsCurrentParaTestLogging(testnumber, lngResult) Then
             If Arg_StoreBaseIpd = "YES" Then
                'TheExec.Datalog.WriteComment (Space(55) & "Stored Sink Value = " & GetBaseIpdString(thisSite))
             End If
@@ -1346,7 +1346,7 @@ Public Function InitBaseIpd() As Long
 '
 '*****************************************************
 
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   Dim i As Long
   
@@ -1359,7 +1359,7 @@ Public Function InitBaseIpd() As Long
   InitBaseIpd = TL_SUCCESS
 '
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     InitBaseIpd = TL_ERROR
     Call TheExec.ErrorLogMessage("Function InitBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
@@ -1375,7 +1375,7 @@ Public Function InitIdd() As Long
 '
 '*****************************************************
 
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   Dim i As Long
   
@@ -1387,7 +1387,7 @@ Public Function InitIdd() As Long
   InitIdd = TL_SUCCESS
 '
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     InitIdd = TL_ERROR
     Call TheExec.ErrorLogMessage("Function InitIdd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
@@ -1404,7 +1404,7 @@ Public Function GetBaseIpd(ByVal lngSite As Long) As Double
 ' Returns: the measurement value which was saved from a previous test instance
 '
 '*****************************************************
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   'Test for error condition, return zero since that will no effect on the measurement.
   If (lngSite >= 0) And (lngSite < cMaxSite) Then
@@ -1419,7 +1419,7 @@ Public Function GetBaseIpd(ByVal lngSite As Long) As Double
   End If            'If (lngSite >= 0) And (lngSite < cMaxSite) Then
 
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     GetBaseIpd = 0
 '    Call TheExec.ErrorLogMessage("Function GetBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
 '    On Error GoTo 0
@@ -1435,7 +1435,7 @@ Public Function GetBaseIpdString(ByVal lngSite As Long) As String
 ' Returns: the measurement value which was saved from a previous test instance
 '
 '*****************************************************
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   'Test for error condition,
   If (lngSite >= 0) And (lngSite < cMaxSite) Then
@@ -1445,7 +1445,7 @@ Public Function GetBaseIpdString(ByVal lngSite As Long) As String
   End If            'If (lngSite >= 0) And (lngSite < cMaxSite) Then
 
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     GetBaseIpdString = " Error in GetBaseIpdString "
 '    Call TheExec.ErrorLogMessage("Function GetBaseIpdString had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
 '    On Error GoTo 0
@@ -1463,7 +1463,7 @@ Public Function StoreBaseIpd(lngSite As Long, ByVal dblIpdValue As Double) As Lo
 '
 '*****************************************************
 
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   'dblIpdValue = CDbl(lngSite) * (0.000001) 'Debug code for offline
   
@@ -1479,7 +1479,7 @@ Public Function StoreBaseIpd(lngSite As Long, ByVal dblIpdValue As Double) As Lo
   StoreBaseIpd = TL_SUCCESS
 '
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     StoreBaseIpd = TL_ERROR
     Call TheExec.ErrorLogMessage("Function StoreBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
@@ -1495,7 +1495,7 @@ Public Function DblToEngStr(ByVal dblValue As Double, ByVal strUnit As String) A
 '
 '*****************************************************
 
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   Dim blnNegNum As Boolean
   Dim dblLocValue As Double
   Dim dblMult As Double
@@ -1588,7 +1588,7 @@ Public Function DblToEngStr(ByVal dblValue As Double, ByVal strUnit As String) A
   DblToEngStr = strTmp
 '
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     DblToEngStr = "Error in function DblToEngStr, converting to engineering format"
     Call TheExec.ErrorLogMessage("Function DblToEngStr had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
@@ -1604,7 +1604,7 @@ Public Function GetIddMeas(ByVal lngSite As Long) As Double
 '          Will return a large negative number in the case of an error
 '
 '*****************************************************
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   'Test for error condition, return zero since that will no effect on the measurement.
   If (lngSite >= 0) And (lngSite < cMaxSite) Then
@@ -1614,7 +1614,7 @@ Public Function GetIddMeas(ByVal lngSite As Long) As Double
   End If
 
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     GetIddMeas = -1E-20   'Set for an error condition so that it can be trapped out
 '    Call TheExec.ErrorLogMessage("Function GetIddMeas had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
 '    On Error GoTo 0
@@ -1631,7 +1631,7 @@ Public Function StoreIddMeas(lngSite As Long, ByVal dblIpdValue As Double) As Lo
 '
 '*****************************************************
 
-  On Error GoTo errHandler
+  On Error GoTo ErrHandler
   
   'Test for out of range condition
   If (lngSite >= 0) And (lngSite < cMaxSite) Then
@@ -1644,7 +1644,7 @@ Public Function StoreIddMeas(lngSite As Long, ByVal dblIpdValue As Double) As Lo
   StoreIddMeas = TL_SUCCESS
 '
 Exit Function 'normal exit of function
-errHandler:
+ErrHandler:
     StoreIddMeas = TL_ERROR
     Call TheExec.ErrorLogMessage("Function StoreIddMeas had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0

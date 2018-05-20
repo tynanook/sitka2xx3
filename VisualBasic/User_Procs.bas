@@ -81,7 +81,7 @@ Option Explicit
  Function OnProgramLoaded() As Integer
 '   Immediately at the conclusion of the load process
 
-   On Error GoTo errHandler
+   On Error GoTo ErrHandler
 
    'Any user code goes here
    'This replaces the Mchp Pre_Validation_Init routine
@@ -96,7 +96,7 @@ Option Explicit
 
    OnProgramLoaded = TL_SUCCESS
 Exit Function      'normal exit of function
-errHandler:
+ErrHandler:
     OnProgramLoaded = TL_ERROR
 '    Call gerror.AddError(VBA.Err.Number, "TestProgram::OnProgramLoaded", VBA.Err.Description, True)
       'Uncomment out the code below if you want a message box to notify the user of an error.
@@ -141,6 +141,23 @@ Function OnProgramValidated() As Integer
     'End If
     
     Call RFOnProgramValidated_LoRa
+    
+    '----------------Enable Data log-------------------------------------------------------------
+    Dim fso As New FileSystemObject
+    Dim objFile As File
+    Dim objText As TextStream
+    Dim DatalogConfig As String
+    If fso.FileExists("\\chip\datalogs\WSG_AutoDlog\Enable Dlog by Mask.txt") = True Then
+        Set objFile = fso.GetFile("\\chip\datalogs\WSG_AutoDlog\Enable Dlog by Mask.txt")
+        Set objText = objFile.OpenAsTextStream(ForReading)
+        DatalogConfig = objText.ReadAll
+        objText.Close
+        If InStr(DatalogConfig, "ZY004") <> 0 Then
+            Call setupDlogOutput
+        End If
+    End If
+'---------------------------------------------------------------------------------------------
+    
     
 End Function
 

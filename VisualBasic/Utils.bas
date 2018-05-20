@@ -218,7 +218,7 @@ Public Function failAllActiveSites()
     If TheExec.Sites.SelectFirst <> loopDone Then
         Do
             SiteNum = TheExec.Sites.SelectedSite
-            Call TheExec.DataLog.WriteFunctionalResult(SiteNum, TheExec.Sites.Site(SiteNum).testnumber, logTestFail)
+            Call TheExec.Datalog.WriteFunctionalResult(SiteNum, TheExec.Sites.Site(SiteNum).testnumber, logTestFail)
             TheExec.Sites.Site(SiteNum).TestResult = siteFail
             
         Loop Until TheExec.Sites.SelectNext(loopTop) = loopDone

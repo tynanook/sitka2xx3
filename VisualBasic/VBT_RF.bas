@@ -25,7 +25,7 @@ Public Function read_cal_factors() As Long              '(argc As Long, argv() A
     
     Dim nSiteIndex As Long
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
      
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
@@ -45,7 +45,7 @@ Public Function read_cal_factors() As Long              '(argc As Long, argv() A
     
     Exit Function
     
-errHandler:
+ErrHandler:
 
     Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
     Call TheExec.ErrorReport
@@ -61,7 +61,7 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
 
     Dim Site As Variant
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
 
     'DUT/DIB Setup:
     'Step -1: set axrf in TX mode
@@ -155,7 +155,7 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
                "Existnumber is not support by ITL", _
                vbCritical + vbOKOnly, _
                "Interpose Setup Error"
-        GoTo errHandler
+        GoTo ErrHandler
         
     End Select
     
@@ -182,7 +182,7 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
 
     If argc < 4 Then
         MsgBox "Error - On Rf_power_meas_t39a - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
     
 '''        'The Variable transfering is not work - Need Debug more now use argv array directly
@@ -197,13 +197,13 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
     Select Case TestFreq
     Case 868300000
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO1 @ +1.8V =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO1 @ +1.8V =============================")
     
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState0 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
          
     Case 433920000
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO2 @ +3.3V =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO2 @ +3.3V =============================")
         
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState1 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
         
@@ -211,7 +211,7 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
         
     Case Else
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO1 =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO1 =============================")
     
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState0 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
     
@@ -442,7 +442,7 @@ Public Function rf_power_meas_t39a(argc As Long, argv() As String) As Long
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
 ''    TheHdw.Pins("SCK").InitState = chInitLo
 ''    TheHdw.Pins("DATA").InitState = chInitLo
@@ -503,9 +503,9 @@ Public Function forced_tx_mode_t39a(argc As Long, argv() As String) As Long
 
     Dim Site As Variant
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
-    TheExec.DataLog.WriteComment ("============================= MEASURE FORCED TX MODE ===========================")
+    TheExec.Datalog.WriteComment ("============================= MEASURE FORCED TX MODE ===========================")
     'DUT/DIB Setup:
     'Step -1: set axrf in TX mode
     Dim ExistingSiteCnt As Integer
@@ -600,7 +600,7 @@ Public Function forced_tx_mode_t39a(argc As Long, argv() As String) As Long
                "Existnumber is not support by ITL", _
                vbCritical + vbOKOnly, _
                "Interpose Setup Error"
-        GoTo errHandler
+        GoTo ErrHandler
         
     End Select
     
@@ -623,7 +623,7 @@ Public Function forced_tx_mode_t39a(argc As Long, argv() As String) As Long
 
     If argc < 2 Then
         MsgBox "Error - On forced_tx_mode_3407x - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
         TestFreq = argv(0)              ' What is testing Freq?
         DATAPinLevel = argv(1)          ' What is data being use to test?
@@ -790,7 +790,7 @@ Public Function forced_tx_mode_t39a(argc As Long, argv() As String) As Long
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
     For nSiteIndex = 0 To ExistingSiteCnt - 1
         TxPower390.pins("RFOUT").Value(nSiteIndex) = -90
@@ -863,7 +863,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
     Dim MaxPowerToSubstract() As Double     'Site Array
     Dim UncalMaxPower() As Double           'Site Array
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
@@ -939,7 +939,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
                "Site number is not supported by ITL", _
                vbCritical + vbOKOnly, _
                "Interpose Setup Error"
-        GoTo errHandler
+        GoTo ErrHandler
 
     End Select
     
@@ -947,7 +947,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
 
     If argc < 4 Then
         MsgBox "Error - On Rf_power_meas_t48a - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
     
 
@@ -963,7 +963,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
     
     Case 433920000
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO_434 @ +1.8V =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO_434 @ +1.8V =============================")
         
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState0 '1 = NI-6652 Ref clock source; 0 = DIB Crystal; DUT PLL operates from site 26MHz crystal
         
@@ -971,7 +971,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
         
     Case 868300000
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO_868 @ +3.3V =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO_868 @ +3.3V =============================")
     
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState1 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
         
@@ -981,7 +981,7 @@ Public Function rf_power_meas_t48a(argc As Long, argv() As String) As Long
         
     Case Else
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE TX POWERnGO_434 =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE TX POWERnGO_434 =============================")
     
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState0 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
     
@@ -1305,7 +1305,7 @@ End If
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
     
     Select Case TestFreq
@@ -1395,9 +1395,9 @@ Public Function sleep_current_t48a(argc As Long, argv() As String) As Long
     Dim ExistingSiteCnt As Integer
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP ==============================================")
+TheExec.Datalog.WriteComment ("============================= MEASURE I_SLEEP ==============================================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         dut_delay = 0.025
@@ -1459,7 +1459,7 @@ TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP ===
     Exit Function
     
 
-errHandler:
+ErrHandler:
 
 
     I_SLEEP.AddPin ("VBAT")
@@ -1546,7 +1546,7 @@ Dim dut_delay As Double
 Dim rf_mux_delay As Double
 
 
- On Error GoTo errHandler
+ On Error GoTo ErrHandler
     
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
@@ -1567,7 +1567,7 @@ Dim rf_mux_delay As Double
         MeasChans(7) = AXRF_CHANNEL_AXRF_CH8
         
 
-    TheExec.DataLog.WriteComment ("============================= MEASURE ADVANCED MODE TX POWER @ +3.3V ===========================")
+    TheExec.Datalog.WriteComment ("============================= MEASURE ADVANCED MODE TX POWER @ +3.3V ===========================")
     
    
     TheHdw.Utility.pins("rlyXTAL").State = utilBitState1 '1 = NI-6652 Ref clock source; 0 = DIB Crystal
@@ -2086,7 +2086,7 @@ End If
     
     Exit Function
 
-errHandler:
+ErrHandler:
             
                 Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear) ' Clearing cpuA allows the pattern to proceed.
                 
@@ -2129,13 +2129,13 @@ Public Function rf_tx_off_20ms_t48a(argc As Long, argv() As String) As Long
     Dim oprVolt As Double
 
     
-On Error GoTo errHandler
+On Error GoTo ErrHandler
     
     
 
     If argc < 2 Then
         MsgBox "Error - On rf_tx_off_20ms_t48a - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
     
         OnSCK_BIAS = argv(0)            ' ON SCK_BIAS(1) or SCK (SCK_BIAS(0))
@@ -2144,7 +2144,7 @@ On Error GoTo errHandler
     End If
     
     
-        TheExec.DataLog.WriteComment ("============================= MEASURE I_TX_OFF_20MS =============================")
+        TheExec.Datalog.WriteComment ("============================= MEASURE I_TX_OFF_20MS =============================")
         
         TheHdw.Utility.pins("rlyXTAL").State = utilBitState1 '1 = NI-6652 Ref clock source; 0 = DIB Crystal; DUT PLL operates from site 26MHz crystal
         
@@ -2282,7 +2282,7 @@ On Error GoTo errHandler
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
 
         'TheExec.Flow.TestLimit I_TOFFT_20MS, 0.013, 0.02, , , scaleMilli, unitAmp, "%5.3f", "I_TOFFT_20MS", , , , , , , , tlForceNone
@@ -2296,9 +2296,9 @@ Public Function tx_config_mrf34ta(argc As Long, argv() As String) As Long
 
     Dim Site As Variant
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
-    TheExec.DataLog.WriteComment ("============================= CONFIG & TX MODE ===========================")
+    TheExec.Datalog.WriteComment ("============================= CONFIG & TX MODE ===========================")
     'DUT/DIB Setup:
     'Step -1: set axrf in TX mode
     Dim ExistingSiteCnt As Integer
@@ -2382,7 +2382,7 @@ Public Function tx_config_mrf34ta(argc As Long, argv() As String) As Long
                "Existnumber is not support by ITL", _
                vbCritical + vbOKOnly, _
                "Interpose Setup Error"
-        GoTo errHandler
+        GoTo ErrHandler
         
     End Select
     
@@ -2405,7 +2405,7 @@ Public Function tx_config_mrf34ta(argc As Long, argv() As String) As Long
 
     If argc < 2 Then
         MsgBox "Error - tx_config_mrf34ta - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
         TestFreq = argv(0)              ' What is testing Freq?
         DATAPinLevel = argv(1)          ' What is data being use to test?
@@ -2577,7 +2577,7 @@ Public Function tx_config_mrf34ta(argc As Long, argv() As String) As Long
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
     For nSiteIndex = 0 To ExistingSiteCnt - 1
         TxPower434.pins("RFOUT").Value(nSiteIndex) = -90
@@ -2636,7 +2636,7 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
     ReDim UncalMaxPower(0 To ExistingSiteCnt - 1)
     ReDim SumPower(0 To ExistingSiteCnt - 1)
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     'AXRF Channel assignments
     
@@ -2666,7 +2666,7 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
                "Existnumber is not support by ITL", _
                vbCritical + vbOKOnly, _
                "Interpose Setup Error"
-        GoTo errHandler
+        GoTo ErrHandler
         
     End Select
     
@@ -2676,7 +2676,7 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
 
     If argc < 2 Then
         MsgBox "Error - On rn2483_tx868_cw - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
         TestFreq = argv(0)
         oprVolt = argv(1)
@@ -2810,7 +2810,7 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- TheExec.DataLog.WriteComment ("==================  TX868_CW_PWR =================== ")
+ TheExec.Datalog.WriteComment ("==================  TX868_CW_PWR =================== ")
  
     Select Case TestFreq
     
@@ -2831,7 +2831,7 @@ End_flag_loop:
     
     Exit Function
 
-errHandler:
+ErrHandler:
     
     For nSiteIndex = 0 To ExistingSiteCnt - 1
         TxPower868.pins("RFHOUT").Value(nSiteIndex) = -90
@@ -2884,7 +2884,7 @@ Public Function rn2483_fsk_pkt_rcv(argc As Long, argv() As String) As Long
     Dim PKTs_RCVd As New PinListData
     
     
- On Error GoTo errHandler
+ On Error GoTo ErrHandler
  
     rn2483_fsk_pkt_rcv = TL_SUCCESS
  
@@ -3028,7 +3028,7 @@ For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Site Loop
 Next nSiteIndex 'Site Loop
     
 
-    TheExec.DataLog.WriteComment ("================== PKTs_RCVd =================== ")
+    TheExec.Datalog.WriteComment ("================== PKTs_RCVd =================== ")
    
     TheExec.Flow.TestLimit PKTs_RCVd, 4.5, 5.5, , , , unitNone, , "PktCnt", , , , , , , , tlForceNone
     
@@ -3050,7 +3050,7 @@ Next nSiteIndex 'Site Loop
  
     Exit Function
 
-errHandler:
+ErrHandler:
 
     On Error GoTo 0
     Call TheExec.ErrorLogMessage("Function Error: rn2483_fsk_pkt_rcv")
@@ -3094,7 +3094,7 @@ Public Function rn2483_id(argc As Long, argv() As String) As Long
     Dim ID_Valid As New PinListData
     
     
- On Error GoTo errHandler
+ On Error GoTo ErrHandler
  
     rn2483_id = TL_SUCCESS
  
@@ -3205,7 +3205,7 @@ Next nSiteIndex 'Site Loop
     'Call TheHdw.Digital.Patgen.Halt
     
 
-    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
+    TheExec.Datalog.WriteComment ("==================  READ_MODULE_ID  =================== ")
    
     TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, , "ID", , , , , , , , tlForceNone
     
@@ -3218,7 +3218,7 @@ Next nSiteIndex 'Site Loop
  
     Exit Function
 
-errHandler:
+ErrHandler:
 
     Call TheHdw.Digital.Patgen.Halt
     On Error GoTo 0
@@ -3245,19 +3245,19 @@ Public Function rn2483_i_sleep(argc As Long, argv() As String) As Long
     
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
 
     If argc < 1 Then
         MsgBox "Error - On rn2483_i_sleep - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
+        GoTo ErrHandler
     Else
         oprVolt = argv(0) '3.3
         
     End If
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP =====================================")
+TheExec.Datalog.WriteComment ("============================= MEASURE I_SLEEP =====================================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         
@@ -3360,7 +3360,7 @@ Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
     Exit Function
     
 
-errHandler:
+ErrHandler:
 
 
     I_SLEEP.AddPin ("VBAT")

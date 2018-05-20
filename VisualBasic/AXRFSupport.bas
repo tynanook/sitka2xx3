@@ -24,7 +24,7 @@ Public Zigbee As Object
 
 Public Function SetAXRFinTxMode(TxChannels() As AXRF_CHANNEL, ExpectedPower As Double, freq As Double)
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     #If Connected_to_AXRF Then
     
@@ -44,14 +44,14 @@ Public Function SetAXRFinTxMode(TxChannels() As AXRF_CHANNEL, ExpectedPower As D
     
     Exit Function
     
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
     
 End Function
 
 Public Function SetAXRFinRxMode(RxChannels() As AXRF_CHANNEL, power As Double, freq As Double)
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     #If Connected_to_AXRF Then
         Dim nSiteIndex As Long
         For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
@@ -62,14 +62,14 @@ Public Function SetAXRFinRxMode(RxChannels() As AXRF_CHANNEL, power As Double, f
         Next nSiteIndex
     #End If
     Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
 End Function
 
 
 
 Public Function MeasPowerAXRF(TxChannels() As AXRF_CHANNEL, MeasPower() As Double)
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     #If Connected_to_AXRF Then
         Dim nSiteIndex As Long
         MeasPower(nSiteIndex) = -100
@@ -81,12 +81,12 @@ Public Function MeasPowerAXRF(TxChannels() As AXRF_CHANNEL, MeasPower() As Doubl
         Next nSiteIndex
     #End If
     Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
 End Function
 
 Public Function MeasDataAXRFandBasicDSP(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Integer, CapType As AXRF_ARRAY_TYPE, Optional PlotData As Boolean = False, Optional CalcMaxPower As Boolean = False, Optional plotName As String = "", Optional MaxPwr As Double, Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     Dim nSiteIndex As Long
     Dim FFT As New DspWave
     Dim temp As Double
@@ -105,11 +105,11 @@ Public Function MeasDataAXRFandBasicDSP(TxChannels As AXRF_CHANNEL, MeasData() A
             End If
             If CalcMaxPower Then
                 FFT.CalcMinMax temp, MaxPwr, temp, temp
-                TheExec.DataLog.WriteComment ("MaxPower -->>  " & MaxPwr)
+                TheExec.Datalog.WriteComment ("MaxPower -->>  " & MaxPwr)
             End If
             If FindIndexOfMaxPower Then
                 FFT.CalcMinMax temp, temp, temp, IndexofMaxPower
-                TheExec.DataLog.WriteComment ("MaxPowerIndex -->>  " & IndexofMaxPower)
+                TheExec.Datalog.WriteComment ("MaxPowerIndex -->>  " & IndexofMaxPower)
             End If
             If SumPowerBins Then
                 FFT.CalcMinMax temp, temp, temp, MaxIndex
@@ -122,11 +122,11 @@ Public Function MeasDataAXRFandBasicDSP(TxChannels As AXRF_CHANNEL, MeasData() A
 
     #End If
     Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
 End Function
 Public Function calcMaxFromAXRFData(TxChannels() As AXRF_CHANNEL, MeasData() As Double, NumSamples As Integer, CapType As AXRF_ARRAY_TYPE)
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     #If Connected_to_AXRF Then
         Dim nSiteIndex As Long
 
@@ -139,13 +139,13 @@ Public Function calcMaxFromAXRFData(TxChannels() As AXRF_CHANNEL, MeasData() As 
         Next nSiteIndex
     #End If
     Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
 End Function
 
 Public Function MeasDataAXRFandCalcMax(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Long, CapType As AXRF_ARRAY_TYPE, ByRef MaxPwr As Double, Optional PlotData As Boolean = False, Optional plotName As String = "", Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
     
-On Error GoTo errHandler
+On Error GoTo ErrHandler
     
     'Dim nSiteIndex As Long
     Dim FFT As New DspWave
@@ -163,12 +163,12 @@ On Error GoTo errHandler
 
         If PlotData Then
             FFT.Plot plotName
-            TheExec.DataLog.WriteComment ("MaxPower -->>  " & MaxPwr)
+            TheExec.Datalog.WriteComment ("MaxPower -->>  " & MaxPwr)
         End If
         
         If FindIndexOfMaxPower Then
             FFT.CalcMinMax temp, temp, temp, IndexofMaxPower
-            TheExec.DataLog.WriteComment ("MaxPowerIndex -->>  " & IndexofMaxPower)
+            TheExec.Datalog.WriteComment ("MaxPowerIndex -->>  " & IndexofMaxPower)
         End If
         
         If SumPowerBins Then 'Sum +/- 1 bin surrounding Fc
@@ -183,7 +183,7 @@ On Error GoTo errHandler
     
     Exit Function
     
-errHandler:
+ErrHandler:
 
     If AbortTest Then Exit Function Else Resume Next
     
@@ -194,7 +194,7 @@ Public Function CaptureAndPlotAXRF(CapChan As AXRF_CHANNEL, power As Double, fre
 
     Dim data(1023) As Double
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     
     With itl.Raw.AF.AXRF
@@ -210,7 +210,7 @@ Public Function CaptureAndPlotAXRF(CapChan As AXRF_CHANNEL, power As Double, fre
     End With
     
      Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
     
     
@@ -361,7 +361,7 @@ Public Function Freq_Estimate_AXRF(CapChan As AXRF_CHANNEL, power As Double, fre
 
     Dim data(1023) As Double
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     
     With itl.Raw.AF.AXRF
@@ -376,7 +376,7 @@ Public Function Freq_Estimate_AXRF(CapChan As AXRF_CHANNEL, power As Double, fre
     End With
     
      Exit Function
-errHandler:
+ErrHandler:
     If AbortTest Then Exit Function Else Resume Next
     
     

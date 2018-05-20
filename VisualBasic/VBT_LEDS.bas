@@ -11,7 +11,7 @@ Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initia
     Dim nSiteIndex As Long
     
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     Call TheHdw.Digital.Patgen.Halt
     
@@ -34,7 +34,7 @@ Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initia
     
     Exit Function
     
-errHandler:
+ErrHandler:
 
     Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
     Call TheExec.ErrorReport
@@ -52,7 +52,7 @@ Public Function reset_module_static(argc As Long, argv() As String) As Long
     
     Dim nSiteIndex As Long
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
      
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
     
@@ -78,7 +78,7 @@ Public Function reset_module_static(argc As Long, argv() As String) As Long
     
     Exit Function
     
-errHandler:
+ErrHandler:
 
     Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
     Call TheExec.ErrorReport
@@ -101,7 +101,7 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
     'Dim PF_State As Long
     
     
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
 
     
     'Debug.Print "set_pass_fails_leds..."
@@ -215,7 +215,7 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
     
     Exit Function
     
-errHandler:
+ErrHandler:
 
 
 

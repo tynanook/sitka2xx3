@@ -125,7 +125,7 @@ Public TxMTX(16, MaxSites) As Double
 ' (see online help for ExecutionCount)
 
 Function OnProgramStarted()
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     Call ITLOnProgramStarted        'Self Check inside. If Done once, no more execute
     
@@ -152,7 +152,7 @@ Function OnProgramStarted()
     Next xSite
 
     Exit Function
-errHandler:
+ErrHandler:
     MsgBox "Error encountered in Exec Interpose Function OnProgramStarted" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -164,7 +164,7 @@ End Function
 
 Function OnProgramEnded()
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
 
 
 Dim led_level_high As Double
@@ -242,7 +242,7 @@ End If
 
     Exit Function
     
-errHandler:
+ErrHandler:
     MsgBox "Error encountered in Exec Interpose Function OnProgramEnded" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -254,12 +254,12 @@ End Function
 ' known as the TDR calibration process). Called only if user DIB calibration succeeds.
 Function OnTDRCalibrated()
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
 '
 '    ' Put code here
 '
     Exit Function
-errHandler:
+ErrHandler:
     MsgBox "Error encountered in Exec Interpose Function OnTDRCalibrated" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -270,7 +270,7 @@ Function RFOnProgramValidated_TW101() 'MRF34TA
 
     Dim Site As Long
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     AbortTest = True
     
@@ -287,13 +287,13 @@ Function RFOnProgramValidated_TW101() 'MRF34TA
 
     FIRSTRUN = True
     
-    TheExec.DataLog.Setup.LotSetup.PartType = TheExec.CurrentPart
-    TheExec.DataLog.Setup.DatalogSetUp.HeaderEveryRun = True
-    TheExec.DataLog.ApplySetup
+    TheExec.Datalog.setup.LotSetup.PartType = TheExec.CurrentPart
+    TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True
+    TheExec.Datalog.ApplySetup
 
     Exit Function
     
-errHandler:
+ErrHandler:
     MsgBox "Error encountered in Exec Interpose Function RFOnProgramValidated_TW101" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 
@@ -305,7 +305,7 @@ Function RFOnProgramValidated_LoRa() 'RN2483
 
     Dim Site As Long
 
-    On Error GoTo errHandler
+    On Error GoTo ErrHandler
     
     AbortTest = True
     
@@ -334,13 +334,13 @@ Function RFOnProgramValidated_LoRa() 'RN2483
     FIRSTLOAD = True
     
     
-    TheExec.DataLog.Setup.LotSetup.PartType = TheExec.CurrentPart
-    TheExec.DataLog.Setup.DatalogSetUp.HeaderEveryRun = True
-    TheExec.DataLog.ApplySetup
+    TheExec.Datalog.setup.LotSetup.PartType = TheExec.CurrentPart
+    TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True
+    TheExec.Datalog.ApplySetup
 
     Exit Function
     
-errHandler:
+ErrHandler:
     MsgBox "Error encountered in Exec Interpose Function RFOnProgramValidated_LoRa" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 
