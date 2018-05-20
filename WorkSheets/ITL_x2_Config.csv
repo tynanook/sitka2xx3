@@ -1,0 +1,7 @@
+Version 1.0,ITL Configuration,,,,,,,,
+,,,,,,,,,
+,,,Instrument,,Channels,,,,
+,Group Names,Pin Names,Type,Model,Site 0,Site 1,Package Pin,Comments,
+,,clock,SYNC,NI-665X,Dev1.0,,,,
+,,RFSub,RFSYS,AF-AXRF,axrf.0,,,,
+,,Rfsig,RFSG,AF-3020,RFSG.0,,,,

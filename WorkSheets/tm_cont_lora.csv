@@ -1,0 +1,6 @@
+DFF 1.1,Time Sets (Basic),,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,Timing Mode:,Extended,,Strobe Timing:,0.000001,,Convert Timing:,0.000001,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,Cycle,,Pin/Group,,Data,,Drive,,,,Compare,,,,
+,Time Set,Period,CPP,Name,Setup,Src,Fmt,On,Data,Return,Off,Mode,Open,Close,Comment,

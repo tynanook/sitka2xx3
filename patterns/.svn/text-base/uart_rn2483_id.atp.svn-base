@@ -1,0 +1,203 @@
+
+import tset tset576, tset576x, tset576xx;
+vector                                          ( $tset    , MCLR_nRESET, UART_CTS, UART_RTS, UART_RX, UART_TX)
+{
+start_label start_uart_id:
+                                                > tset576    1            0         X         1        X       ; //vec 0  tset576xx runs 100x faster than tset576
+                                                > tset576    1            0         X         1        X       ; //vec 1  
+                                                > tset576    1            0         X         1        X       ; //vec 2  
+repeat 3000                                     
+                                                > tset576    1            0         X         1        X       ; //vec 3  After 50ms, send 'sys reset\r\n'
+                                                > tset576    1            0         X         0        X       ; //vec 4 Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 5 's' lsb
+                                                > tset576    1            0         X         1        X       ; //vec 6 's' 
+                                                > tset576    1            0         X         0        X       ; //vec 7 's' 
+                                                > tset576    1            0         X         0        X       ; //vec 8 's' 
+                                                > tset576    1            0         X         1        X       ; //vec 9 's' 
+                                                > tset576    1            0         X         1        X       ; //vec 10  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 11  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 12  's' msb x73
+                                                > tset576    1            0         X         1        X       ; //vec 13  Stop Bit = 1				
+                                                > tset576    1            0         X         0        X       ; //vec 14  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 15  'y' lsb
+                                                > tset576    1            0         X         0        X       ; //vec 16  'y' 
+                                                > tset576    1            0         X         0        X       ; //vec 17  'y' 
+                                                > tset576    1            0         X         1        X       ; //vec 18  'y' 
+                                                > tset576    1            0         X         1        X       ; //vec 19  'y' 
+                                                > tset576    1            0         X         1        X       ; //vec 20  'y' 
+                                                > tset576    1            0         X         1        X       ; //vec 21  'y' 
+                                                > tset576    1            0         X         0        X       ; //vec 22  'y' msb x79
+                                                > tset576    1            0         X         1        X       ; //vec 23  Stop Bit = 1				
+                                                > tset576    1            0         X         0        X       ; //vec 24  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 25  's' lsb
+                                                > tset576    1            0         X         1        X       ; //vec 26  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 27  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 28  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 29  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 30  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 31  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 32  's' msb x73
+                                                > tset576    1            0         X         1        X       ; //vec 33  Stop Bit = 1				
+                                                > tset576    1            0         X         0        X       ; //vec 34  Start Bit = 0
+                                                > tset576    1            0         X         0        X       ; //vec 35  space lsb
+                                                > tset576    1            0         X         0        X       ; //vec 36  space 
+                                                > tset576    1            0         X         0        X       ; //vec 37  space 
+                                                > tset576    1            0         X         0        X       ; //vec 38  space 
+                                                > tset576    1            0         X         0        X       ; //vec 39  space 
+                                                > tset576    1            0         X         1        X       ; //vec 40  space 
+                                                > tset576    1            0         X         0        X       ; //vec 41  space 
+                                                > tset576    1            0         X         0        X       ; //vec 42  space msb x20
+                                                > tset576    1            0         X         1        X       ; //vec 43  Stop Bit = 1				
+                                                > tset576    1            0         X         0        X       ; //vec 44  Start Bit = 0
+                                                > tset576    1            0         X         0        X       ; //vec 45  'r' lsb
+                                                > tset576    1            0         X         1        X       ; //vec 46  'r' 
+                                                > tset576    1            0         X         0        X       ; //vec 47  'r' 
+                                                > tset576    1            0         X         0        X       ; //vec 48  'r' 
+                                                > tset576    1            0         X         1        X       ; //vec 49  'r' 
+                                                > tset576    1            0         X         1        X       ; //vec 50  'r' 
+                                                > tset576    1            0         X         1        X       ; //vec 51  'r' 
+                                                > tset576    1            0         X         0        X       ; //vec 52  'r' msb x72
+                                                > tset576    1            0         X         1        X       ; //vec 53  Stop Bit = 1
+                                                > tset576    1            0         X         0        X       ; //vec 54  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 55  'e' lsb
+                                                > tset576    1            0         X         0        X       ; //vec 56  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 57  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 58  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 59  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 60  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 61  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 62  'e' msb x65
+                                                > tset576    1            0         X         1        X       ; //vec 63  Stop Bit = 1
+                                                > tset576    1            0         X         0        X       ; //vec 64  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 65  's' lsb
+                                                > tset576    1            0         X         1        X       ; //vec 66  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 67  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 68  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 69  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 70  's' 
+                                                > tset576    1            0         X         1        X       ; //vec 71  's' 
+                                                > tset576    1            0         X         0        X       ; //vec 72  's' msb x73
+                                                > tset576    1            0         X         1        X       ; //vec 73  Stop Bit = 1
+                                                > tset576    1            0         X         0        X       ; //vec 74  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 75  'e' lsb
+                                                > tset576    1            0         X         0        X       ; //vec 76  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 77  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 78  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 79  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 80  'e' 
+                                                > tset576    1            0         X         1        X       ; //vec 81  'e' 
+                                                > tset576    1            0         X         0        X       ; //vec 82  'e' msb x65
+                                                > tset576    1            0         X         1        X       ; //vec 83  Stop Bit = 1
+                                                > tset576    1            0         X         0        X       ; //vec 84  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 85  't' lsb
+                                                > tset576    1            0         X         1        X       ; //vec 86  't' 
+                                                > tset576    1            0         X         0        X       ; //vec 87  't' 
+                                                > tset576    1            0         X         0        X       ; //vec 88  't' 
+                                                > tset576    1            0         X         1        X       ; //vec 89  't' 
+                                                > tset576    1            0         X         1        X       ; //vec 90  't' 
+                                                > tset576    1            0         X         1        X       ; //vec 91  't' 
+                                                > tset576    1            0         X         0        X       ; //vec 92  't' msb x73
+                                                > tset576    1            0         X         1        X       ; //vec 93  Stop Bit = 1		
+                                                > tset576    1            0         X         0        X       ; //vec 94  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //vec 95  CR lsb
+                                                > tset576    1            0         X         0        X       ; //vec 96  CR 
+                                                > tset576    1            0         X         1        X       ; //vec 97  CR 
+                                                > tset576    1            0         X         1        X       ; //vec 98  CR 
+                                                > tset576    1            0         X         0        X       ; //vec 99  CR 
+                                                > tset576    1            0         X         0        X       ; //vec 100  CR 
+                                                > tset576    1            0         X         0        X       ; //vec 101  CR 
+                                                > tset576    1            0         X         0        X       ; //vec 102  CR msb x0D
+                                                > tset576    1            0         X         1        X       ; //vec 103  Stop Bit = 1					
+                                                > tset576    1            0         X         0        X       ; //vec 104  Start Bit = 0
+                                                > tset576    1            0         X         0        X       ; //vec 105  LF lsb
+                                                > tset576    1            0         X         1        X       ; //vec 106  LF 
+                                                > tset576    1            0         X         0        X       ; //vec 107  LF 
+                                                > tset576    1            0         X         1        X       ; //vec 108  LF 
+                                                > tset576    1            0         X         0        X       ; //vec 109  LF 
+                                                > tset576    1            0         X         0        X       ; //vec 110  LF 
+                                                > tset576    1            0         X         0        X       ; //vec 111  LF 
+                                                > tset576    1            0         X         0        X       ; //vec 112  LF msb x0A
+repeat 3456                                     
+                                                > tset576    1            0         X         1        X       ; //vec 113 Delay 60msec
+repeat 14400                                    
+                                                > tset576xx  1            0         X         1        X       ; //vec 114 Stop Bit =1							
+set_loopA 65535                                 
+                                                > tset576xx  1            0         X         1        X       ; //vec 115 
+m_loop:
+                                                > tset576xx  1            0         X         1        X       ; //vec 116 look for Start Bit = L                                             
+if (fail) exit_loop goahead, clr_fail, clr_cond 
+                                                > tset576xx  1            0         X         1        H       ; //vec 117  branch on L
+end_loopA m_loop                                
+                                                > tset576xx  1            0         X         1        X       ; //vec 118  jump back on H
+halt                                            
+                                                > tset576xx  1            0         X         1        X       ; //vec 119  loopA time out	
+goahead:
+ign, mask                                       
+                                                > tset576xx  1            0         X         1        X       ; //vec 120  in Start Bit here
+repeat 34, ign, mask                            
+                                                > tset576xx  1            0         X         1        L       ; //vec 121  ~60% of Start Bit here	                                
+                                                > tset576    1            1         X         1        L       ; //vec 122  'R' lsb, capture ID = 'RN2483'
+                                                > tset576    1            0         X         1        H       ; //vec 123  'R' 
+                                                > tset576    1            0         X         1        L       ; //vec 124  'R' 
+                                                > tset576    1            0         X         1        L       ; //vec 125  'R' 
+                                                > tset576    1            0         X         1        H       ; //vec 126  'R' 
+                                                > tset576    1            0         X         1        L       ; //vec 127  'R' 
+                                                > tset576    1            0         X         1        H       ; //vec 128  'R' 
+                                                > tset576    1            0         X         1        L       ; //vec 129  'R' msb x52
+                                                > tset576    1            0         X         1        H       ; //vec 130  Stop Bit = H
+                                                > tset576    1            0         X         1        L       ; //vec 131  Start Bit = L
+                                                > tset576    1            0         X         1        L       ; //vec 132  'N' lsb
+                                                > tset576    1            0         X         1        H       ; //vec 133  'N' 
+                                                > tset576    1            0         X         1        H       ; //vec 134  'N' 
+                                                > tset576    1            0         X         1        H       ; //vec 135  'N' 
+                                                > tset576    1            0         X         1        L       ; //vec 136  'N' 
+                                                > tset576    1            0         X         1        L       ; //vec 137  'N' 
+                                                > tset576    1            0         X         1        H       ; //vec 138  'N' 
+                                                > tset576    1            0         X         1        L       ; //vec 139  'N' msb x4E
+                                                > tset576    1            0         X         1        H       ; //vec 140  Stop Bit = H
+                                                > tset576    1            0         X         1        L       ; //vec 141  Start Bit = L				
+                                                > tset576    1            0         X         1        L       ; //vec 142  '2' lsb
+                                                > tset576    1            0         X         1        H       ; //vec 143  '2' 
+                                                > tset576    1            0         X         1        L       ; //vec 144  '2' 
+                                                > tset576    1            0         X         1        L       ; //vec 145  '2' 
+                                                > tset576    1            0         X         1        H       ; //vec 146  '2' 
+                                                > tset576    1            0         X         1        H       ; //vec 147  '2' 
+                                                > tset576    1            0         X         1        L       ; //vec 148  '2' 
+                                                > tset576    1            0         X         1        L       ; //vec 149  '2' msb x32
+                                                > tset576    1            0         X         1        H       ; //vec 150  Stop Bit = H
+                                                > tset576    1            0         X         1        L       ; //vec 151  Start Bit = L				
+                                                > tset576    1            0         X         1        L       ; //vec 152  '4' lsb
+                                                > tset576    1            0         X         1        L       ; //vec 153  '4' 
+                                                > tset576    1            0         X         1        H       ; //vec 154  '4' 
+                                                > tset576    1            0         X         1        L       ; //vec 155  '4' 
+                                                > tset576    1            0         X         1        H       ; //vec 156  '4' 
+                                                > tset576    1            0         X         1        H       ; //vec 157  '4' 
+                                                > tset576    1            0         X         1        L       ; //vec 158  '4' 
+                                                > tset576    1            0         X         1        L       ; //vec 159  '4' msb x34
+                                                > tset576    1            0         X         1        H       ; //vec 160  Stop Bit = H
+                                                > tset576    1            0         X         1        L       ; //vec 161  Start Bit = L				
+                                                > tset576    1            0         X         1        L       ; //vec 162  '8' lsb
+                                                > tset576    1            0         X         1        L       ; //vec 163  '8' 
+                                                > tset576    1            0         X         1        L       ; //vec 164  '8' 
+                                                > tset576    1            0         X         1        H       ; //vec 165  '8' 
+                                                > tset576    1            0         X         1        H       ; //vec 166  '8' 
+                                                > tset576    1            0         X         1        H       ; //vec 167  '8' 
+                                                > tset576    1            0         X         1        L       ; //vec 168  '8' 
+                                                > tset576    1            0         X         1        L       ; //vec 169  '8' msb x38
+                                                > tset576    1            0         X         1        H       ; //vec 170  Stop Bit = H
+                                                > tset576    1            0         X         1        L       ; //vec 171  Start Bit = L				
+                                                > tset576    1            0         X         1        H       ; //vec 172  '3' lsb
+                                                > tset576    1            0         X         1        H       ; //vec 173  '3' 
+                                                > tset576    1            0         X         1        L       ; //vec 174  '3' 
+                                                > tset576    1            0         X         1        L       ; //vec 175  '3' 
+                                                > tset576    1            0         X         1        H       ; //vec 176  '3' 
+                                                > tset576    1            0         X         1        H       ; //vec 177  '3' 
+                                                > tset576    1            0         X         1        L       ; //vec 178  '3' 
+                                                > tset576    1            0         X         1        L       ; //vec 179  '3' msb x33
+                                                > tset576    1            0         X         1        H       ; //vec 180  Stop Bit = H
+repeat 1000, ign, mask                          
+                                                > tset576    1            0         X         1        X       ; //vec 181  clear pipeline														
+halt                                            
+                                                > tset576    1            0         X         1        X       ; //vec 182 ignore rest of ID
+}
+

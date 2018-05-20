@@ -1,0 +1,5 @@
+DFF 1.0,AC Specs,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,Selector,,Freq_32khz,,,Freq_100khz,,,Freq_500khz,,,Freq_1Mhz,,,Freq_2Mhz,,,Freq_4Mhz,,,Freq_8Mhz,,,Freq_10Mhz,,,Freq_16Mhz,,,Freq_18p2Mhz,,,Freq_20Mhz,,,Freq_25Mhz,,,Freq_30Mhz,,,Freq_32Mhz,,,Freq_40Mhz,,,Freq_50Mhz,,,,
+,Symbol,Value,Name,Val,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Typ,Min,Max,Comment,
+,tds_databus,0.4,Max,Max,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,,

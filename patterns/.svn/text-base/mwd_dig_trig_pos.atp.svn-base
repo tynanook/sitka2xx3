@@ -1,0 +1,128 @@
+
+import tset Tset_1;
+vector                  ( $tset , MWDigTrigger, MSEL, RESETn, CLK_OUT, WAKE, SCAN_EN, GPIO0, GPIO1, GPIO2, SO, SEN, SI, SCLK)
+{
+global pos_mw_dig_trig:
+clr_fail                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 0 
+set_loopA 1000          
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 1 
+loopA2:
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 2 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 3 
+repeat 100              
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 4 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 5 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 6 
+repeat 2200             
+                        > Tset_1  1             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 7 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 8 
+repeat 2                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 9 
+repeat 2                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 10 
+repeat 2                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 11 
+repeat 2                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 12 
+repeat 2                
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 13 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 14 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 15 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 16 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 17 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 18 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 19 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 20 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 21 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 22 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 23 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 24 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 25 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 26 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      L   0    0   1    ; //vec 27 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 28 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 29 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      V   0    0   1    ; //vec 30 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   0    ; //vec 31 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 32 
+pipe_minus 6            
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 33 
+ign                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 34 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 35 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 36 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 37 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 38 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 39 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 40 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 41 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 42 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 43 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 44 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 45 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 46 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 47 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 48 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 49 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 50 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 51 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 52 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    X   0    ; //vec 53 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 54 
+repeat 10               
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 55 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 56 
+end_loopA loopA2        
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 57 
+clr_flag (fail)         
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 58 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    X   0    ; //vec 59 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 60 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 61 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 62 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    1   1    ; //vec 63 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 64 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 65 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 66 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 67 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 68 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 69 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 70 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 71 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   1    ; //vec 72 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    X   1    ; //vec 73 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    X   1    ; //vec 74 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    X   1    ; //vec 75 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    X   1    ; //vec 76 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 77 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 78 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 79 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 80 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 81 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 82 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 83 
+stv                     
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    V   1    ; //vec 84 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   0    0   0    ; //vec 85 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 86 
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 87 
+halt                    
+                        > Tset_1  0             0     1       X        X     X        X      X      X      X   1    0   0    ; //vec 88 
+}
+

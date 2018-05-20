@@ -1,0 +1,8 @@
+DFF 1.4,Characterization,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,Parameter to Vary,,Range,,,,,,Point Generation,,,Apply To,,,Adjust,,Output,,Interpose Functions,,,,,,,,,
+,Setup Name,Row Name,Mode,Type,Name,From,To,Steps,Step Size,P/F From,P/F To,Algorithm,Test Method,Arguments,Pins/Groups,Pin Method,Time Sets,Spec Name,From Setup,File,Sheet,Start,Args,PrePoint,Args,PostPoint,Args,End,Args,Comment,
+,Vdd_vs_Freq,,X Shmoo,DC Spec,v_vdd_psw,,,9,0.0,,,List,Retest,5.5,5,4.5,4,3.5,3,2.5,2,1.8,1.7,,Simultaneous,,,,,,,,,,,,,,,
+,Vdd_vs_Freq,,Y Shmoo,AC Spec,t_per,0,0,16,0,,,List,,0.00001, 0.0000004, 0.0000002, 1.33333E-07, 0.0000001, 0.00000008, 6.66667E-08, 5.71429E-08, 0.00000005, 4.44444E-08, 0.00000004, 3.63636E-08, 3.33333E-08, 3.07692E-08, 2.85714E-08, 2.66667E-08, 0.000000025,,Simultaneous,,,,,,,,,,,,,,,
+,nm_tc_shmoo,,X Shmoo,DC Spec,vds_vdd,,,3,0,,,List,Retest,2.5,2.0,1.8,1.7,,Simultaneous,,,,,,,,,,,,vdd_period_shmoo_output,nm_tc_shmoo,,
+,nm_tc_shmoo,,Y Shmoo,AC Spec,t_per,0.00000004,0.00000002,10,-0.000000002,,,Linear,,,,Simultaneous,,,,,,,,,,,,,,,

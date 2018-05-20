@@ -1,0 +1,6 @@
+DFF 1.2,Job List,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,Sheet Parameters,,,,,,,,,,,
+,Job Name,Pin Map,Test Instances,Flow Table,AC Specs,DC Specs,Pattern Sets,Pattern Groups,Bin Table,Characterization,Test Procedures,Comment,
+,f1-prd-std,Pinmap_rn2483,ti_prod_lora,flow_lora_rn2483,AC Specs,DC Specs,,,,DevChar,,RN2483,
+,q1-prd-std,Pinmap_rn2483,ti_prod_lora,flow_lora_rn2483,AC Specs,DC Specs,,,,DevChar,,RN2483,
