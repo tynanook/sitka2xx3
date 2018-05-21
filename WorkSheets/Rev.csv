@@ -45,13 +45,13 @@ B0B,9/28/2016,Phuwaneth T.,RN2483,icsp_pfm_rd_qtp64k_cp, icsp_pfm_rd_qtp64K,- Ch
 B0C,10/12/2016,Phuwaneth T.,RN2903, RN2483,icsp_pfm_rd_qtp64k_cp, icsp_pfm_rd_qtp64K, icsp_pfm_wr_qtp64K,- Separate QTP pattern file for RN2483 and RN2903 to fix UID issue.,
 B0D,1/11/2017,Phuwaneth T.,RN2903, RN2483,flow_pkg_lora
 VBT,- Add test "EU_I_SLEEP_REV, NA_I_SLEEP_REV" for deep sleep measurement.
-- Add test "EU_MODULE_R1_GPIO_CHECK"
 - Add new part name "RN2903A"
 - Add VBT Sub routine " rn2483_i_sleep_rev, rn2903a_i_sleep_rev"
 - Add new pattern "uart_rn2483_sleep_revised",
-,1/25/2017,Phuwaneth T.,RN2483, RN2903, RN2903A,VBT,- Unload pattern "uart_rn2483r1_gpio_full" in VBT Onprogramvalidated.,
-,,,,,,
-,,,,,,
+B0E,1/25/2017,Phuwaneth T.,RN2483, RN2903, RN2903A,VBT,- Unload pattern "uart_rn2483r1_gpio_full" in VBT Onprogramvalidated.,
+B0F,2/16/2017,Ty S.,RN2483, RN2903, RN2903A,VBT, -Added xtal offset test,
+,2/20/2017,Phuwaneth T.,RN2483A,flow_pkg_lora
+VBT,- Added new part name "RN2483A",
 ,,,,,,
 ,,,,,,
 ,,,,,,

@@ -143,7 +143,9 @@ errHandler:
     If AbortTest Then Exit Function Else Resume Next
 End Function
 
-Public Function MeasDataAXRFandCalcMax(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Long, CapType As AXRF_ARRAY_TYPE, ByRef MaxPwr As Double, Optional PlotData As Boolean = False, Optional plotName As String = "", Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
+
+
+Public Function MeasDataAXRFandCalcMax(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Long, CapType As AXRF_ARRAY_TYPE, ByRef MaxPwr As Double, ByRef FreqOffset As Double, Optional testXtalOffset As Boolean, Optional PlotData As Boolean = False, Optional plotName As String = "", Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
     
 On Error GoTo errHandler
     
@@ -177,6 +179,86 @@ On Error GoTo errHandler
             For i = -1 * NumBinstoInclude To NumBinstoInclude
                 SummedPower = SummedPower + MeasData(MaxIndex + i)
             Next i
+        End If
+        
+        If testXtalOffset Then
+            FreqOffset = 0#
+            Dim capd As New DspWave, capax() As Double, ht() As Variant, cap As New DspWave
+            Dim fs As Double, fres As Double, ifFrq As Double, ss As Long, hsize As Long
+            Dim o As Double, phzo As Double, capr() As Double, caph() As Double, capi() As Double
+            Dim phz() As Double, dp() As Double, pramp() As Double, j As Long
+            ReDim capax(NumSamples * 2)
+            itl.Raw.AF.AXRF.MeasureArray TxChannels, capax, AXRF_ARRAY_TYPE_AXRF_TIME_DOMAIN
+            capd.data = capax
+            hsize = 35
+            ss = NumSamples
+            fs = 250# * 1000000#
+            fres = fs / ss
+            ifFrq = fres * ss / 4#
+            ht = Array(0.957143, 0.650478, -0.042857, 0.225208, -0.042857, 0.139465, _
+            -0.042857, 0.10222, -0.042857, 0.081132, -0.042857, 0.06738, -0.042857, _
+             0.05757, -0.042857, 0.050113, -0.042857, 0.044169, -0.042857, 0.039248, _
+            -0.042857, 0.035044, -0.042857, 0.031356, -0.042857, 0.028045, -0.042857, _
+             0.025009, -0.042857, 0.022171, -0.042857, 0.019471, -0.042857, 0.016857, _
+            -0.042857, 0.014286, -0.042857, 0.011714, -0.042857, 0.009101, -0.042857, _
+             0.006401, -0.042857, 0.003563, -0.042857, 0.000526, -0.042857, -0.002785, _
+            -0.042857, -0.006473, -0.042857, -0.010676, -0.042857, -0.015598, -0.042857, _
+            -0.021542, -0.042857, -0.028998, -0.042857, -0.038809, -0.042857, -0.05256, _
+            -0.042857, -0.073648, -0.042857, -0.110894, -0.042857, -0.196637, -0.042857, _
+            -0.621907)
+            Set cap = capd.Select(0, 1, ss).Copy
+            capr = cap.data
+            ReDim caph(ss + 2 * hsize - 1)
+            capr = cap.data
+            For i = 0 To ss - 1
+                For j = 0 To 2 * hsize - 1
+                    caph(i + j) = caph(i + j) + capr(i) * ht(j)
+                Next
+            Next
+            ReDim capi(ss - 1)
+            For i = 0 To ss - 1
+                capi(i) = caph(i + hsize)
+            Next
+            ReDim phz(ss)
+            For i = 0 To ss - 1
+                If capr(i) = 0# Then
+                    capr(i) = 0.000000000001
+                End If
+                phz(i) = Atn(capi(i) / capr(i))
+                If capr(i) < 0# Then
+                    If capi(i) < 0# Then
+                        phz(i) = phz(i) - 4# * Atn(1#)
+                    ElseIf capi(i) > 0# Then
+                        phz(i) = phz(i) + 4# * Atn(1#)
+                    End If
+                End If
+            Next i
+            phzo = phz(0)
+            For i = 0 To ss - 2
+                phz(i) = phz(i + 1) - phz(i)
+                If phz(i) > 2# * Atn(1#) Then
+                    phz(i) = phz(i) - 8# * Atn(1#)
+                End If
+                If phz(i) < -2# * Atn(1#) Then
+                    phz(i) = phz(i) + 8# * Atn(1#)
+                End If
+            Next i
+            ReDim pramp(ss - 1)
+            pramp(0) = phzo
+            For i = 1 To ss - 1
+                pramp(i) = pramp(i - 1) + phz(i - 1)
+            Next i
+            ReDim dp(ss - 1 - 4 * hsize)
+            For i = 0 To UBound(dp)
+                dp(i) = (pramp(i + 1 + hsize) - pramp(i + hsize))
+            Next i
+            o = 0#
+            For i = 0 To UBound(dp)
+                o = o + dp(i)
+            Next i
+            FreqOffset = (o * fs / (8# * Atn(1#) * (UBound(dp) + 1))) - ifFrq
+        Else
+            FreqOffset = -99999
         End If
 
     #End If

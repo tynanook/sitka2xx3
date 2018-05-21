@@ -1,4 +1,5 @@
 Attribute VB_Name = "DatalogFunctions"
+Option Explicit
 Public ButtonsAdded As Boolean
 Public HramEnabled As Boolean
 Public DlogButton As Integer    'Set to 1 if Datalog Off

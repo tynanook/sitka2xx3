@@ -176,7 +176,7 @@ If TheExec.Sites.Site(0).Active = True Then
                 TheHdw.Wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED1_ON").Disconnect
-                Debug.Print "Site 0 FAILED"
+                If 0 Then Debug.Print "Site 0 FAILED" ' 20170216 - ty added if 0
                            
      End If
      
@@ -191,7 +191,7 @@ If TheExec.Sites.Site(1).Active = True Then
                 TheHdw.Wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED2_ON").Disconnect
-                Debug.Print "Site 1 FAILED"
+                If (0) Then Debug.Print "Site 1 FAILED"  ' 20170216 - ty added if 0
     
     End If
     
@@ -206,7 +206,7 @@ If TheExec.Sites.Site(2).Active = True Then
                 TheHdw.Wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED3_ON").Disconnect
-                Debug.Print "Site 2 FAILED"
+                If 0 Then Debug.Print "Site 2 FAILED" ' 20170216 - ty added if 0
     
     
     End If
@@ -222,7 +222,7 @@ If TheExec.Sites.Site(3).Active = True Then
                 TheHdw.Wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED4_ON").Disconnect
-                Debug.Print "Site 3 FAILED"
+                If 0 Then Debug.Print "Site 3 FAILED" ' 20170216 - ty added if 0
     
     End If
     

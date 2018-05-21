@@ -1,4 +1,6 @@
 Attribute VB_Name = "VDD_Voltage_Disturb"
+Option Explicit
+
 ' [=============================================================================]
 ' [ DEVICE :                                                                    ]
 ' [ MASK NO:                                                                    ]

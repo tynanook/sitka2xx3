@@ -1071,7 +1071,7 @@ End Function
 
 Private Function Local_tl_PpmuMeasureValue(pins As String, _
     MeasureMode As String, Samples As Long, lowLimit As Double, _
-    highLimit As Double, SettlingTime As Double, forceValue As Double, _
+    highLimit As Double, SettlingTime As Double, ForceValue As Double, _
     HiLoLimValid As String, RelayMode As String, Irange As String, PeRlyClosed As String) As Long
     
     Dim channels() As Long
@@ -1218,12 +1218,12 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
         If (nsharedChannels = 0) Then
             Call Local_tl_tm_LogResultReportStatus(channels(ChanNdx), chIO, _
                 dblAdjustedIpd, lowLimit, highLimit, parmFlag, testStatus, _
-                measunitcode, forceValue, forceunitcode, loc, , , HiLoLimValid)
+                measunitcode, ForceValue, forceunitcode, loc, , , HiLoLimValid)
         Else 'There are shared channels
          siteIndex = ChanNdx Mod nsites
         Call Local_tl_tm_LogResultReportStatus(channels(ChanNdx), chIO, _
                 dblAdjustedIpd, lowLimit, highLimit, parmFlag, testStatus, _
-                measunitcode, forceValue, forceunitcode, loc, , , HiLoLimValid)
+                measunitcode, ForceValue, forceunitcode, loc, , , HiLoLimValid)
         End If
 
         ' Log result and report status
@@ -1258,7 +1258,7 @@ End Function
 Private Sub Local_tl_tm_LogResultReportStatus(ByVal ChannelNumber As Long, chtype As Long, _
     SampleAvg As Double, lowLimit As Double, highLimit As Double, _
     parmFlag As Long, testStatus As Long, _
-    units As Long, forceValue As Double, forceUnits As Long, loc As Long, _
+    units As Long, ForceValue As Double, forceUnits As Long, loc As Long, _
     Optional PinNameInput As String, Optional siteNumber As Long = -1, _
     Optional HiLoLimitValid As String = CStr(TL_C_HILIM1LOLIM1))
     Dim ReturnStatus As Long
@@ -1292,19 +1292,19 @@ Private Sub Local_tl_tm_LogResultReportStatus(ByVal ChannelNumber As Long, chtyp
       Case TL_C_HILIM1LOLIM1 ' Hi and Lo limits defined.
         Call TheExec.DataLog.WriteParametricResult(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
-                lowLimit, SampleAvg, highLimit, units, forceValue, forceUnits, loc)
+                lowLimit, SampleAvg, highLimit, units, ForceValue, forceUnits, loc)
       Case TL_C_HILIM1LOLIM0 ' Only Hi limit defined.
         Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
-                SampleAvg, units, forceValue, forceUnits, , highLimit, loc)
+                SampleAvg, units, ForceValue, forceUnits, , highLimit, loc)
       Case TL_C_HILIM0LOLIM1 ' Only Lo limit defined.
         Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
-                SampleAvg, units, forceValue, forceUnits, lowLimit, , loc)
+                SampleAvg, units, ForceValue, forceUnits, lowLimit, , loc)
       Case TL_C_HILIM0LOLIM0 ' Neither Hi or Lo limit defined.
         Call TheExec.DataLog.WriteParametricResultOptLoHi(thisSite, testnumber, _
                 testStatus, parmFlag, PinName, ChannelNumber, _
-                SampleAvg, units, forceValue, forceUnits, , , loc)
+                SampleAvg, units, ForceValue, forceUnits, , , loc)
     End Select
   
     ' Send results to Datalog

@@ -366,7 +366,7 @@ Public Function rampDPS_andLevels(argc As Long, argv() As String) As Long
     final_Voltage = ResolveArgv(argv(0))
     
     For ramp_Voltage = 1.8 To final_Voltage Step -0.02
-        TheHdw.DPS.pins(power_Pin).forceValue(dpsPrimaryVoltage) = ramp_Voltage
+        TheHdw.DPS.pins(power_Pin).ForceValue(dpsPrimaryVoltage) = ramp_Voltage
         If UCase(Trim(argv(3))) = "NM" Then Call TheHdw.PinLevels.pins("nmclr").ModifyLevel(chVDriveHi, CDbl(ramp_Voltage))
         TheHdw.Wait (0.0001)
     Next ramp_Voltage
@@ -426,7 +426,7 @@ End Sub
 '
 Public Sub adjustLevels(ByVal vddValue As Double)
 
-    TheHdw.DPS.pins("vdd").forceValue(dpsPrimaryVoltage) = vddValue
+    TheHdw.DPS.pins("vdd").ForceValue(dpsPrimaryVoltage) = vddValue
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVDriveHi, vddValue)
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVCompareLo, (vddValue / 2) - 0.15)
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVCompareHi, (vddValue / 2) + 0.15)

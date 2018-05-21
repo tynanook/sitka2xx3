@@ -1,4 +1,5 @@
 Attribute VB_Name = "Bin_numbers"
+Option Explicit
 ' [=============================================================================]
 ' [ DEVICE :   all                                                              ]
 ' [ MASK NO:   all                                                              ]
@@ -55,7 +56,7 @@ Attribute VB_Name = "Bin_numbers"
 ' 9. Run the macro GetBinNumberCleanUp while on the flow sheet to remove the data in
 '    columns AD-AH that GetBinNumber macro put there.
 
-Option Explicit
+
 
 Const FirstRow = 5
 Dim strBinLisName As String

@@ -1,5 +1,6 @@
 Attribute VB_Name = "DatalogSupport"
 
+Option Explicit
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AutoDatalog Module :
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -60,6 +61,11 @@ Function catch_doall() As Long
 End Function
 
 Function autoDlog_onValidate() As Long
+
+' 20170216 - ty added following variable (FSOobj) bc not declared, guessing on type
+Stop
+
+    Dim FSOobj As Object
 
     Dim fso As New FileSystemObject
     Dim fCommandFile As Object
