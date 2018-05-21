@@ -1,0 +1,512 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE settings SYSTEM "settings.dtd">
+<settings>
+
+  <section name="plugins" version="2">
+    <section name="skin" version="1"/>
+    <key name="count">1</key>
+    <section name="0" version="1">
+      <section name="loader" version="1">
+        <key name="uuid">e1a99bb4-2f33-4a1f-9bab-1c74f826931b</key>
+        <key name="plugin">2a3d2e4c-7ede-4962-8ad8-48331dcdbb36</key>
+        <key name="factory">Fsk Generation</key>
+        <key name="instance">4df9fe3c-16b0-48f3-a5c6-0ff08161ffbe</key>
+      </section>
+      <section name="Hardware Config" version="1">
+        <key name="RF Signal Generator"></key>
+      </section>
+      <section name="Fsk Generation" version="2">
+        <key name="FilterOversamplingFactor">6</key>
+        <key name="FilterAutoOversampling">true</key>
+        <key name="ModulationType">afGen_fmtFSK2</key>
+        <key name="NumberOfSymbols">248</key>
+        <key name="NumberOfMarkerRepetitions">1</key>
+        <key name="AutoCyclic">false</key>
+        <key name="BitEncodingType">afGen_betNoBitEncoding</key>
+        <key name="UserDefinedFreqShift">-25000.0000000000</key>
+        <key name="UserDefinedFreqShift1">25000.0000000000</key>
+        <key name="UserDefinedFreqShift2">0.0000000000</key>
+        <key name="UserDefinedFreqShift3">0.0000000000</key>
+        <key name="SymbolRate">50000.000000000000000000</key>
+        <section name="Iq Impairments" version="1">
+          <key name="AwgnState">false</key>
+          <key name="AwgnSnr">0.0000000000</key>
+          <key name="AwgnBandwidth">5.0000000000</key>
+          <key name="ApplyError">false</key>
+          <key name="Skew">0.0000000000</key>
+          <key name="ICarrierLeak">0.0000000000</key>
+          <key name="QCarrierLeak">0.0000000000</key>
+          <key name="GainImbalance">0.0000000000</key>
+          <key name="ApplyClipping">false</key>
+          <key name="ClippingType">Circle</key>
+          <key name="PercentageILevel">0.0000000000</key>
+          <key name="PercentageQLevel">0.0000000000</key>
+          <key name="ApplyBeforeFilter">false</key>
+          <key name="CoupleIandQ">false</key>
+        </section>
+        <section name="MarkerManager" version="1">
+          <section name="Transitions" version="1">
+            <key name="count">4</key>
+            <section name="0" version="1">
+              <section name="Marker" version="1">
+                <section name="Transitions" version="1">
+                  <key name="count">0</key>
+                </section>
+                <key name="MarkerState">msDisabled</key>
+                <key name="MkrProfileShape">Gaussian</key>
+                <key name="RaiseTime">15.0000000000</key>
+                <key name="FallTime">15.0000000000</key>
+              </section>
+            </section>
+            <section name="1" version="1">
+              <section name="Marker" version="1">
+                <section name="Transitions" version="1">
+                  <key name="count">0</key>
+                </section>
+                <key name="MarkerState">msDisabled</key>
+                <key name="MkrProfileShape">None</key>
+                <key name="RaiseTime">10.0000000000</key>
+                <key name="FallTime">10.0000000000</key>
+              </section>
+            </section>
+            <section name="2" version="1">
+              <section name="Marker" version="1">
+                <section name="Transitions" version="1">
+                  <key name="count">0</key>
+                </section>
+                <key name="MarkerState">msDisabled</key>
+                <key name="MkrProfileShape">None</key>
+                <key name="RaiseTime">10.0000000000</key>
+                <key name="FallTime">10.0000000000</key>
+              </section>
+            </section>
+            <section name="3" version="1">
+              <section name="Marker" version="1">
+                <section name="Transitions" version="1">
+                  <key name="count">0</key>
+                </section>
+                <key name="MarkerState">msDisabled</key>
+                <key name="MkrProfileShape">None</key>
+                <key name="RaiseTime">10.0000000000</key>
+                <key name="FallTime">10.0000000000</key>
+              </section>
+            </section>
+          </section>
+          <key name="MarkerRepetitions">1</key>
+          <key name="UseMarkers">false</key>
+        </section>
+        <section name="Filter Settings" version="1">
+          <key name="FilterType">IdealLowPass</key>
+          <key name="WindowType">None</key>
+          <key name="ImpulseType">DiracImpulse</key>
+          <key name="UseEstimate">false</key>
+          <key name="FilterLength">8</key>
+          <key name="ReqACP">-70.0000000000</key>
+          <key name="ReqEvm">0.1000000015</key>
+          <key name="Alpha">0.3000000119</key>
+          <key name="Beta">2.0000000000</key>
+          <key name="userCofficientFile">No  file found.</key>
+        </section>
+        <section name="Fsk Data Source" version="1">
+          <key name="DataSourceType">afGen_bsBoolCsvFile</key>
+          <key name="PRBSType">afGen_ptPN9</key>
+          <key name="PRBSSeed">1</key>
+          <key name="PatternData">1</key>
+          <key name="FilePath">C:/Users/c14574/Documents/LoRa/fsk_31b_xC0C2_i.txt</key>
+          <key name="CurrentCsvFile">C:/Users/c14574/Documents/LoRa/fsk_31b_ccitt_i.txt</key>
+          <key name="PRBSTapMask">17</key>
+          <key name="PRBSLength">9</key>
+        </section>
+      </section>
+      <section name="RFControlSettings" version="1">
+        <key name="CentreFrequency">200000000.000000000000000000</key>
+        <key name="CentreLevel">0.000000000000000000</key>
+        <key name="RFOn">true</key>
+        <key name="Play">false</key>
+        <key name="SingleShot">false</key>
+        <key name="CurrentArbFile"></key>
+      </section>
+      <section name="GraphicsSettings" version="1"/>
+      <section name="ui" version="2">
+        <section name="windows" version="2">
+          <key name="count">1</key>
+          <section name="0" version="1">
+            <section name="layouts" version="1">
+              <key name="count">1</key>
+              <section name="0" version="1">
+                <section name="views" version="1">
+                  <key name="count">6</key>
+                  <section name="0" version="1">
+                    <key name="uid">ModulationParameterSettings</key>
+                    <key name="wid">56e0405c-c225-43da-8c7c-abff7e80dfbb</key>
+                    <section name="user" version="1"/>
+                  </section>
+                  <section name="1" version="1">
+                    <key name="uid">FilterParameterSettings</key>
+                    <key name="wid">03f4ba40-0acb-424e-b56a-8618c6747014</key>
+                    <section name="user" version="1"/>
+                  </section>
+                  <section name="2" version="1">
+                    <key name="uid">DataSourceSettings</key>
+                    <key name="wid">01939144-1ac0-4d85-903f-8a53afafe8f8</key>
+                    <section name="user" version="1"/>
+                  </section>
+                  <section name="3" version="1">
+                    <key name="uid">MarkersPanel</key>
+                    <key name="wid">ae0439b0-110c-45db-8d6a-06729b8a7742</key>
+                    <section name="user" version="1"/>
+                  </section>
+                  <section name="4" version="1">
+                    <key name="uid">ImpairmentParameterSettings</key>
+                    <key name="wid">592acf74-38ef-4584-b2fe-16af2d652a66</key>
+                    <section name="user" version="1"/>
+                  </section>
+                  <section name="5" version="1">
+                    <key name="uid">GraphicsPanel</key>
+                    <key name="wid">2360d1e1-f95c-4420-b732-134527c9324f</key>
+                    <section name="user" version="3">
+                      <key name="CurrentGraph">Spectrum</key>
+                      <section name="MarkerSettings" version="2">
+                        <section name="Marker 1" version="3">
+                          <section name="Polar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="XPolar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Samples" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Frequency" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="PowerCcdf" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                        </section>
+                        <section name="Marker 2" version="3">
+                          <section name="Polar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="XPolar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Samples" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Frequency" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="PowerCcdf" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                        </section>
+                        <section name="Marker 3" version="3">
+                          <section name="Polar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="XPolar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Samples" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Frequency" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="PowerCcdf" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                        </section>
+                        <section name="Marker 4" version="3">
+                          <section name="Polar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="XPolar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Samples" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Frequency" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="PowerCcdf" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                        </section>
+                        <section name="Delta" version="3">
+                          <section name="Polar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="XPolar" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Samples" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="Frequency" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                          <section name="PowerCcdf" version="1">
+                            <key name="XValue">0.000000000000000000</key>
+                            <key name="Enabled">false</key>
+                            <key name="Hidden">false</key>
+                          </section>
+                        </section>
+                      </section>
+                      <section name="PlotSettings" version="1">
+                        <key name="Graticule">true</key>
+                      </section>
+                      <section name="IQ Vector" version="3">
+                        <section name="IQ Vector" version="3">
+                          <key name="PlotAllData">true</key>
+                        </section>
+                        <section name="XPolar" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="YPolar" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <key name="IsVectorPlot">true</key>
+                        <section name="IQ" version="1"/>
+                      </section>
+                      <section name="IQ vs Time" version="3">
+                        <section name="IQ vs Time" version="3">
+                          <key name="PlotAllData">true</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-1.000000000000000000</key>
+                          <key name="DefMax">1.000000000000000000</key>
+                          <key name="Min">-1.000000000000000000</key>
+                          <key name="Max">1.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-2147483647.000000000000000000</key>
+                          <key name="DefMax">2147483647.000000000000000000</key>
+                          <key name="Min">-2147483647.000000000000000000</key>
+                          <key name="Max">2147483647.000000000000000000</key>
+                        </section>
+                        <section name="I" version="1"/>
+                        <section name="Q" version="1"/>
+                      </section>
+                      <section name="Phase vs Time" version="3">
+                        <section name="Phase vs Time" version="3">
+                          <key name="PlotAllData">true</key>
+                          <key name="Function">0</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-4.000000000000000000</key>
+                          <key name="DefMax">4.000000000000000000</key>
+                          <key name="Min">-4.000000000000000000</key>
+                          <key name="Max">4.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-2147483647.000000000000000000</key>
+                          <key name="DefMax">2147483647.000000000000000000</key>
+                          <key name="Min">-2147483647.000000000000000000</key>
+                          <key name="Max">2147483647.000000000000000000</key>
+                        </section>
+                      </section>
+                      <section name="Power vs Time" version="4">
+                        <section name="Power vs Time" version="4">
+                          <key name="PlotAllData">true</key>
+                          <key name="Function">0</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-90.000000000000000000</key>
+                          <key name="DefMax">10.000000000000000000</key>
+                          <key name="Min">-90.000000000000000000</key>
+                          <key name="Max">10.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-2147483647.000000000000000000</key>
+                          <key name="DefMax">2147483647.000000000000000000</key>
+                          <key name="Min">-2147483647.000000000000000000</key>
+                          <key name="Max">2147483647.000000000000000000</key>
+                        </section>
+                      </section>
+                      <section name="Freq vs Time" version="3">
+                        <section name="Freq vs Time" version="3">
+                          <key name="PlotAllData">true</key>
+                          <key name="Function">0</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-25000.000000000000000000</key>
+                          <key name="DefMax">25000.000000000000000000</key>
+                          <key name="Min">-25000.000000000000000000</key>
+                          <key name="Max">25000.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-2147483647.000000000000000000</key>
+                          <key name="DefMax">2147483647.000000000000000000</key>
+                          <key name="Min">-2147483647.000000000000000000</key>
+                          <key name="Max">2147483647.000000000000000000</key>
+                        </section>
+                      </section>
+                      <section name="Spectrum" version="4">
+                        <section name="Spectrum" version="4">
+                          <key name="WindowApplied">true</key>
+                          <key name="AnnotationDisplayed">true</key>
+                          <key name="Function">0</key>
+                        </section>
+                      </section>
+                      <section name="Scales" version="1">
+                        <section name="Samples" version="1">
+                          <key name="DefMin">-1.000000000000000000</key>
+                          <key name="DefMax">-1.000000000000000000</key>
+                          <key name="Min">-1.000000000000000000</key>
+                          <key name="Max">1.000000000000000000</key>
+                        </section>
+                      </section>
+                      <section name="IQ vs Time (Wrapped)" version="3">
+                        <section name="y" version="1">
+                          <key name="DefMin">-1.000000000000000000</key>
+                          <key name="DefMax">1.000000000000000000</key>
+                          <key name="Min">-1.000000000000000000</key>
+                          <key name="Max">1.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-2147483647.000000000000000000</key>
+                          <key name="DefMax">2147483647.000000000000000000</key>
+                          <key name="Min">-2147483647.000000000000000000</key>
+                          <key name="Max">2147483647.000000000000000000</key>
+                        </section>
+                        <section name="I" version="1"/>
+                        <section name="Q" version="1"/>
+                      </section>
+                      <section name="Constellation" version="3">
+                        <section name="Constellation" version="3">
+                          <key name="PlotAllData">false</key>
+                        </section>
+                        <section name="XPolar" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="YPolar" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">-3.000000000000000000</key>
+                          <key name="DefMax">3.000000000000000000</key>
+                          <key name="Min">-3.000000000000000000</key>
+                          <key name="Max">3.000000000000000000</key>
+                        </section>
+                        <key name="IsVectorPlot">false</key>
+                        <section name="IQ" version="1"/>
+                      </section>
+                      <section name="CCDF" version="4">
+                        <section name="CCDF" version="4">
+                          <key name="WindowApplied">true</key>
+                          <key name="AnnotationDisplayed">true</key>
+                          <key name="Function">0</key>
+                        </section>
+                        <section name="y" version="1">
+                          <key name="DefMin">0.000000000000000000</key>
+                          <key name="DefMax">100.000000000000000000</key>
+                          <key name="Min">0.000000000000000000</key>
+                          <key name="Max">100.000000000000000000</key>
+                        </section>
+                        <section name="x" version="1">
+                          <key name="DefMin">-20.000000000000000000</key>
+                          <key name="DefMax">15.000000000000000000</key>
+                          <key name="Min">-20.000000000000000000</key>
+                          <key name="Max">15.000000000000000000</key>
+                        </section>
+                      </section>
+                    </section>
+                  </section>
+                </section>
+                <key name="uid">d3d5a984-597f-4d26-b506-67f7a9719668</key>
+                <key name="layout"></key>
+              </section>
+            </section>
+            <key name="uid">c807f74a-56b3-4cbb-b779-09f5939a18cb</key>
+            <key name="width">1040</key>
+            <key name="height">1005</key>
+          </section>
+        </section>
+        <key name="preventActivate">false</key>
+        <key name="uid">4df9fe3c-16b0-48f3-a5c6-0ff08161ffbe</key>
+      </section>
+    </section>
+  </section>
+
+</settings>
