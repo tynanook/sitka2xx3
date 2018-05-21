@@ -331,8 +331,12 @@ Function RFOnProgramValidated_LoRa() 'RN2483
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_id_fast").Load
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_gpio_full").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483r1_gpio_full").Load 'FW Revision 1.0.0
+        
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_sleep").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_sleep_revised").Load
+        
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_cw").Load
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx_cw_off").Load

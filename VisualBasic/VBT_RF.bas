@@ -275,7 +275,7 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- TheExec.DataLog.WriteComment ("=================== TX868_CW_PWR =====================")
+ 'TheExec.DataLog.WriteComment ("=================== TX868_CW_PWR =====================")
  
     Select Case TestFreq
     
@@ -507,7 +507,795 @@ errHandler:
     
 End Function
 
+Public Function rn2483_i_sleep_rev(argc As Long, argv() As String) As Long
 
+'The DUT is commanded to sleep for up to 10 sec via a UART command, as recommended by HDC (Tibor Keller).
+' During the 10 second window the VBAT current is measured and reported. The Upper Test Limit (UTL) is set approximately
+' 6x higher than the guaranteed-by-design data sheet value due to the inferior DPS low current measurement capability.
+
+'Sleep Current Test Methodology
+
+'Steps performed across multiple sites (parallel):
+    '1) Send UART command in pattern to put DUT to sleep.
+    '2) Pattern sets cpuA flag when DUT is sleeping
+    '3) Delay between 4-5 seconds.
+    '4) Disconnect all DUT pins except VBAT and GND.
+    '5) Take a number of single current readings (PinListData objects) separated by time.
+    '6) Reconnect pins
+    '7) Clear cpuA flag to allow pattern to finish
+    
+'Steps performed within site loop for active sites:
+    '8) Take absolute value of current readings.
+    '9) Find lowest value.
+    
+ 'Final step performed outside of site loop:
+    '10) Test site-minimum DUT sleep current values and datalog for all sites.
+
+        
+
+    Dim Site As Variant
+    
+    Dim I_SLEEP As New PinListData
+    Dim I_SLEEP_A As New PinListData
+    Dim I_SLEEP_B As New PinListData
+    Dim I_SLEEP_C As New PinListData
+    Dim I_SLEEP_D As New PinListData
+    Dim I_SLEEP_E As New PinListData
+    Dim I_SLEEP_F As New PinListData
+    Dim I_SLEEP_G As New PinListData
+    Dim I_SLEEP_H As New PinListData
+    Dim I_SLEEP_J As New PinListData
+    Dim I_SLEEP_K As New PinListData
+    
+    
+    
+    
+    
+    
+    Dim ExistingSiteCnt As Integer
+    
+    Dim i As Long
+    Dim num_samps As Long
+    Dim siteStatus As Long
+    Dim thisSite As Long
+    'Dim i As Long
+    
+    Dim nSiteIndex As Long
+    Dim Flags As Long
+    Dim FlagsSet As Long, FlagsClear As Long
+
+    Dim I_Sleep_Samples() As Double
+    Dim Sleep_Current_Mean() As Double
+    Dim Sleep_Current_Sum() As Double
+    Dim Sleep_Current_Max() As Double
+    Dim Sleep_Current_OK() As Double
+    Dim Sleep_Current_Min() As Double
+    
+    Dim i_sleep_temp As Double
+    Dim oprVolt As Double
+    Dim SLEEP_DLY As Double
+    Dim INTERVAL_DLY As Double
+    
+    Dim tmpA, tmpB, tmpC, tmpD, tmpE As Double
+    Dim tmpF, tmpG, tmpH, tmpJ, tmpK As Double
+    
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
+    Debug.Print "LoLimit = "; LoLimit
+    Debug.Print "HiLimit = "; HiLimit
+    
+    ExistingSiteCnt = TheExec.Sites.ExistingCount
+    
+    'Debug.Print "Existing Site Count = "; ExistingSiteCnt
+    
+    On Error GoTo errHandler
+    
+        rn2483_i_sleep_rev = TL_SUCCESS
+    
+    Call enable_store_inactive_sites 'For Pass/Fail LEDs
+    
+    I_SLEEP.AddPin ("VBAT") 'add pin to PinListData Object
+    I_SLEEP_A.AddPin ("VBAT")
+    I_SLEEP_B.AddPin ("VBAT")
+    I_SLEEP_C.AddPin ("VBAT")
+    I_SLEEP_D.AddPin ("VBAT")
+    I_SLEEP_E.AddPin ("VBAT")
+    I_SLEEP_F.AddPin ("VBAT")
+    I_SLEEP_G.AddPin ("VBAT")
+    I_SLEEP_H.AddPin ("VBAT")
+    I_SLEEP_J.AddPin ("VBAT")
+    I_SLEEP_K.AddPin ("VBAT")
+     
+
+    If argc < 1 Then
+        MsgBox "Error - On rn2483_i_sleep_rev - Wrong Argument Assigned", , "Error"
+        GoTo errHandler
+    Else
+        oprVolt = argv(0) '3.3
+        
+    End If
+    
+    TheHdw.Digital.Patgen.ThreadingForActiveSites = False
+    
+'TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP_REV =====================================")
+    
+        oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
+        
+        num_samps = 1      'Number of current samples taken per site
+        
+        SLEEP_DLY = 4.5            '4.5
+        INTERVAL_DLY = 0.03
+        
+        
+        ReDim Sleep_Current_Min(ExistingSiteCnt)
+        
+        'Disconnect GPIO_PINS
+            TheHdw.pins("MODULE_IO").InitState = chInitOff
+            TheHdw.pins("MODULE_IO").StartState = chStartOff
+            
+            TheHdw.pins("SDA").InitState = chInitOff
+            TheHdw.pins("SDA").StartState = chStartOff
+         
+
+   
+        For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize PinListData objects and variables
+        
+            I_SLEEP.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_A.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_B.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_C.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_D.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_E.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_F.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_G.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_H.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_J.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_K.pins("VBAT").Value(nSiteIndex) = -99
+            
+            Sleep_Current_Min(nSiteIndex) = 0.00009999 'UTL = 11.11uA FAILING VALUE
+            
+        Next nSiteIndex
+        
+        
+        
+        
+        'DPS Setup
+        
+        With TheHdw.DPS.pins("VBAT")
+            .ClearLatchedCurrentLimit
+            .ClearOverCurrentLimit
+            .CurrentRange = dps50uA     'lowest DPS current range
+            TheHdw.DPS.Samples = num_samps
+        End With
+        
+                TheHdw.Wait (0.05)  'DPS settling
+
+               TheHdw.Digital.Patgen.Timeout = 30
+            
+            Call TheHdw.Digital.Patgen.HaltWait
+            
+            'Run pattern to put DUT into SLEEP Mode
+            'TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
+            'TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
+            
+            'TheHdw.Wait (1)
+                'Dim SlpWaitLoop As Long
+                'SlpWaitLoop = 28800
+                
+                'TheExec.DataLog.WriteComment "SlpWait: " & SlpWaitLoop & " Vectors"
+                'Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").ModifyVectorOperand("start_i_sleep", 304, SlpWaitLoop)
+            
+            
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
+        
+       
+                'Check for cpuA flag from pattern 'Flags: cpuA = 1 when set and 0 when cleared
+                'DUT is sleeping when cpuA = 1.
+              
+Flag_Loop:
+
+
+        Flags = TheHdw.Digital.Patgen.CpuFlags
+
+        'Debug.Print "Flags ="; Flags
+
+         If (Flags = 1) Then GoTo End_flag_loop 'cpuA set in pattern (DUT should be asleep).
+
+         If (Flags = 0) Then GoTo Flag_Loop 'cpuA not set in pattern
+
+End_flag_loop:
+
+        TheHdw.Wait (SLEEP_DLY) 'Sleep Delay 'Critical to have sleep delay with pins connected!
+        
+        Call TheHdw.Digital.Relays.pins("MODULE_IO").disconnectPins 'disconnect pins for lowest sleep current
+        Call TheHdw.Digital.Relays.pins("SDA").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_IO").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_TX").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_RX").disconnectPins
+        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").disconnectPins
+        
+        TheHdw.Wait (INTERVAL_DLY)      'HW Delay
+        
+'Collect several measurements at all sites with interval delay
+
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_A)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_B)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_C)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+            
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_D)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_E)
+         
+            TheHdw.Wait (INTERVAL_DLY)
+         
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_F)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_G)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_H)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+            
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_J)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_K)
+            
+ 'All data for all sites have been collected at this point.
+    
+'Clear cpuA flag so pattern can continue
+
+    FlagsSet = 0
+    FlagsClear = cpuA
+    
+        'Re-connect pins previously disconnected
+          
+        Call TheHdw.Digital.Relays.pins("MODULE_IO").connectPins
+        Call TheHdw.Digital.Relays.pins("SDA").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_IO").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_TX").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_RX").connectPins
+        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").connectPins
+        
+        TheHdw.Wait (INTERVAL_DLY)      'HW Delay
+
+    Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
+    
+
+    'Call TheHdw.Digital.Patgen.Halt  'For DEBUG to prevent pattern timeout. Comment out for faster test time.
+
+        
+' Loop through the active sites
+    
+With TheExec.Sites
+    
+''        siteStatus = .SelectFirst
+''
+''    Do While siteStatus <> loopDone
+''        thisSite = .SelectedSite
+    
+        If (TheExec.Sites.Site(0).Active) Then
+          
+            TheExec.Sites.SetOverride (0)       'Site 0 Active
+
+            'Begin data processing for Site 0
+            
+                Debug.Print "Site "; 0
+                Debug.Print "Sleep Current Samples..."
+    
+    
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(0))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(0))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(0))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(0))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(0))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(0))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(0))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(0))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(0))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(0))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search for a sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(0) Then 'search for minimum value
+                Sleep_Current_Min(0) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpE
+            End If
+
+    
+            I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+            
+           'End data processing for Site 0
+        
+        TheExec.Sites.RestoreFromOverride
+
+     End If 'Site 0 active
+     
+     'Exit Do        'DEBUG
+     
+    
+''    siteStatus = TheExec.Sites.SelectNext(siteStatus)  'DEBUG
+''
+''    If siteStatus > 1 Then
+''        siteStatus = siteStatus - 1
+''    End If
+''
+''
+''    If siteStatus = loopDone Then Exit Do
+     
+        If (TheExec.Sites.Site(1).Active) Then
+          
+            TheExec.Sites.SetOverride (1)   'Site 1 Active
+            
+            'Begin data processing for Site 1
+        
+            Debug.Print "Site "; 1
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(1))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(1))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(1))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(1))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(1))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(1))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(1))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(1))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(1))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(1))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(1) Then 'search for minimum value
+                Sleep_Current_Min(1) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpE
+            End If
+
+    
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+            
+           'End data processing for Site 1
+
+
+            TheExec.Sites.RestoreFromOverride
+            
+        End If 'Site 1 Active
+      
+      
+''        siteStatus = TheExec.Sites.SelectNext(siteStatus)
+''
+''        If siteStatus > 2 Then
+''            siteStatus = siteStatus - 1
+''        End If
+''
+''        If siteStatus = loopDone Then Exit Do
+        
+        If (TheExec.Sites.Site(2).Active) Then
+          
+            TheExec.Sites.SetOverride (2)   'Site 2 Active
+            
+            'Begin data processing for Site 2
+        
+            Debug.Print "Site "; 2
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(2))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(2))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(2))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(2))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(2))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(2))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(2))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(2))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(2))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(2))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(2) Then 'search for minimum value
+                Sleep_Current_Min(2) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpE
+            End If
+    
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+
+
+            TheExec.Sites.RestoreFromOverride
+      
+      
+        End If 'Site 2 Active
+      
+      
+''    siteStatus = TheExec.Sites.SelectNext(siteStatus)
+''
+''    If siteStatus > 3 Then
+''            siteStatus = siteStatus - 1
+''    End If
+''
+''    If siteStatus = loopDone Then Exit Do
+        
+        If (TheExec.Sites.Site(3).Active) Then
+          
+            TheExec.Sites.SetOverride (3)   'Site 3 Active
+        
+            'Begin data processing for Site 3
+        
+            Debug.Print "Site "; 3
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(3))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(3))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(3))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(3))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(3))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(3))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(3))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(3))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(3))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(3))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(3) Then 'search for minimum value
+                Sleep_Current_Min(3) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpE
+            End If
+            
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            Debug.Print Sleep_Current_Min(3)
+
+
+
+            TheExec.Sites.RestoreFromOverride
+      
+        End If 'Site 3 Active
+
+    
+''    siteStatus = TheExec.Sites.SelectNext(siteStatus)
+''
+''    If siteStatus = loopDone Then Exit Do
+''
+''    If (TheExec.Sites.ActiveCount = 0 Or TheExec.Sites.ActiveCount >= 3) Then Exit Do
+''
+''    siteStatus = .SelectNext(loopTop)
+        
+''   Loop
+  
+End With ' TheExec.Sites
+      
+      'Test to Limits and Datalog
+      
+            If (TheExec.CurrentJob = "f1-prd-std" Or TheExec.CurrentJob = "f1-prd-qtp") Then
+    
+                'TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
+                TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
+    
+            ElseIf (TheExec.CurrentJob = "q1-prd-std" Or TheExec.CurrentJob = "q1-prd-qtp") Then
+    
+                'TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
+                TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
+                    
+            End If
+
+
+'        If TheExec.CurrentJob = "f1-prd-std-rn2483r101" Then
+'
+'            'TheExec.Flow.TestLimit I_SLEEP, 0.00000002, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
+'            TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483r101" Then
+'
+'            'TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
+'            TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
+'
+'        End If
+        
+    Call TheHdw.Digital.Patgen.Halt
+        
+    Call disable_inactive_sites 'For Pass/Fail LEDs
+    
+    Exit Function
+    
+
+errHandler:
+
+
+    I_SLEEP.AddPin ("VBAT")
+            
+'      For nSiteIndex = 0 To ExistingSiteCnt - 1
+'
+'            I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
+'
+'      Next nSiteIndex
+
+     
+         TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
+
+    Call TheHdw.Digital.Patgen.Halt
+    
+    If AbortTest Then Exit Function Else Resume Next
+    
+    On Error GoTo 0
+    
+    Call TheExec.ErrorLogMessage("Function Error: rn2483_i_sleep_rev")
+    
+    Call TheExec.ErrorReport
+    
+    rn2483_i_sleep_rev = TL_ERROR
+    
+    
+End Function
+
+
+Public Function rn2483_gpio_r1(argc As Long, argv() As String) As Long
+
+'Previous template version of this test did not bin properly for multi-site operation, so the test was written in VBT.
+'The LoRa module has 14 gpio pins, GPIO0 - GPIO13. Each gpio pin is commanded via the UART to be set to a logical 1, tested in the pattern, then set to logical 0, then tested in the pattern.
+
+    Dim Site As Variant
+    
+      'Dim oprVolt As Double
+      'Dim dut_delay As Double
+      
+      Dim nSiteIndex As Long
+      
+    Dim ExistingSiteCnt As Integer
+    ExistingSiteCnt = TheExec.Sites.ExistingCount
+    
+    On Error GoTo errHandler
+    
+        rn2483_gpio_r1 = TL_SUCCESS
+    
+    Call enable_store_inactive_sites 'For Pass/Fail LEDs
+    
+'TheExec.DataLog.WriteComment ("=================== GPIO CHECK ========================")
+    
+        'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
+        'dut_delay = 0.1
+            
+                      'RESET ACTIVE
+            TheHdw.pins("MCLR_nRESET").InitState = chInitLo
+            TheHdw.pins("MCLR_nRESET").StartState = chStartLo
+  
+  
+  Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483r1_gpio_full").Test(pfAlways, 0)
+        
+        
+        TheHdw.Wait (0.3)
+        
+    
+    Call disable_inactive_sites 'For Pass/Fail LEDs
+    
+    Exit Function
+    
+
+errHandler:
+
+
+    If AbortTest Then Exit Function Else Resume Next
+    
+    On Error GoTo 0
+    Call TheExec.ErrorLogMessage("Function Error: rn2483_gpio_r1")
+    Call TheExec.ErrorReport
+    rn2483_gpio_r1 = TL_ERROR
+    
+End Function
 
 Public Function rn2483_id_mfs(argc As Long, argv() As String) As Long
 
@@ -836,7 +1624,7 @@ Wend 'end WHILE loop
     Call TheHdw.Digital.Patgen.Halt
     
 
-    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
+    'TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
     
     TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
@@ -970,7 +1758,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-TheExec.DataLog.WriteComment ("===================== PKTs_RCVd ======================")
+'TheExec.DataLog.WriteComment ("===================== PKTs_RCVd ======================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -1466,7 +2254,7 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ===================")
+'TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ===================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         dut_delay = 0.1
@@ -1702,7 +2490,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-TheExec.DataLog.WriteComment ("====================== PKTs_RCVd ====================")
+'TheExec.DataLog.WriteComment ("====================== PKTs_RCVd ====================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -2313,6 +3101,705 @@ errHandler:
     
     
 End Function
+Public Function rn2903a_i_sleep_rev(argc As Long, argv() As String) As Long
+
+'The DUT is commanded to sleep for up to 10 sec via a UART command, as recommended by HDC (Tibor Keller).
+' During the 10 second window the VBAT current is measured and reported. The Upper Test Limit (UTL) is set approximately
+' 6x higher than the guaranteed-by-design data sheet value due to the inferior DPS low current measurement capability.
+
+'Sleep Current Test Methodology
+
+'Steps performed across multiple sites (parallel):
+    '1) Send UART command in pattern to put DUT to sleep.
+    '2) Pattern sets cpuA flag when DUT is sleeping
+    '3) Delay between 4-5 seconds.
+    '4) Disconnect all DUT pins except VBAT and GND.
+    '5) Take a number of single current readings (PinListData objects) separated by time.
+    '6) Reconnect pins
+    '7) Clear cpuA flag to allow pattern to finish
+    
+'Steps performed within site loop for active sites:
+    '8) Take absolute value of current readings.
+    '9) Find lowest value.
+    
+ 'Final step performed outside of site loop:
+    '10) Test site-minimum DUT sleep current values and datalog for all sites.
+
+        
+
+    Dim Site As Variant
+    
+    Dim I_SLEEP As New PinListData
+    Dim I_SLEEP_A As New PinListData
+    Dim I_SLEEP_B As New PinListData
+    Dim I_SLEEP_C As New PinListData
+    Dim I_SLEEP_D As New PinListData
+    Dim I_SLEEP_E As New PinListData
+    Dim I_SLEEP_F As New PinListData
+    Dim I_SLEEP_G As New PinListData
+    Dim I_SLEEP_H As New PinListData
+    Dim I_SLEEP_J As New PinListData
+    Dim I_SLEEP_K As New PinListData
+    
+    
+    
+    
+    
+    
+    Dim ExistingSiteCnt As Integer
+    
+    Dim i As Long
+    Dim num_samps As Long
+    Dim siteStatus As Long
+    Dim thisSite As Long
+    'Dim i As Long
+    
+    Dim nSiteIndex As Long
+    Dim Flags As Long
+    Dim FlagsSet As Long, FlagsClear As Long
+
+    Dim I_Sleep_Samples() As Double
+    Dim Sleep_Current_Mean() As Double
+    Dim Sleep_Current_Sum() As Double
+    Dim Sleep_Current_Max() As Double
+    Dim Sleep_Current_OK() As Double
+    Dim Sleep_Current_Min() As Double
+    
+    Dim i_sleep_temp As Double
+    Dim oprVolt As Double
+    Dim SLEEP_DLY As Double
+    Dim INTERVAL_DLY As Double
+    
+    Dim tmpA, tmpB, tmpC, tmpD, tmpE As Double 'First pass
+    Dim tmpF, tmpG, tmpH, tmpJ, tmpK As Double  'Second pass (if needed)
+    
+    
+    ExistingSiteCnt = TheExec.Sites.ExistingCount
+    
+    Debug.Print "Existing Site Count = "; ExistingSiteCnt
+    
+    On Error GoTo errHandler
+    
+        rn2903a_i_sleep_rev = TL_SUCCESS
+    
+    Call enable_store_inactive_sites 'For Pass/Fail LEDs
+    
+    I_SLEEP.AddPin ("VBAT") 'add pin to PinListData Object
+    I_SLEEP_A.AddPin ("VBAT")
+    I_SLEEP_B.AddPin ("VBAT")
+    I_SLEEP_C.AddPin ("VBAT")
+    I_SLEEP_D.AddPin ("VBAT")
+    I_SLEEP_E.AddPin ("VBAT")
+    I_SLEEP_F.AddPin ("VBAT")
+    I_SLEEP_G.AddPin ("VBAT")
+    I_SLEEP_H.AddPin ("VBAT")
+    I_SLEEP_J.AddPin ("VBAT")
+    I_SLEEP_K.AddPin ("VBAT")
+     
+
+    If argc < 1 Then
+        MsgBox "Error - On rn2903a_i_sleep_rev - Wrong Argument Assigned", , "Error"
+        GoTo errHandler
+    Else
+        oprVolt = argv(0) '3.3
+        
+    End If
+    
+    TheHdw.Digital.Patgen.ThreadingForActiveSites = False
+    
+'TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP_REV =====================================")
+    
+        oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
+        
+        num_samps = 1      'Number of current samples taken per site
+        
+        SLEEP_DLY = 3.75
+        INTERVAL_DLY = 0.1
+        
+        
+        ReDim Sleep_Current_Min(ExistingSiteCnt)
+        
+        'Disconnect GPIO_PINS
+            TheHdw.pins("MODULE_IO").InitState = chInitOff
+            TheHdw.pins("MODULE_IO").StartState = chStartOff
+            
+            TheHdw.pins("SDA").InitState = chInitOff
+            TheHdw.pins("SDA").StartState = chStartOff
+         
+
+   
+        For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize PinListData objects and variables
+        
+            I_SLEEP.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_A.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_B.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_C.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_D.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_E.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_F.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_G.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_H.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_J.pins("VBAT").Value(nSiteIndex) = -99
+            I_SLEEP_K.pins("VBAT").Value(nSiteIndex) = -99
+            
+            Sleep_Current_Min(nSiteIndex) = 0.00009999 'UTL = 11.1uA FAILING VALUE
+            
+        Next nSiteIndex
+        
+        
+        
+        
+        'DPS Setup
+        
+        With TheHdw.DPS.pins("VBAT")
+            .ClearLatchedCurrentLimit
+            .ClearOverCurrentLimit
+            .CurrentRange = dps50uA        'lowest DPS current range
+            TheHdw.DPS.Samples = num_samps
+        End With
+        
+                TheHdw.Wait (0.05) 'DPS settling
+
+               TheHdw.Digital.Patgen.Timeout = 30
+            
+            Call TheHdw.Digital.Patgen.HaltWait
+            
+            'Run pattern to put DUT into SLEEP Mode
+        
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
+        
+       
+                'Check for cpuA flag from pattern 'Flags: cpuA = 1 when set and 0 when cleared
+                'DUT is sleeping when cpuA = 1.
+              
+Flag_Loop:
+        
+           
+        Flags = TheHdw.Digital.Patgen.CpuFlags
+        
+        'Debug.Print "Flags ="; Flags
+                
+         If (Flags = 1) Then GoTo End_flag_loop 'cpuA set in pattern (DUT should be asleep).
+         
+         If (Flags = 0) Then GoTo Flag_Loop 'cpuA not set in pattern
+                  
+End_flag_loop:
+
+        TheHdw.Wait (SLEEP_DLY) 'Sleep Delay 'Critical to have sleep delay with pins connected!
+        
+        Call TheHdw.Digital.Relays.pins("MODULE_IO").disconnectPins 'disconnect pins for lowest sleep current
+        Call TheHdw.Digital.Relays.pins("SDA").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_IO").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_TX").disconnectPins
+        Call TheHdw.Digital.Relays.pins("UART_RX").disconnectPins
+        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").disconnectPins
+        
+        TheHdw.Wait (INTERVAL_DLY)
+        
+'Collect several measurements at all sites with interval delay
+
+        Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_A)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_B)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_C)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+            
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_D)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_E)
+         
+            TheHdw.Wait (INTERVAL_DLY)
+         
+        Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_F)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_G)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_H)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+            
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_J)
+        
+            TheHdw.Wait (INTERVAL_DLY)
+        
+         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_K)
+            
+ 'All data for all sites have been collected at this point.
+    
+'Clear cpuA flag so pattern can continue
+
+    FlagsSet = 0
+    FlagsClear = cpuA
+    
+        'Re-connect pins previously disconnected
+          
+        Call TheHdw.Digital.Relays.pins("MODULE_IO").connectPins
+        Call TheHdw.Digital.Relays.pins("SDA").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_IO").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_TX").connectPins
+        Call TheHdw.Digital.Relays.pins("UART_RX").connectPins
+        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").connectPins
+        
+        TheHdw.Wait (INTERVAL_DLY)
+
+    Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
+    
+
+    'Call TheHdw.Digital.Patgen.Halt  'For DEBUG to prevent pattern timeout. Comment out for faster test time.
+
+        
+' Loop through the active sites
+    
+With TheExec.Sites
+    
+'        siteStatus = .SelectFirst
+'
+'    Do While siteStatus <> loopDone
+'        thisSite = .SelectedSite
+    
+        If (TheExec.Sites.Site(0).Active) Then
+          
+            TheExec.Sites.SetOverride (0)       'Site 0 Active
+
+            'Begin data processing for Site 0
+            
+                Debug.Print "Site "; 0
+                Debug.Print "Sleep Current Samples..."
+    
+    
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(0))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(0))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(0))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(0))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(0))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(0))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(0))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(0))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(0))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(0))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search the first 5 values for a sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(0) Then 'search for minimum value
+                Sleep_Current_Min(0) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(0) Then
+                Sleep_Current_Min(0) = tmpE
+            End If
+    
+            I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+            
+           'End data processing for Site 0
+        
+        TheExec.Sites.RestoreFromOverride
+
+     End If 'Site 0 active
+     
+     'Exit Do        'DEBUG
+     
+    
+'    siteStatus = TheExec.Sites.SelectNext(siteStatus)  'DEBUG
+'
+'    If siteStatus > 1 Then
+'        siteStatus = siteStatus - 1
+'    End If
+'
+'
+'    If siteStatus = loopDone Then Exit Do
+     
+        If (TheExec.Sites.Site(1).Active) Then
+          
+            TheExec.Sites.SetOverride (1)   'Site 1 Active
+            
+            'Begin data processing for Site 1
+        
+            Debug.Print "Site "; 1
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(1))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(1))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(1))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(1))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(1))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(1))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(1))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(1))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(1))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(1))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search the first 5 values for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(1) Then 'search for minimum value
+                Sleep_Current_Min(1) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(1) Then
+                Sleep_Current_Min(1) = tmpE
+            End If
+    
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+            
+           'End data processing for Site 1
+
+
+            TheExec.Sites.RestoreFromOverride
+            
+        End If 'Site 1 Active
+      
+      
+'        siteStatus = TheExec.Sites.SelectNext(siteStatus)
+'
+'        If siteStatus > 2 Then
+'            siteStatus = siteStatus - 1
+'        End If
+'
+'        If siteStatus = loopDone Then Exit Do
+        
+        If (TheExec.Sites.Site(2).Active) Then
+          
+            TheExec.Sites.SetOverride (2)   'Site 2 Active
+            
+            'Begin data processing for Site 2
+        
+            Debug.Print "Site "; 2
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(2))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(2))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(2))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(2))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(2))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(2))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(2))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(2))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(2))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(2))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search the first 5 values for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(2) Then 'search for minimum value
+                Sleep_Current_Min(2) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(2) Then
+                Sleep_Current_Min(2) = tmpE
+            End If
+    
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            Debug.Print Sleep_Current_Min(2)
+            'Debug.Print Sleep_Current_Min(3)
+
+
+            TheExec.Sites.RestoreFromOverride
+      
+      
+        End If 'Site 2 Active
+      
+      
+'    siteStatus = TheExec.Sites.SelectNext(siteStatus)
+'
+'    If siteStatus > 3 Then
+'            siteStatus = siteStatus - 1
+'    End If
+'
+'    If siteStatus = loopDone Then Exit Do
+        
+        If (TheExec.Sites.Site(3).Active) Then
+          
+            TheExec.Sites.SetOverride (3)   'Site 3 Active
+        
+            'Begin data processing for Site 3
+        
+            Debug.Print "Site "; 3
+            Debug.Print "Sleep Current Samples..."
+
+
+            'Extract absolute value of site measurements assigned to local variables.
+        
+            tmpA = Abs(I_SLEEP_A.pins("VBAT").Value(3))
+            
+            tmpB = Abs(I_SLEEP_B.pins("VBAT").Value(3))
+            
+            tmpC = Abs(I_SLEEP_C.pins("VBAT").Value(3))
+            
+            tmpD = Abs(I_SLEEP_D.pins("VBAT").Value(3))
+            
+            tmpE = Abs(I_SLEEP_E.pins("VBAT").Value(3))
+            
+            tmpF = Abs(I_SLEEP_F.pins("VBAT").Value(3))
+            
+            tmpG = Abs(I_SLEEP_G.pins("VBAT").Value(3))
+            
+            tmpH = Abs(I_SLEEP_H.pins("VBAT").Value(3))
+            
+            tmpJ = Abs(I_SLEEP_J.pins("VBAT").Value(3))
+            
+            tmpK = Abs(I_SLEEP_K.pins("VBAT").Value(3))
+            
+     
+            
+            Debug.Print "Current Samples..."
+            Debug.Print "A = "; tmpA
+            Debug.Print "B = "; tmpB
+            Debug.Print "C = "; tmpC
+            Debug.Print "D = "; tmpD
+            Debug.Print "E = "; tmpE
+            Debug.Print "F = "; tmpF
+            Debug.Print "G = "; tmpG
+            Debug.Print "H = "; tmpH
+            Debug.Print "J = "; tmpJ
+            Debug.Print "K = "; tmpK
+    
+    
+            'Search the first 5 values for sleep current minimum
+        
+            If tmpA < Sleep_Current_Min(3) Then 'search for minimum value
+                Sleep_Current_Min(3) = tmpA
+            End If
+            
+            If tmpB < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpB
+            End If
+            
+            If tmpC < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpC
+            End If
+            
+            If tmpD < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpD
+            End If
+            
+            If tmpE < Sleep_Current_Min(3) Then
+                Sleep_Current_Min(3) = tmpE
+            End If
+    
+            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
+            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
+            I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
+            
+            'Debug.Print Sleep_Current_Min(0)
+            'Debug.Print Sleep_Current_Min(1)
+            'Debug.Print Sleep_Current_Min(2)
+            Debug.Print Sleep_Current_Min(3)
+
+
+
+            TheExec.Sites.RestoreFromOverride
+      
+        End If 'Site 3 Active
+
+    
+'    siteStatus = TheExec.Sites.SelectNext(siteStatus)
+'
+'    If siteStatus = loopDone Then Exit Do
+'
+'    If (TheExec.Sites.ActiveCount = 0 Or TheExec.Sites.ActiveCount >= 3) Then Exit Do
+'
+'    siteStatus = .SelectNext(loopTop)
+'
+'   Loop
+  
+End With ' TheExec.Sites
+      
+      'Test to Limits and Datalog
+      
+        If ((TheExec.CurrentJob = "f1-prd-std") Or (TheExec.CurrentJob = "f1-prd-qtp")) Then
+        
+            TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2903A_I_SLEEP_REV", , , , , , , , tlForceNone
+              
+        ElseIf ((TheExec.CurrentJob = "q1-prd-std") Or (TheExec.CurrentJob = "q1-prd-qtp")) Then
+
+            TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.000011, , , scaleMicro, unitAmp, "%4.2f", "RN2903A_I_SLEEP_REV_qc", , , , , , , , tlForceNone
+     
+        End If
+        
+    Call TheHdw.Digital.Patgen.Halt
+        
+    Call disable_inactive_sites 'For Pass/Fail LEDs
+    
+    Exit Function
+    
+
+errHandler:
+
+
+    I_SLEEP.AddPin ("VBAT")
+            
+      For nSiteIndex = 0 To ExistingSiteCnt - 1
+      
+            I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
+    
+      Next nSiteIndex
+
+     
+         TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2903A_I_SLEEP_REV", , , , , , , , tlForceNone
+
+    Call TheHdw.Digital.Patgen.Halt
+    
+    If AbortTest Then Exit Function Else Resume Next
+    
+    On Error GoTo 0
+    
+    Call TheExec.ErrorLogMessage("Function Error: rn2903a_i_sleep_rev")
+    
+    Call TheExec.ErrorReport
+    
+    rn2903a_i_sleep_rev = TL_ERROR
+    
+    
+End Function
 
 Public Function rn2903_id_mfs(argc As Long, argv() As String) As Long
 
@@ -2641,7 +4128,7 @@ Wend 'end WHILE loop
     Call TheHdw.Digital.Patgen.Halt
     
 
-    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================")
+    'TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================")
     
     TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
@@ -3047,7 +4534,7 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- TheExec.DataLog.WriteComment ("==================== TX915_CW_PWR ===================")
+ 'TheExec.DataLog.WriteComment ("==================== TX915_CW_PWR ===================")
  
     Select Case TestFreq
     
@@ -3180,7 +4667,7 @@ Public Function rn2903_gpio(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("===================== GPIO CHECK ====================")
+'TheExec.DataLog.WriteComment ("===================== GPIO CHECK ====================")
     
         'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         'dut_delay = 0.1
