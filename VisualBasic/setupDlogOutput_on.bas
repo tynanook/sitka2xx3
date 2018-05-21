@@ -60,7 +60,7 @@ On Error GoTo errHandler
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub
@@ -109,7 +109,7 @@ On Error GoTo errHandler
     End If
     mchpDevice = UCase(Left(TheExec.ExcelHandle.ActiveWorkbook.name, 5))
     mchpDevice = mchpMPC
-    currentTime = format(Now, "MM-dd-yy")
+    currentTime = Format(Now, "MM-dd-yy")
     
     If InStr(chanMap, "J") Then
         Call createProbeDlog(mchpDevice, job, mchpMPC, Part, env, testerLotID, currentTime, chanMap, probeScribe)
@@ -160,7 +160,7 @@ On Error GoTo errHandler
     If Not (DirExists(dlogDir)) Then
         MkDir dlogDir
     End If
-        ftTimeStamp = ftTimeStamp & "_" & format(Now, "hh-nn")
+        ftTimeStamp = ftTimeStamp & "_" & Format(Now, "hh-nn")
     dlogFile = dlogDir & "\" & ftDevice & "_" & ftJob & "_" & ftMPC & "_" & ftPart & "_" & ftChanMap & "_" & ftEnv & "_" & ftLotID & "_" & ftTimeStamp
     Call ApplyDlogSetup("FT_Mode", dlogFile)
 Exit Sub
@@ -257,7 +257,7 @@ On Error GoTo errHandler
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 
@@ -287,7 +287,7 @@ Public Sub CreateSetupFiles()
      
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'CreateSetupFiles
@@ -349,7 +349,7 @@ Public Sub setupNumber()
                   
     Exit Sub 'normal exit of function
 errHandler:
-        Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+        Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
         On Error GoTo 0
 
 End Sub 'setupDlogOutput
@@ -378,10 +378,9 @@ Public Sub SetupFiles()
      
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 
 End Sub 'CreateSetupFiles
-
 

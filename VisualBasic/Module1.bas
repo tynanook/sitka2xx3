@@ -82,10 +82,10 @@ End If
 For RowNdx = StartRow To EndRow
 WholeLine = ""
 For ColNdx = StartCol To EndCol
-If Cells(RowNdx, ColNdx).value = "" Then
+If Cells(RowNdx, ColNdx).Value = "" Then
 CellValue = ""
 Else
-CellValue = Cells(RowNdx, ColNdx).value
+CellValue = Cells(RowNdx, ColNdx).Value
 End If
 WholeLine = WholeLine & CellValue & Sep
 Next ColNdx

@@ -166,7 +166,7 @@ Public Function ToggleVdd(argc As Long, argv() As String) As Long
     TheHdw.DPS.chans(lChans).OutputSource = dpsPrimaryVoltage
     
     ' Wait
-    Call TheHdw.wait(ResolveArgv(argv(1)))
+    Call TheHdw.Wait(ResolveArgv(argv(1)))
     
     ' Restore original voltages
     TheHdw.DPS.chans(lChans).PrimaryVoltages = OriginalVoltages
@@ -196,9 +196,9 @@ Public Function devPowerDown(argc As Long, argv() As String) As Long
     ' Have the pin levels power down all active sites, wait the requested pdTime, and
     ' then reapply the power levels to the pins and wait 100us before proceeding.
     Call TheHdw.PinLevels.PowerDown
-    Call TheHdw.wait(pdTime)
+    Call TheHdw.Wait(pdTime)
     Call TheHdw.PinLevels.ApplyPower
-    Call TheHdw.wait(0.0001)
+    Call TheHdw.Wait(0.0001)
 
 End Function
 
@@ -252,12 +252,12 @@ Public Sub cto_src_ramp(ByVal start As Double, ByVal finish As Double, ByRef cto
     For indx = 0 To num_step Step 1
             TheHdw.CTO.chans(cto_ary).LevelValue(ctoSrc) = start + sign * step_Size * (indx / num_step)
 '           TheHdw.CTO.chans(cto_ary).LevelValue(ctoSrc) = start + (finish - start) * indx / num_step
-           TheHdw.wait (DLY_TIME)
+           TheHdw.Wait (DLY_TIME)
     Next indx
     
 exit_cto_src_ramp:
     TheHdw.CTO.chans(cto_ary).LevelValue(ctoSrc) = finish
-    TheHdw.wait (DLY_TIME)
+    TheHdw.Wait (DLY_TIME)
 End Sub
 
 Public Function rampVdd(argc As Long, argv() As String) As Long
@@ -318,7 +318,7 @@ Public Function rampVdd(argc As Long, argv() As String) As Long
     TheHdw.DPS.chans(lChans).OutputSource = dpsPrimaryVoltage
     
     ' Wait the specified hold time
-    Call TheHdw.wait(ResolveArgv(argv(0)))
+    Call TheHdw.Wait(ResolveArgv(argv(0)))
     
     ' Begin ramping voltage
     For jj = 1 To lNumRampSteps
@@ -329,7 +329,7 @@ Public Function rampVdd(argc As Long, argv() As String) As Long
         TheHdw.DPS.chans(lChans).PrimaryVoltages = NewVoltages
         TheHdw.DPS.chans(lChans).OutputSource = dpsPrimaryVoltage
         
-        Call TheHdw.wait(dRampStepTime)
+        Call TheHdw.Wait(dRampStepTime)
     Next jj
         
     ' Restore original voltages - NOTE: This should be voltage we want to run test at,
@@ -366,9 +366,9 @@ Public Function rampDPS_andLevels(argc As Long, argv() As String) As Long
     final_Voltage = ResolveArgv(argv(0))
     
     For ramp_Voltage = 1.8 To final_Voltage Step -0.02
-        TheHdw.DPS.pins(power_Pin).ForceValue(dpsPrimaryVoltage) = ramp_Voltage
+        TheHdw.DPS.pins(power_Pin).forceValue(dpsPrimaryVoltage) = ramp_Voltage
         If UCase(Trim(argv(3))) = "NM" Then Call TheHdw.PinLevels.pins("nmclr").ModifyLevel(chVDriveHi, CDbl(ramp_Voltage))
-        TheHdw.wait (0.0001)
+        TheHdw.Wait (0.0001)
     Next ramp_Voltage
     
 '   Pin levels not really ramped since they should have been driven to ground during Vdd ramp.  Levels can
@@ -383,7 +383,7 @@ Public Function rampDPS_andLevels(argc As Long, argv() As String) As Long
         Call TheHdw.PinLevels.pins("nmclr").WriteHighVoltageParams(8, 0.05, 0.000001)
     End If
     
-    Call TheHdw.wait(ResolveArgv(argv(1)))
+    Call TheHdw.Wait(ResolveArgv(argv(1)))
         
 End Function
 '
@@ -426,11 +426,10 @@ End Sub
 '
 Public Sub adjustLevels(ByVal vddValue As Double)
 
-    TheHdw.DPS.pins("vdd").ForceValue(dpsPrimaryVoltage) = vddValue
+    TheHdw.DPS.pins("vdd").forceValue(dpsPrimaryVoltage) = vddValue
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVDriveHi, vddValue)
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVCompareLo, (vddValue / 2) - 0.15)
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVCompareHi, (vddValue / 2) + 0.15)
     Call TheHdw.PinLevels.pins("iopins").ModifyLevel(chVT, vddValue / 2)
 
 End Sub
-

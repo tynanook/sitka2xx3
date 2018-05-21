@@ -91,9 +91,6 @@ Option Explicit
    'For 9707b
    'TheHdw.Digital.ACCalExcludePins ("mclr,ra4")
    
-    AXRF_Error_Flag = False
-    AXRFInitialized = False
-   
     TheHdw.Digital.ACCalExcludePins ("VBAT_PMU,XTAL_CONT,MW_DIG_TRIG")   'TW101
     
     Call AddDatalogButtons
@@ -106,7 +103,7 @@ errHandler:
       'Uncomment out the code below if you want a message box to notify the user of an error.
       'The gError.AddError method, writes it out to the immediate window and the dataloger.
       'For this routine, at load time the dataloger is not running, so need to force an error for it to be seen.
-    Call TheExec.ErrorLogMessage("Function OnProgramLoaded had an Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function OnProgramLoaded had an Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     Call TheExec.ErrorReport
     On Error GoTo 0
  End Function       ' OnProgramLoaded
@@ -249,7 +246,6 @@ End Function
 '    'Call TheExec.ErrorReport
 '    'On Error GoTo 0
 ' End Function  'OnProgramEnded
-
 
 
 

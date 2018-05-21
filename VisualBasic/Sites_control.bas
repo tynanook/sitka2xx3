@@ -88,8 +88,7 @@ Next
 
 '*** added in for IDDW testing 9/24/14
 If argc = 1 Then
-    Stop ' this function does exist in program; ty noticed it on 20170216
-    'Call ActivateSelectedSites(CLng(argv(0)))  20170316 - ty commented out to allow prg compile
+  Call ActivateSelectedSites(CLng(argv(0)))
 End If
 
 
@@ -300,8 +299,7 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
  
  '*** added in for IDDW testing 9/24/14
 If argc = 2 Then
-    Stop ' ty noticed the following function doesn't exist in prg - 20170216
-    'Call reActivateSelectedSites(CLng(argv(1))) ' 20170116 - ty commented out for prg compile
+  Call reActivateSelectedSites(CLng(argv(1)))
 End If
 
  TheExec.DataLog.WriteComment ("   Tester Sites")
@@ -477,16 +475,16 @@ For Site = 0 To TheExec.Sites.ExistingCount - 1
                  Select Case Site
                     Case 0
                         site0_failed = True
-                        If 0 Then Debug.Print "Site "; Site; " FAILED" ' 20170216 - ty added if 0
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 1
                         site1_failed = True
-                        If 0 Then Debug.Print "Site "; Site; " FAILED" ' 20170216 - ty added if 0
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 2
                         site2_failed = True
-                        If 0 Then Debug.Print "Site "; Site; " FAILED" ' 20170216 - ty added if 0
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 3
                         site3_failed = True
-                        If 0 Then Debug.Print "Site "; Site; " FAILED" ' 20170216 - ty added if 0
+                        Debug.Print "Site "; Site; " FAILED"
                     Case Else
                 End Select
                 
@@ -638,4 +636,3 @@ Public Function enable_store_inactive_sites() As Long
   Call TheHdw.PinLevels.ApplyPower
 
 End Function
-

@@ -33,9 +33,9 @@ Public Function read_cal_factors() As Long              '(argc As Long, argv() A
     
         If TheExec.Sites.Site(nSiteIndex).Active = True Then
         
-            tx_path_db(nSiteIndex) = Worksheets("RF_Cal_Factors").Cells(3, 2 + nSiteIndex).value       'DIB TX path loss
+            tx_path_db(nSiteIndex) = Worksheets("RF_Cal_Factors").Cells(3, 2 + nSiteIndex).Value       'DIB TX path loss
                            
-            coax_cable_db(nSiteIndex) = Worksheets("RF_Cal_Factors").Cells(4, 2 + nSiteIndex).value    'Cable loss from PXI to DIB
+            coax_cable_db(nSiteIndex) = Worksheets("RF_Cal_Factors").Cells(4, 2 + nSiteIndex).Value    'Cable loss from PXI to DIB
         
             'Debug.Print "TX_Path_dB = "; tx_path_db(nSiteIndex)
             'Debug.Print "Coax_Cable_dB = "; coax_cable_db(nSiteIndex)
@@ -56,28 +56,6 @@ errHandler:
 
 End Function
 
-'This function will test a value against limits and set the appropriate Pass/Fail status based on the values.
-'you must call the function from within a site loop.  Required inputs are Site, Value2Dlog, lo and hi limits.
-'other inputs are optional.  Hint, you can use the pinname field as a unique identifier.
-Public Sub sm_LogPassFail(Site As Long, Value2Dlog As SiteDouble, LoLimit As Double, HiLimit As Double, _
-    Optional PinName As String = "", Optional MeasUnit As UnitType = unitNone, _
-    Optional ForceValue As Double = 0, Optional TestName As String = "" _
-    )
-
-    Select Case Value2Dlog(Site)
-        Case Is < LoLimit, Is > HiLimit
-            Call TheExec.DataLog.WriteParametricResult(Site, TheExec.Sites.Site(Site).testnumber, _
-                logTestFail, 0, PinName, -1, LoLimit, Value2Dlog(Site), HiLimit, MeasUnit, _
-                ForceValue, unitNone, 0, TestName)
-            TheExec.Sites.Site(Site).TestResult = siteFail
-        Case Else
-            Call TheExec.DataLog.WriteParametricResult(Site, TheExec.Sites.Site(Site).testnumber, _
-                logTestPass, 0, PinName, -1, LoLimit, Value2Dlog(Site), HiLimit, MeasUnit, _
-                ForceValue, unitNone, 0, TestName)
-            TheExec.Sites.Site(Site).IncrementTestNumber                                'increment tnum
-    End Select
-    
-End Sub
 
 Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
 
@@ -109,9 +87,6 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
     Dim TxPower868 As New PinListData
     Dim I_TX868_CW As New PinListData
 
-    Dim testXtalOffset As Boolean
-    Dim FreqOffset_Hz As New SiteDouble
-    Dim FreqOffset_Hz_temp As Double
     
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
@@ -122,7 +97,7 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
     
     On Error GoTo errHandler
     
-    rn2483_tx868_cw = TL_SUCCESS
+        rn2483_tx868_cw = TL_SUCCESS
     
     'AXRF Channel assignments
     
@@ -140,22 +115,22 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
     Select Case ExistingSiteCnt
         
     Case Is = 1
-        MeasChans(0) = AXRF_CH1
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
         
     Case Is = 2
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
         
     Case Is = 3
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
-        MeasChans(2) = AXRF_CH5
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
+        MeasChans(2) = AXRF_CHANNEL_AXRF_CH5
         
     Case Is = 4
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
-        MeasChans(2) = AXRF_CH5
-        MeasChans(3) = AXRF_CH7
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
+        MeasChans(2) = AXRF_CHANNEL_AXRF_CH5
+        MeasChans(3) = AXRF_CHANNEL_AXRF_CH7
         
         
     Case Else
@@ -180,20 +155,21 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
         
     End If
     
-    testXtalOffset = True                   'set true if you want to test xtal offset
+
 
     Call read_cal_factors                   'RF Calibration Offsets Note: AXRF calibration performed with same coax cables and RF junction boxes as production AXRF with DIB
     
-    Call TevAXRF_SetMeasureSamples(8192) 'Fres = 30.5176 kHz  (Fs = 250MHz, N=8192) NOTE: Fres chosen to bound TX freq
+    
+    Call itl.Raw.AF.AXRF.SetMeasureSamples(8192) 'Fres = 30.5176 kHz  (Fs = 250MHz, N=8192) NOTE: Fres chosen to bound TX freq
   
-    TheHdw.wait 0.05
+        TheHdw.Wait 0.05
         
     Select Case TestFreq
     Case 868300000
         TxPower868.AddPin ("RFHOUT")
         
         For nSiteIndex = 0 To ExistingSiteCnt - 1
-            TxPower868.pins("RFHOUT").value(nSiteIndex) = -90
+            TxPower868.pins("RFHOUT").Value(nSiteIndex) = -90
         Next nSiteIndex
         
 
@@ -202,14 +178,14 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
         TxPower868.AddPin ("RFHOUT")
         
         For nSiteIndex = 0 To ExistingSiteCnt - 1
-            TxPower868.pins("RFHOUT").value(nSiteIndex) = -90
+            TxPower868.pins("RFHOUT").Value(nSiteIndex) = -90
         Next nSiteIndex
         
         
     End Select
 
 
-    TheHdw.wait (0.002)
+    TheHdw.Wait (0.002)
     
         
         'Run pattern to put DUT into TX CW Mode @ 868 MHz, +15 dBm Power
@@ -241,7 +217,7 @@ End_flag_loop:
         .ClearOverCurrentLimit
         .CurrentRange = dps100mA
         .CurrentLimit = 0.1
-        TheHdw.DPS.samples = 1
+        TheHdw.DPS.Samples = 1
     End With
     
     
@@ -255,13 +231,12 @@ End_flag_loop:
 
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
                 
-                TevAXRF_MeasureSetup MeasChans(nSiteIndex), 17, TestFreq  'set for +17dBm
+                itl.Raw.AF.AXRF.MeasureSetup MeasChans(nSiteIndex), 17, TestFreq  'set for +17dBm
                 
-                TheHdw.wait (0.01)      'RF MUX Speed depended.
+                TheHdw.Wait (0.01)      'RF MUX Speed depended.
                 
-                Call MeasDataAXRFandCalcMax(MeasChans(nSiteIndex), MeasData, 4096, AXRF_FREQ_DOMAIN, MaxPowerTemp, FreqOffset_Hz_temp, testXtalOffset, False, "rf", False, False, False, 1, SumPowerTemp)  'True plots waveform
+                Call MeasDataAXRFandCalcMax(MeasChans(nSiteIndex), MeasData, 4096, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN, MaxPowerTemp, False, "rf", False, False, False, 1, SumPowerTemp) 'True plots waveform
                 
-                FreqOffset_Hz(nSiteIndex) = FreqOffset_Hz_temp
                 UncalMaxPower(nSiteIndex) = MaxPowerTemp
                 SumPower(nSiteIndex) = SumPowerTemp
             
@@ -272,10 +247,10 @@ End_flag_loop:
                 Select Case TestFreq
                 Case 868300000
                     
-                    TxPower868.pins("RFHOUT").value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
+                    TxPower868.pins("RFHOUT").Value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
 
                 Case Else       'Dummy  for force fail purpose
-                    TxPower868.pins("RFOUT").value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
+                    TxPower868.pins("RFOUT").Value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
         
                 End Select
 
@@ -300,22 +275,15 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- 'TheExec.DataLog.WriteComment ("=================== TX868_CW_PWR =====================")
+ TheExec.DataLog.WriteComment ("=================== TX868_CW_PWR =====================")
  
     Select Case TestFreq
     
     Case 868300000
     
-        TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
-        TheExec.Flow.TestLimit TxPower868, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_868")
-                End If
-            Next nSiteIndex
-        End If
-
+                    TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
+                    TheExec.Flow.TestLimit TxPower868, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
+                
 '                Select Case TheExec.CurrentJob
 '                Case "f1-prd-std-rn2483"
 '                    TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
@@ -335,18 +303,11 @@ End_flag_loop:
 
         
     Case Else      'Dummy for force fail purpose
-    
         TheExec.Flow.TestLimit I_TX868_CW, 0.03, 0.09, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower868, 10, 17, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_868")
-                End If
-            Next nSiteIndex
-        End If
-        
+
     End Select
+
  
     Call disable_inactive_sites 'For Pass/Fail LEDs
     
@@ -355,34 +316,17 @@ End_flag_loop:
 errHandler:
     
     For nSiteIndex = 0 To ExistingSiteCnt - 1
-        TxPower868.pins("RFHOUT").value(nSiteIndex) = -90
+        TxPower868.pins("RFHOUT").Value(nSiteIndex) = -90
     Next nSiteIndex
         
     Select Case TestFreq
-    
     Case 868300000
-    
         TheExec.Flow.TestLimit I_TX868_CW, 0.02, 0.06, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower868, 10, 16, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_868")
-                End If
-            Next nSiteIndex
-        End If
   
     Case Else      'Dummy for force fail purpose
-    
         TheExec.Flow.TestLimit I_TX868_CW, 0.02, 0.06, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower868, 10, 16, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_868")
-                End If
-            Next nSiteIndex
-        End If
 
     End Select
 
@@ -461,7 +405,7 @@ TheExec.DataLog.WriteComment ("================= MEASURE I_SLEEP ===============
         
         'For nSiteIndex = 0 To ExistingSiteCnt - 1
   
-            I_SLEEP.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+            I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
 
         'Next nSiteIndex
         
@@ -497,7 +441,7 @@ End_flag_loop:
             .ClearOverCurrentLimit
             .CurrentRange = dps500ua
             .CurrentLimit = 0.1
-            TheHdw.DPS.samples = 1
+            TheHdw.DPS.Samples = 1
         End With
             
             
@@ -547,7 +491,7 @@ errHandler:
             
       For nSiteIndex = 0 To ExistingSiteCnt - 1
       
-    I_SLEEP.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+    I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
       Next nSiteIndex
 
@@ -563,799 +507,7 @@ errHandler:
     
 End Function
 
-Public Function rn2483_i_sleep_rev(argc As Long, argv() As String) As Long
 
-'The DUT is commanded to sleep for up to 10 sec via a UART command, as recommended by HDC (Tibor Keller).
-' During the 10 second window the VBAT current is measured and reported. The Upper Test Limit (UTL) is set approximately
-' 6x higher than the guaranteed-by-design data sheet value due to the inferior DPS low current measurement capability.
-
-'Sleep Current Test Methodology
-
-'Steps performed across multiple sites (parallel):
-    '1) Send UART command in pattern to put DUT to sleep.
-    '2) Pattern sets cpuA flag when DUT is sleeping
-    '3) Delay between 4-5 seconds.
-    '4) Disconnect all DUT pins except VBAT and GND.
-    '5) Take a number of single current readings (PinListData objects) separated by time.
-    '6) Reconnect pins
-    '7) Clear cpuA flag to allow pattern to finish
-    
-'Steps performed within site loop for active sites:
-    '8) Take absolute value of current readings.
-    '9) Find lowest value.
-    
- 'Final step performed outside of site loop:
-    '10) Test site-minimum DUT sleep current values and datalog for all sites.
-
-        
-
-    Dim Site As Variant
-    
-    Dim I_SLEEP As New PinListData
-    Dim I_SLEEP_A As New PinListData
-    Dim I_SLEEP_B As New PinListData
-    Dim I_SLEEP_C As New PinListData
-    Dim I_SLEEP_D As New PinListData
-    Dim I_SLEEP_E As New PinListData
-    Dim I_SLEEP_F As New PinListData
-    Dim I_SLEEP_G As New PinListData
-    Dim I_SLEEP_H As New PinListData
-    Dim I_SLEEP_J As New PinListData
-    Dim I_SLEEP_K As New PinListData
-    
-    
-    
-    
-    
-    
-    Dim ExistingSiteCnt As Integer
-    
-    Dim i As Long
-    Dim num_samps As Long
-    Dim siteStatus As Long
-    Dim thisSite As Long
-    'Dim i As Long
-    
-    Dim nSiteIndex As Long
-    Dim Flags As Long
-    Dim FlagsSet As Long, FlagsClear As Long
-
-    Dim I_Sleep_Samples() As Double
-    Dim Sleep_Current_Mean() As Double
-    Dim Sleep_Current_Sum() As Double
-    Dim Sleep_Current_Max() As Double
-    Dim Sleep_Current_OK() As Double
-    Dim Sleep_Current_Min() As Double
-    
-    Dim i_sleep_temp As Double
-    Dim oprVolt As Double
-    Dim SLEEP_DLY As Double
-    Dim INTERVAL_DLY As Double
-    
-    Dim tmpA, tmpB, tmpC, tmpD, tmpE As Double
-    Dim tmpF, tmpG, tmpH, tmpJ, tmpK As Double
-    
-    Dim LoLimit As Double
-    Dim HiLimit As Double
-    '--------Argument processing--------'
-    LoLimit = argv(1)
-    HiLimit = argv(2)
-    '------- end of argument process -------'
-    If 0 Then Debug.Print "LoLimit = "; LoLimit ' 20170216 - ty added if 0
-    If 0 Then Debug.Print "HiLimit = "; HiLimit ' 20170216 - ty added if 0
-    
-    ExistingSiteCnt = TheExec.Sites.ExistingCount
-    
-    'Debug.Print "Existing Site Count = "; ExistingSiteCnt
-    
-    On Error GoTo errHandler
-    
-        rn2483_i_sleep_rev = TL_SUCCESS
-    
-    Call enable_store_inactive_sites 'For Pass/Fail LEDs
-    
-    I_SLEEP.AddPin ("VBAT") 'add pin to PinListData Object
-    I_SLEEP_A.AddPin ("VBAT")
-    I_SLEEP_B.AddPin ("VBAT")
-    I_SLEEP_C.AddPin ("VBAT")
-    I_SLEEP_D.AddPin ("VBAT")
-    I_SLEEP_E.AddPin ("VBAT")
-    I_SLEEP_F.AddPin ("VBAT")
-    I_SLEEP_G.AddPin ("VBAT")
-    I_SLEEP_H.AddPin ("VBAT")
-    I_SLEEP_J.AddPin ("VBAT")
-    I_SLEEP_K.AddPin ("VBAT")
-     
-
-    If argc < 1 Then
-        MsgBox "Error - On rn2483_i_sleep_rev - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
-    Else
-        oprVolt = argv(0) '3.3
-        
-    End If
-    
-    TheHdw.Digital.Patgen.ThreadingForActiveSites = False
-    
-'TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP_REV =====================================")
-    
-        oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
-        
-        num_samps = 1      'Number of current samples taken per site
-        
-        SLEEP_DLY = 4.5            '4.5
-        INTERVAL_DLY = 0.03
-        
-        
-        ReDim Sleep_Current_Min(ExistingSiteCnt)
-        
-        'Disconnect GPIO_PINS
-            TheHdw.pins("MODULE_IO").InitState = chInitOff
-            TheHdw.pins("MODULE_IO").StartState = chStartOff
-            
-            TheHdw.pins("SDA").InitState = chInitOff
-            TheHdw.pins("SDA").StartState = chStartOff
-         
-
-   
-        For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize PinListData objects and variables
-        
-            I_SLEEP.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_A.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_B.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_C.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_D.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_E.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_F.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_G.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_H.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_J.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_K.pins("VBAT").value(nSiteIndex) = -99
-            
-            Sleep_Current_Min(nSiteIndex) = 0.00009999 'UTL = 11.11uA FAILING VALUE
-            
-        Next nSiteIndex
-        
-        
-        
-        
-        'DPS Setup
-        
-        With TheHdw.DPS.pins("VBAT")
-            .ClearLatchedCurrentLimit
-            .ClearOverCurrentLimit
-            .CurrentRange = dps50uA     'lowest DPS current range
-            TheHdw.DPS.samples = num_samps
-        End With
-        
-                TheHdw.wait (0.05)  'DPS settling
-
-               TheHdw.Digital.Patgen.timeout = 30
-            
-            Call TheHdw.Digital.Patgen.HaltWait
-            
-            'Run pattern to put DUT into SLEEP Mode
-            'TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
-            'TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
-            
-            'TheHdw.Wait (1)
-                'Dim SlpWaitLoop As Long
-                'SlpWaitLoop = 28800
-                
-                'TheExec.DataLog.WriteComment "SlpWait: " & SlpWaitLoop & " Vectors"
-                'Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").ModifyVectorOperand("start_i_sleep", 304, SlpWaitLoop)
-            
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
-        
-       
-                'Check for cpuA flag from pattern 'Flags: cpuA = 1 when set and 0 when cleared
-                'DUT is sleeping when cpuA = 1.
-              
-Flag_Loop:
-
-
-        Flags = TheHdw.Digital.Patgen.CpuFlags
-
-        'Debug.Print "Flags ="; Flags
-
-         If (Flags = 1) Then GoTo End_flag_loop 'cpuA set in pattern (DUT should be asleep).
-
-         If (Flags = 0) Then GoTo Flag_Loop 'cpuA not set in pattern
-
-End_flag_loop:
-
-        TheHdw.wait (SLEEP_DLY) 'Sleep Delay 'Critical to have sleep delay with pins connected!
-        
-        Call TheHdw.Digital.Relays.pins("MODULE_IO").disconnectPins 'disconnect pins for lowest sleep current
-        Call TheHdw.Digital.Relays.pins("SDA").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_IO").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_TX").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_RX").disconnectPins
-        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").disconnectPins
-        
-        TheHdw.wait (INTERVAL_DLY)      'HW Delay
-        
-'Collect several measurements at all sites with interval delay
-
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_A)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_B)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_C)
-        
-            TheHdw.wait (INTERVAL_DLY)
-            
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_D)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_E)
-         
-            TheHdw.wait (INTERVAL_DLY)
-         
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_F)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_G)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_H)
-        
-            TheHdw.wait (INTERVAL_DLY)
-            
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_J)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_K)
-            
- 'All data for all sites have been collected at this point.
-    
-'Clear cpuA flag so pattern can continue
-
-    FlagsSet = 0
-    FlagsClear = cpuA
-    
-        'Re-connect pins previously disconnected
-          
-        Call TheHdw.Digital.Relays.pins("MODULE_IO").connectPins
-        Call TheHdw.Digital.Relays.pins("SDA").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_IO").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_TX").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_RX").connectPins
-        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").connectPins
-        
-        TheHdw.wait (INTERVAL_DLY)      'HW Delay
-
-    Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
-    
-
-    'Call TheHdw.Digital.Patgen.Halt  'For DEBUG to prevent pattern timeout. Comment out for faster test time.
-
-        
-' Loop through the active sites
-    
-With TheExec.Sites
-    
-''        siteStatus = .SelectFirst
-''
-''    Do While siteStatus <> loopDone
-''        thisSite = .SelectedSite
-    
-        If (TheExec.Sites.Site(0).Active) Then
-          
-            TheExec.Sites.SetOverride (0)       'Site 0 Active
-
-            'Begin data processing for Site 0
-            
-                If 0 Then Debug.Print "Site "; 0  ' 20170216 - ty added if 0
-                If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-    
-    
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(0))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(0))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(0))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(0))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(0))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(0))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(0))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(0))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(0))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(0))
-            
-     
-            If 0 Then  ' 20170216 - ty added if 0
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-    
-            'Search for a sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(0) Then 'search for minimum value
-                Sleep_Current_Min(0) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpE
-            End If
-
-    
-            I_SLEEP.pins("VBAT").value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            If 0 Then Debug.Print Sleep_Current_Min(0) ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(1)
-            'Debug.Print Sleep_Current_Min(2)
-            'Debug.Print Sleep_Current_Min(3)
-            
-           'End data processing for Site 0
-        
-        TheExec.Sites.RestoreFromOverride
-
-     End If 'Site 0 active
-     
-     'Exit Do        'DEBUG
-     
-    
-''    siteStatus = TheExec.Sites.SelectNext(siteStatus)  'DEBUG
-''
-''    If siteStatus > 1 Then
-''        siteStatus = siteStatus - 1
-''    End If
-''
-''
-''    If siteStatus = loopDone Then Exit Do
-     
-        If (TheExec.Sites.Site(1).Active) Then
-          
-            TheExec.Sites.SetOverride (1)   'Site 1 Active
-            
-            'Begin data processing for Site 1
-        
-            If 0 Then Debug.Print "Site "; 1 ' 20170216 - ty added if 0
-            If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(1))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(1))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(1))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(1))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(1))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(1))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(1))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(1))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(1))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(1))
-            
-     
-            If 0 Then ' 20170216 - ty added if 0
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-            'Search for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(1) Then 'search for minimum value
-                Sleep_Current_Min(1) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpE
-            End If
-
-    
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            I_SLEEP.pins("VBAT").value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            If 0 Then Debug.Print Sleep_Current_Min(1) ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(2)
-            'Debug.Print Sleep_Current_Min(3)
-            
-           'End data processing for Site 1
-
-
-            TheExec.Sites.RestoreFromOverride
-            
-        End If 'Site 1 Active
-      
-      
-''        siteStatus = TheExec.Sites.SelectNext(siteStatus)
-''
-''        If siteStatus > 2 Then
-''            siteStatus = siteStatus - 1
-''        End If
-''
-''        If siteStatus = loopDone Then Exit Do
-        
-        If (TheExec.Sites.Site(2).Active) Then
-          
-            TheExec.Sites.SetOverride (2)   'Site 2 Active
-            
-            'Begin data processing for Site 2
-        
-            If 0 Then Debug.Print "Site "; 2 ' 20170216 - ty added if 0
-            If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(2))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(2))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(2))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(2))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(2))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(2))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(2))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(2))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(2))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(2))
-            
-     
-            If 0 Then  ' 20170216 - ty added if 0
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-    
-            'Search for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(2) Then 'search for minimum value
-                Sleep_Current_Min(2) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpE
-            End If
-    
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            I_SLEEP.pins("VBAT").value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            'Debug.Print Sleep_Current_Min(1)
-            If 0 Then Debug.Print Sleep_Current_Min(2)  ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(3)
-
-
-            TheExec.Sites.RestoreFromOverride
-      
-      
-        End If 'Site 2 Active
-      
-      
-''    siteStatus = TheExec.Sites.SelectNext(siteStatus)
-''
-''    If siteStatus > 3 Then
-''            siteStatus = siteStatus - 1
-''    End If
-''
-''    If siteStatus = loopDone Then Exit Do
-        
-        If (TheExec.Sites.Site(3).Active) Then
-          
-            TheExec.Sites.SetOverride (3)   'Site 3 Active
-        
-            'Begin data processing for Site 3
-        
-            If 0 Then Debug.Print "Site "; 3 ' 20170216 - ty added if 0
-            If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(3))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(3))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(3))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(3))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(3))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(3))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(3))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(3))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(3))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(3))
-            
-     
-            If 0 Then  ' 20170216 - ty added if 0
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-    
-            'Search for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(3) Then 'search for minimum value
-                Sleep_Current_Min(3) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpE
-            End If
-            
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            I_SLEEP.pins("VBAT").value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            'Debug.Print Sleep_Current_Min(1)
-            'Debug.Print Sleep_Current_Min(2)
-            If 0 Then Debug.Print Sleep_Current_Min(3) ' 20170216 - ty added if 0
-
-
-
-            TheExec.Sites.RestoreFromOverride
-      
-        End If 'Site 3 Active
-
-    
-''    siteStatus = TheExec.Sites.SelectNext(siteStatus)
-''
-''    If siteStatus = loopDone Then Exit Do
-''
-''    If (TheExec.Sites.ActiveCount = 0 Or TheExec.Sites.ActiveCount >= 3) Then Exit Do
-''
-''    siteStatus = .SelectNext(loopTop)
-        
-''   Loop
-  
-End With ' TheExec.Sites
-      
-      'Test to Limits and Datalog
-      
-            If (TheExec.CurrentJob = "f1-prd-std" Or TheExec.CurrentJob = "f1-prd-qtp") Then
-    
-                'TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
-                TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
-    
-            ElseIf (TheExec.CurrentJob = "q1-prd-std" Or TheExec.CurrentJob = "q1-prd-qtp") Then
-    
-                'TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
-                TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
-                    
-            End If
-
-
-'        If TheExec.CurrentJob = "f1-prd-std-rn2483r101" Then
-'
-'            'TheExec.Flow.TestLimit I_SLEEP, 0.00000002, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
-'            TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
-'
-'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483r101" Then
-'
-'            'TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
-'            TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.2f", "RN2483_I_SLEEP_REV_qc", , , , , , , , tlForceNone
-'
-'        End If
-        
-    Call TheHdw.Digital.Patgen.Halt
-        
-    Call disable_inactive_sites 'For Pass/Fail LEDs
-    
-    Exit Function
-    
-
-errHandler:
-
-
-    I_SLEEP.AddPin ("VBAT")
-            
-'      For nSiteIndex = 0 To ExistingSiteCnt - 1
-'
-'            I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
-'
-'      Next nSiteIndex
-
-     
-         TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_REV", , , , , , , , tlForceNone
-
-    Call TheHdw.Digital.Patgen.Halt
-    
-    If AbortTest Then Exit Function Else Resume Next
-    
-    On Error GoTo 0
-    
-    Call TheExec.ErrorLogMessage("Function Error: rn2483_i_sleep_rev")
-    
-    Call TheExec.ErrorReport
-    
-    rn2483_i_sleep_rev = TL_ERROR
-    
-    
-End Function
-
-
-Public Function rn2483_gpio_r1(argc As Long, argv() As String) As Long
-
-'Previous template version of this test did not bin properly for multi-site operation, so the test was written in VBT.
-'The LoRa module has 14 gpio pins, GPIO0 - GPIO13. Each gpio pin is commanded via the UART to be set to a logical 1, tested in the pattern, then set to logical 0, then tested in the pattern.
-
-    Dim Site As Variant
-    
-      'Dim oprVolt As Double
-      'Dim dut_delay As Double
-      
-      Dim nSiteIndex As Long
-      
-    Dim ExistingSiteCnt As Integer
-    ExistingSiteCnt = TheExec.Sites.ExistingCount
-    
-    On Error GoTo errHandler
-    
-        rn2483_gpio_r1 = TL_SUCCESS
-    
-    Call enable_store_inactive_sites 'For Pass/Fail LEDs
-    
-'TheExec.DataLog.WriteComment ("=================== GPIO CHECK ========================")
-    
-        'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
-        'dut_delay = 0.1
-            
-                      'RESET ACTIVE
-            TheHdw.pins("MCLR_nRESET").InitState = chInitLo
-            TheHdw.pins("MCLR_nRESET").StartState = chStartLo
-  
-  
-  Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483r1_gpio_full").Test(pfAlways, 0)
-        
-        
-        TheHdw.wait (0.3)
-        
-    
-    Call disable_inactive_sites 'For Pass/Fail LEDs
-    
-    Exit Function
-    
-
-errHandler:
-
-
-    If AbortTest Then Exit Function Else Resume Next
-    
-    On Error GoTo 0
-    Call TheExec.ErrorLogMessage("Function Error: rn2483_gpio_r1")
-    Call TheExec.ErrorReport
-    rn2483_gpio_r1 = TL_ERROR
-    
-End Function
 
 Public Function rn2483_id_mfs(argc As Long, argv() As String) As Long
 
@@ -1413,7 +565,7 @@ Public Function rn2483_id_mfs(argc As Long, argv() As String) As Long
     
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize ID_Valid variables
         
-        ID_Valid.pins("RFHOUT").value(nSiteIndex) = 0
+        ID_Valid.pins("RFHOUT").Value(nSiteIndex) = 0
         
            ValidityCountFast(nSiteIndex) = 0
            ValidityCountSlow(nSiteIndex) = 0
@@ -1459,9 +611,9 @@ While loopstatus <> loopDone
                     
                 patgen_fails_slow(0) = TheHdw.Digital.Patgen.FailCount
                         
-                        If 0 Then Debug.Print "Site = 0" ' 20170216 - ty added if 0
+                        Debug.Print "Site = 0"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Slow = "; fails_ids ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_id_fast.pat").Run ("start_uart_id_fast")
             
@@ -1471,7 +623,7 @@ While loopstatus <> loopDone
                 patgen_fails_fast(0) = TheHdw.Digital.Patgen.FailCount
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(0) = 0 Or patgen_fails_slow(0) = 0 Then 'Open socket workaround
@@ -1490,11 +642,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(0) > 0) Or (ValidityCountSlow(0) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(0) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(0) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(0) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(0) = 0
                                 
     
                 End If
@@ -1516,9 +668,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(1) = TheHdw.Digital.Patgen.FailCount
                         
-                        If 0 Then Debug.Print "Site = 1" ' 20170216 - ty added if 0
+                        Debug.Print "Site = 1"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Slow = "; fails_ids ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -1528,7 +680,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(1) = 0 Or patgen_fails_slow(1) = 0 Then 'Open socket workaround
@@ -1547,11 +699,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(1) > 0) Or (ValidityCountSlow(1) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(1) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(1) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(1) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(1) = 0
                                 
     
                 End If
@@ -1573,9 +725,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(2) = TheHdw.Digital.Patgen.FailCount
                         
-                        If 0 Then Debug.Print "Site = 2" ' 20170216 - ty added if 0
+                        Debug.Print "Site = 2"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Slow = "; fails_ids ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -1585,7 +737,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(2) = 0 Or patgen_fails_slow(2) = 0 Then 'Open socket workaround
@@ -1604,11 +756,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(2) > 0) Or (ValidityCountSlow(2) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(2) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(2) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(2) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(2) = 0
                                 
     
                 End If
@@ -1630,9 +782,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(3) = TheHdw.Digital.Patgen.FailCount
                         
-                        If 0 Then Debug.Print "Site = 3" ' 20170216 - ty added if 0
+                        Debug.Print "Site = 3"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Slow = "; fails_ids ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -1642,7 +794,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(3) = 0 Or patgen_fails_slow(3) = 0 Then 'Open socket workaround
@@ -1661,11 +813,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(3) > 0) Or (ValidityCountSlow(3) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(3) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(3) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(3) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(3) = 0
                                 
     
                 End If
@@ -1684,7 +836,7 @@ Wend 'end WHILE loop
     Call TheHdw.Digital.Patgen.Halt
     
 
-    'TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
+    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
     
     TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
@@ -1772,7 +924,7 @@ Public Function rn2483_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
         
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize ID_Valid variables
            
-        PKTs_RCVd.pins("RFHOUT").value(nSiteIndex) = 0
+        PKTs_RCVd.pins("RFHOUT").Value(nSiteIndex) = 0
         
         patgen_fails(nSiteIndex) = 0
         
@@ -1799,10 +951,10 @@ Public Function rn2483_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
     ModFilePath = xTPPath & "\patterns\fsk_31b_ccitt_gauss03.aiq"
     
     
-    SrcChans(0) = AXRF_CH1
-    SrcChans(1) = AXRF_CH3
-    SrcChans(2) = AXRF_CH5
-    SrcChans(3) = AXRF_CH7
+    SrcChans(0) = AXRF_CHANNEL_AXRF_CH1
+    SrcChans(1) = AXRF_CHANNEL_AXRF_CH3
+    SrcChans(2) = AXRF_CHANNEL_AXRF_CH5
+    SrcChans(3) = AXRF_CHANNEL_AXRF_CH7
    
     'AXRF Modulation Trigger Arm Source Parameters
 
@@ -1818,7 +970,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-'TheExec.DataLog.WriteComment ("===================== PKTs_RCVd ======================")
+TheExec.DataLog.WriteComment ("===================== PKTs_RCVd ======================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -1835,23 +987,23 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(0), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(0), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(0), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(0), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(0), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(0), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             'Setting is ~2 dB above highest passing threshhold for functional DUTS.
                 
-                Call TevAXRF_Source(SrcChans(0), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(0), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
  
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
@@ -1861,7 +1013,7 @@ Do While siteStatus <> loopDone
 '                        .StartState = chStartLo
 '                    End With
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -1895,11 +1047,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(0) > 0 Then
             
-                             PKTs_RCVd.AddPin("RFHOUT").value(0) = PacketCount(0) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(0) = PacketCount(0) + 1
                         
                         Else
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(0) = PacketCount(0)
+                             PKTs_RCVd.AddPin("RFHOUT").Value(0) = PacketCount(0)
                         
                         End If
                    
@@ -1944,28 +1096,28 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(1), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(1), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(1), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(1), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(1), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(1), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(1), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(1), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -1997,11 +1149,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(1) > 0 Then  'And pkt_sent_count > 0
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(1) = PacketCount(1) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(1) = PacketCount(1) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(1) = PacketCount(1)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(1) = PacketCount(1)
                             
                         End If
                         
@@ -2044,29 +1196,29 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(2), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(2), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(2), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(2), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(2), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(2), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(2), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(2), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
                      
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2098,11 +1250,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(2) > 0 Then 'And pkt_sent_count > 0 Then
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(2) = PacketCount(2) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(2) = PacketCount(2) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(2) = PacketCount(2)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(2) = PacketCount(2)
                             
                         End If
                         
@@ -2146,28 +1298,28 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(3), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(3), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(3), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(3), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(3), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(3), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(3), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(3), -85, 868300000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2199,11 +1351,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(3) > 0 Then  'And pkt_sent_count > 0 Then
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(3) = PacketCount(3) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(3) = PacketCount(3) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(3) = PacketCount(3)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(3) = PacketCount(3)
                             
                         End If
                         
@@ -2256,8 +1408,8 @@ End With ' TheExec.Sites
     
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
         If TheExec.Sites.Site(nSiteIndex).Active Then
-            Call TevAXRF_StopModulation(SrcChans(nSiteIndex))
-            Call TevAXRF_UnloadModulationFile(SrcChans(nSiteIndex), ModFilePath)
+            Call itl.Raw.AF.AXRF.StopModulation(SrcChans(nSiteIndex))
+            Call itl.Raw.AF.AXRF.UnloadModulationFile(SrcChans(nSiteIndex), ModFilePath)
         End If
         
     Next nSiteIndex
@@ -2314,7 +1466,7 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-'TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ===================")
+TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ===================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         dut_delay = 0.1
@@ -2342,14 +1494,14 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
         
          'Call cycle_power(0.001, oprVolt, 0.01, 0.01)
     
-        TheHdw.wait (0.05)
+        TheHdw.Wait (0.05)
         
         
                     'RESET ACTIVE
             TheHdw.pins("MCLR_nRESET").InitState = chInitLo
             TheHdw.pins("MCLR_nRESET").StartState = chStartLo
             
-         TheHdw.wait (0.05)
+         TheHdw.Wait (0.05)
          
                      'RESET INACTIVE
             TheHdw.pins("MCLR_nRESET").InitState = chInitHi
@@ -2364,7 +1516,7 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
 '
 '  Next nSiteIndex
         
-        TheHdw.wait (0.3)
+        TheHdw.Wait (0.3)
         
   For nSiteIndex = 0 To ExistingSiteCnt - 1
   
@@ -2372,29 +1524,29 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
         
         
         
-        I_IDLE.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+        I_IDLE.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
         With TheHdw.DPS.pins("VBAT")
             .ClearLatchedCurrentLimit
             .ClearOverCurrentLimit
             .CurrentRange = dps100mA
             .CurrentLimit = 0.1
-            TheHdw.DPS.samples = 1
+            TheHdw.DPS.Samples = 1
             Call .MeasureCurrents(dps100mA, I_IDLE)
         End With
         
    
     
-            If I_IDLE.pins("VBAT").value(nSiteIndex) > 0.007 Then
+            If I_IDLE.pins("VBAT").Value(nSiteIndex) > 0.007 Then
             
-            TheHdw.wait (0.3)
+            TheHdw.Wait (0.3)
             
                  With TheHdw.DPS.pins("VBAT")
                     .ClearLatchedCurrentLimit
                     .ClearOverCurrentLimit
                     .CurrentRange = dps100mA
                     .CurrentLimit = 0.1
-                    TheHdw.DPS.samples = 1
+                    TheHdw.DPS.Samples = 1
                     Call .MeasureCurrents(dps100mA, I_IDLE)
                 End With
                 
@@ -2434,7 +1586,7 @@ errHandler:
             
       For nSiteIndex = 0 To ExistingSiteCnt - 1
       
-        I_IDLE.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+        I_IDLE.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
       Next nSiteIndex
 
@@ -2504,7 +1656,7 @@ Public Function rn2903_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
         
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize ID_Valid variables
            
-        PKTs_RCVd.pins("RFHOUT").value(nSiteIndex) = 0
+        PKTs_RCVd.pins("RFHOUT").Value(nSiteIndex) = 0
         
         patgen_fails(nSiteIndex) = 0
         
@@ -2531,10 +1683,10 @@ Public Function rn2903_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
     ModFilePath = xTPPath & "\patterns\fsk_31b_ccitt_gauss03.aiq"
     
     
-    SrcChans(0) = AXRF_CH1
-    SrcChans(1) = AXRF_CH3
-    SrcChans(2) = AXRF_CH5
-    SrcChans(3) = AXRF_CH7
+    SrcChans(0) = AXRF_CHANNEL_AXRF_CH1
+    SrcChans(1) = AXRF_CHANNEL_AXRF_CH3
+    SrcChans(2) = AXRF_CHANNEL_AXRF_CH5
+    SrcChans(3) = AXRF_CHANNEL_AXRF_CH7
    
     'AXRF Modulation Trigger Arm Source Parameters
 
@@ -2550,7 +1702,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-'TheExec.DataLog.WriteComment ("====================== PKTs_RCVd ====================")
+TheExec.DataLog.WriteComment ("====================== PKTs_RCVd ====================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -2567,23 +1719,23 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(0), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(0), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(0), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(0), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(0), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(0), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             'Setting is ~2 dB above highest passing threshhold for functional DUTS.
                 
-                Call TevAXRF_Source(SrcChans(0), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(0), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
  
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
@@ -2593,7 +1745,7 @@ Do While siteStatus <> loopDone
 '                        .StartState = chStartLo
 '                    End With
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2627,11 +1779,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(0) > 0 Then
             
-                             PKTs_RCVd.AddPin("RFHOUT").value(0) = PacketCount(0) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(0) = PacketCount(0) + 1
                         
                         Else
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(0) = PacketCount(0)
+                             PKTs_RCVd.AddPin("RFHOUT").Value(0) = PacketCount(0)
                         
                         End If
                    
@@ -2674,28 +1826,28 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(1), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(1), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(1), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(1), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(1), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(1), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(1), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(1), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2727,11 +1879,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(1) > 0 Then  'And pkt_sent_count > 0
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(1) = PacketCount(1) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(1) = PacketCount(1) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(1) = PacketCount(1)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(1) = PacketCount(1)
                             
                         End If
                         
@@ -2772,29 +1924,29 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(2), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(2), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(2), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(2), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(2), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(2), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(2), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(2), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
                      
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2826,11 +1978,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(2) > 0 Then 'And pkt_sent_count > 0 Then
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(2) = PacketCount(2) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(2) = PacketCount(2) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(2) = PacketCount(2)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(2) = PacketCount(2)
                             
                         End If
                         
@@ -2872,28 +2024,28 @@ Do While siteStatus <> loopDone
             
             'If FIRSTLOAD = True Then
             
-                Call TevAXRF_LoadModulationFile(SrcChans(3), ModFilePath) 'Separate Loads for each site?
-                TheHdw.wait (0.1)
+                Call itl.Raw.AF.AXRF.LoadModulationFile(SrcChans(3), ModFilePath) 'Separate Loads for each site?
+                TheHdw.Wait (0.1)
                 'FIRSTLOAD = False
                 'Debug.Print ModFilePath
                 
             'End If
             
-                Call TevAXRF_ModulationTriggerArm(SrcChans(3), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
+                Call itl.Raw.AF.AXRF.ModulationTriggerArm(SrcChans(3), afSigGenDll_rmRoutingMatrix_t_afSigGenDll_rmFRONT_SMB, Gate, Edge)
                 
                 
-                Call TevAXRF_StartModulation(SrcChans(3), ModFilePath)
+                Call itl.Raw.AF.AXRF.StartModulation(SrcChans(3), ModFilePath)
                 
-                TheHdw.wait (0.05)
+                TheHdw.Wait (0.05)
                 
             
                 
-                Call TevAXRF_Source(SrcChans(3), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
+                Call itl.Raw.AF.AXRF.Source(SrcChans(3), -85, 915000000#) 'Assumes AXRF calibration performed with DIB cables and AXRF interface junction box.
                                                                                     'Setting is ~2 dB above highest passing threshhold for functional DUTS.
         
             'For pkt_sent_count = 1 To 5 '5 packets sent
             
-                    TheHdw.wait (0.01)
+                    TheHdw.Wait (0.01)
             
             
                     'If TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2483_tx868_fsk_pkt_one.pat").IsPatLoaded = memNone Then
@@ -2925,11 +2077,11 @@ Do While siteStatus <> loopDone
                    
                         If patgen_fails(3) > 0 Then  'And pkt_sent_count > 0 Then
                         
-                             PKTs_RCVd.AddPin("RFHOUT").value(3) = PacketCount(3) + 1
+                             PKTs_RCVd.AddPin("RFHOUT").Value(3) = PacketCount(3) + 1
                         
                         Else
                         
-                            PKTs_RCVd.AddPin("RFHOUT").value(3) = PacketCount(3)
+                            PKTs_RCVd.AddPin("RFHOUT").Value(3) = PacketCount(3)
                             
                         End If
                         
@@ -2979,8 +2131,8 @@ End With ' TheExec.Sites
     
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
         If TheExec.Sites.Site(nSiteIndex).Active Then
-            Call TevAXRF_StopModulation(SrcChans(nSiteIndex))
-            Call TevAXRF_UnloadModulationFile(SrcChans(nSiteIndex), ModFilePath)
+            Call itl.Raw.AF.AXRF.StopModulation(SrcChans(nSiteIndex))
+            Call itl.Raw.AF.AXRF.UnloadModulationFile(SrcChans(nSiteIndex), ModFilePath)
         End If
         
     Next nSiteIndex
@@ -3064,7 +2216,7 @@ TheExec.DataLog.WriteComment ("================== MEASURE I_SLEEP ==============
         
         'For nSiteIndex = 0 To ExistingSiteCnt - 1
   
-            I_SLEEP.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+            I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
 
         'Next nSiteIndex
         
@@ -3100,7 +2252,7 @@ End_flag_loop:
             .ClearOverCurrentLimit
             .CurrentRange = dps500ua
             .CurrentLimit = 0.1
-            TheHdw.DPS.samples = 1
+            TheHdw.DPS.Samples = 1
         End With
             
             
@@ -3146,7 +2298,7 @@ errHandler:
             
       For nSiteIndex = 0 To ExistingSiteCnt - 1
       
-    I_SLEEP.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+    I_SLEEP.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
       Next nSiteIndex
 
@@ -3158,709 +2310,6 @@ errHandler:
     If AbortTest Then Exit Function Else Resume Next
     
     rn2903_i_sleep = TL_ERROR
-    
-    
-End Function
-Public Function rn2903a_i_sleep_rev(argc As Long, argv() As String) As Long
-
-'The DUT is commanded to sleep for up to 10 sec via a UART command, as recommended by HDC (Tibor Keller).
-' During the 10 second window the VBAT current is measured and reported. The Upper Test Limit (UTL) is set approximately
-' 6x higher than the guaranteed-by-design data sheet value due to the inferior DPS low current measurement capability.
-
-'Sleep Current Test Methodology
-
-'Steps performed across multiple sites (parallel):
-    '1) Send UART command in pattern to put DUT to sleep.
-    '2) Pattern sets cpuA flag when DUT is sleeping
-    '3) Delay between 4-5 seconds.
-    '4) Disconnect all DUT pins except VBAT and GND.
-    '5) Take a number of single current readings (PinListData objects) separated by time.
-    '6) Reconnect pins
-    '7) Clear cpuA flag to allow pattern to finish
-    
-'Steps performed within site loop for active sites:
-    '8) Take absolute value of current readings.
-    '9) Find lowest value.
-    
- 'Final step performed outside of site loop:
-    '10) Test site-minimum DUT sleep current values and datalog for all sites.
-
-        
-
-    Dim Site As Variant
-    
-    Dim I_SLEEP As New PinListData
-    Dim I_SLEEP_A As New PinListData
-    Dim I_SLEEP_B As New PinListData
-    Dim I_SLEEP_C As New PinListData
-    Dim I_SLEEP_D As New PinListData
-    Dim I_SLEEP_E As New PinListData
-    Dim I_SLEEP_F As New PinListData
-    Dim I_SLEEP_G As New PinListData
-    Dim I_SLEEP_H As New PinListData
-    Dim I_SLEEP_J As New PinListData
-    Dim I_SLEEP_K As New PinListData
-    
-    
-    
-    
-    
-    
-    Dim ExistingSiteCnt As Integer
-    
-    Dim i As Long
-    Dim num_samps As Long
-    Dim siteStatus As Long
-    Dim thisSite As Long
-    'Dim i As Long
-    
-    Dim nSiteIndex As Long
-    Dim Flags As Long
-    Dim FlagsSet As Long, FlagsClear As Long
-
-    Dim I_Sleep_Samples() As Double
-    Dim Sleep_Current_Mean() As Double
-    Dim Sleep_Current_Sum() As Double
-    Dim Sleep_Current_Max() As Double
-    Dim Sleep_Current_OK() As Double
-    Dim Sleep_Current_Min() As Double
-    
-    Dim i_sleep_temp As Double
-    Dim oprVolt As Double
-    Dim SLEEP_DLY As Double
-    Dim INTERVAL_DLY As Double
-    
-    Dim tmpA, tmpB, tmpC, tmpD, tmpE As Double 'First pass
-    Dim tmpF, tmpG, tmpH, tmpJ, tmpK As Double  'Second pass (if needed)
-    
-    
-    ExistingSiteCnt = TheExec.Sites.ExistingCount
-    
-    If 0 Then Debug.Print "Existing Site Count = "; ExistingSiteCnt ' 20170216 - ty added if 0
-    
-    On Error GoTo errHandler
-    
-        rn2903a_i_sleep_rev = TL_SUCCESS
-    
-    Call enable_store_inactive_sites 'For Pass/Fail LEDs
-    
-    I_SLEEP.AddPin ("VBAT") 'add pin to PinListData Object
-    I_SLEEP_A.AddPin ("VBAT")
-    I_SLEEP_B.AddPin ("VBAT")
-    I_SLEEP_C.AddPin ("VBAT")
-    I_SLEEP_D.AddPin ("VBAT")
-    I_SLEEP_E.AddPin ("VBAT")
-    I_SLEEP_F.AddPin ("VBAT")
-    I_SLEEP_G.AddPin ("VBAT")
-    I_SLEEP_H.AddPin ("VBAT")
-    I_SLEEP_J.AddPin ("VBAT")
-    I_SLEEP_K.AddPin ("VBAT")
-     
-
-    If argc < 1 Then
-        MsgBox "Error - On rn2903a_i_sleep_rev - Wrong Argument Assigned", , "Error"
-        GoTo errHandler
-    Else
-        oprVolt = argv(0) '3.3
-        
-    End If
-    
-    TheHdw.Digital.Patgen.ThreadingForActiveSites = False
-    
-'TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP_REV =====================================")
-    
-        oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
-        
-        num_samps = 1      'Number of current samples taken per site
-        
-        SLEEP_DLY = 4.5
-        INTERVAL_DLY = 0.1
-        
-        
-        ReDim Sleep_Current_Min(ExistingSiteCnt)
-        
-        'Disconnect GPIO_PINS
-            TheHdw.pins("MODULE_IO").InitState = chInitOff
-            TheHdw.pins("MODULE_IO").StartState = chStartOff
-            
-            TheHdw.pins("SDA").InitState = chInitOff
-            TheHdw.pins("SDA").StartState = chStartOff
-         
-
-   
-        For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize PinListData objects and variables
-        
-            I_SLEEP.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_A.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_B.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_C.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_D.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_E.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_F.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_G.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_H.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_J.pins("VBAT").value(nSiteIndex) = -99
-            I_SLEEP_K.pins("VBAT").value(nSiteIndex) = -99
-            
-            Sleep_Current_Min(nSiteIndex) = 0.00009999 'UTL = 11.1uA FAILING VALUE
-            
-        Next nSiteIndex
-        
-        
-        
-        
-        'DPS Setup
-        
-        With TheHdw.DPS.pins("VBAT")
-            .ClearLatchedCurrentLimit
-            .ClearOverCurrentLimit
-            .CurrentRange = dps50uA        'lowest DPS current range
-            TheHdw.DPS.samples = num_samps
-        End With
-        
-                TheHdw.wait (0.05) 'DPS settling
-
-               TheHdw.Digital.Patgen.timeout = 30
-            
-            Call TheHdw.Digital.Patgen.HaltWait
-            
-            'Run pattern to put DUT into SLEEP Mode
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
-            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
-        
-       
-                'Check for cpuA flag from pattern 'Flags: cpuA = 1 when set and 0 when cleared
-                'DUT is sleeping when cpuA = 1.
-              
-Flag_Loop:
-        
-           
-        Flags = TheHdw.Digital.Patgen.CpuFlags
-        
-        'Debug.Print "Flags ="; Flags
-                
-         If (Flags = 1) Then GoTo End_flag_loop 'cpuA set in pattern (DUT should be asleep).
-         
-         If (Flags = 0) Then GoTo Flag_Loop 'cpuA not set in pattern
-                  
-End_flag_loop:
-
-        TheHdw.wait (SLEEP_DLY) 'Sleep Delay 'Critical to have sleep delay with pins connected!
-        
-        Call TheHdw.Digital.Relays.pins("MODULE_IO").disconnectPins 'disconnect pins for lowest sleep current
-        Call TheHdw.Digital.Relays.pins("SDA").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_IO").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_TX").disconnectPins
-        Call TheHdw.Digital.Relays.pins("UART_RX").disconnectPins
-        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").disconnectPins
-        
-        TheHdw.wait (INTERVAL_DLY)
-        
-'Collect several measurements at all sites with interval delay
-
-        Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_A)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_B)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_C)
-        
-            TheHdw.wait (INTERVAL_DLY)
-            
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_D)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_E)
-         
-            TheHdw.wait (INTERVAL_DLY)
-         
-        Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_F)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_G)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_H)
-        
-            TheHdw.wait (INTERVAL_DLY)
-            
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_J)
-        
-            TheHdw.wait (INTERVAL_DLY)
-        
-         Call TheHdw.DPS.pins("VBAT").MeasureCurrents(dps50uA, I_SLEEP_K)
-            
- 'All data for all sites have been collected at this point.
-    
-'Clear cpuA flag so pattern can continue
-
-    FlagsSet = 0
-    FlagsClear = cpuA
-    
-        'Re-connect pins previously disconnected
-          
-        Call TheHdw.Digital.Relays.pins("MODULE_IO").connectPins
-        Call TheHdw.Digital.Relays.pins("SDA").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_IO").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_TX").connectPins
-        Call TheHdw.Digital.Relays.pins("UART_RX").connectPins
-        Call TheHdw.Digital.Relays.pins("MCLR_nRESET").connectPins
-        
-        TheHdw.wait (INTERVAL_DLY)
-
-    Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
-    
-
-    'Call TheHdw.Digital.Patgen.Halt  'For DEBUG to prevent pattern timeout. Comment out for faster test time.
-
-        
-' Loop through the active sites
-    
-With TheExec.Sites
-    
-'        siteStatus = .SelectFirst
-'
-'    Do While siteStatus <> loopDone
-'        thisSite = .SelectedSite
-    
-        If (TheExec.Sites.Site(0).Active) Then
-          
-            TheExec.Sites.SetOverride (0)       'Site 0 Active
-
-            'Begin data processing for Site 0
-            
-                If 0 Then Debug.Print "Site "; 0 ' 20170216 - ty added if 0
-                If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-    
-    
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(0))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(0))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(0))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(0))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(0))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(0))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(0))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(0))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(0))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(0))
-            
-     
-            If 0 Then
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-            
-            'Search the first 5 values for a sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(0) Then 'search for minimum value
-                Sleep_Current_Min(0) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(0) Then
-                Sleep_Current_Min(0) = tmpE
-            End If
-    
-            I_SLEEP.pins("VBAT").value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            If 0 Then Debug.Print Sleep_Current_Min(0)  ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(1)
-            'Debug.Print Sleep_Current_Min(2)
-            'Debug.Print Sleep_Current_Min(3)
-            
-           'End data processing for Site 0
-        
-        TheExec.Sites.RestoreFromOverride
-
-     End If 'Site 0 active
-     
-     'Exit Do        'DEBUG
-     
-    
-'    siteStatus = TheExec.Sites.SelectNext(siteStatus)  'DEBUG
-'
-'    If siteStatus > 1 Then
-'        siteStatus = siteStatus - 1
-'    End If
-'
-'
-'    If siteStatus = loopDone Then Exit Do
-     
-        If (TheExec.Sites.Site(1).Active) Then
-          
-            TheExec.Sites.SetOverride (1)   'Site 1 Active
-            
-            'Begin data processing for Site 1
-        
-            If 0 Then Debug.Print "Site "; 1 ' 20170216 - ty added if 0
-            If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(1))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(1))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(1))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(1))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(1))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(1))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(1))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(1))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(1))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(1))
-            
-     
-            If 0 Then
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-            'Search the first 5 values for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(1) Then 'search for minimum value
-                Sleep_Current_Min(1) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(1) Then
-                Sleep_Current_Min(1) = tmpE
-            End If
-    
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            I_SLEEP.pins("VBAT").value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            If 0 Then Debug.Print Sleep_Current_Min(1)  ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(2)
-            'Debug.Print Sleep_Current_Min(3)
-            
-           'End data processing for Site 1
-
-
-            TheExec.Sites.RestoreFromOverride
-            
-        End If 'Site 1 Active
-      
-      
-'        siteStatus = TheExec.Sites.SelectNext(siteStatus)
-'
-'        If siteStatus > 2 Then
-'            siteStatus = siteStatus - 1
-'        End If
-'
-'        If siteStatus = loopDone Then Exit Do
-        
-        If (TheExec.Sites.Site(2).Active) Then
-          
-            TheExec.Sites.SetOverride (2)   'Site 2 Active
-            
-            'Begin data processing for Site 2
-        
-            If 0 Then Debug.Print "Site "; 2 ' 20170216 - ty added if 0
-            If 0 Then Debug.Print "Sleep Current Samples..." ' 20170216 - ty added if 0
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(2))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(2))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(2))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(2))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(2))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(2))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(2))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(2))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(2))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(2))
-            
-     
-            If 0 Then  ' 20170216 - ty added if 0
-            Debug.Print "Current Samples..."
-            Debug.Print "A = "; tmpA
-            Debug.Print "B = "; tmpB
-            Debug.Print "C = "; tmpC
-            Debug.Print "D = "; tmpD
-            Debug.Print "E = "; tmpE
-            Debug.Print "F = "; tmpF
-            Debug.Print "G = "; tmpG
-            Debug.Print "H = "; tmpH
-            Debug.Print "J = "; tmpJ
-            Debug.Print "K = "; tmpK
-            End If
-    
-            'Search the first 5 values for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(2) Then 'search for minimum value
-                Sleep_Current_Min(2) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(2) Then
-                Sleep_Current_Min(2) = tmpE
-            End If
-    
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            I_SLEEP.pins("VBAT").value(2) = Sleep_Current_Min(2) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            'Debug.Print Sleep_Current_Min(1)
-            If 0 Then Debug.Print Sleep_Current_Min(2) ' 20170216 - ty added if 0
-            'Debug.Print Sleep_Current_Min(3)
-
-
-            TheExec.Sites.RestoreFromOverride
-      
-      
-        End If 'Site 2 Active
-      
-      
-'    siteStatus = TheExec.Sites.SelectNext(siteStatus)
-'
-'    If siteStatus > 3 Then
-'            siteStatus = siteStatus - 1
-'    End If
-'
-'    If siteStatus = loopDone Then Exit Do
-        
-        If (TheExec.Sites.Site(3).Active) Then
-          
-            TheExec.Sites.SetOverride (3)   'Site 3 Active
-        
-            'Begin data processing for Site 3
-        
-            If (0) Then ' ty added 20170216
-                Debug.Print "Site "; 3
-                Debug.Print "Sleep Current Samples..."
-            End If
-
-
-            'Extract absolute value of site measurements assigned to local variables.
-        
-            tmpA = Abs(I_SLEEP_A.pins("VBAT").value(3))
-            
-            tmpB = Abs(I_SLEEP_B.pins("VBAT").value(3))
-            
-            tmpC = Abs(I_SLEEP_C.pins("VBAT").value(3))
-            
-            tmpD = Abs(I_SLEEP_D.pins("VBAT").value(3))
-            
-            tmpE = Abs(I_SLEEP_E.pins("VBAT").value(3))
-            
-            tmpF = Abs(I_SLEEP_F.pins("VBAT").value(3))
-            
-            tmpG = Abs(I_SLEEP_G.pins("VBAT").value(3))
-            
-            tmpH = Abs(I_SLEEP_H.pins("VBAT").value(3))
-            
-            tmpJ = Abs(I_SLEEP_J.pins("VBAT").value(3))
-            
-            tmpK = Abs(I_SLEEP_K.pins("VBAT").value(3))
-            
-     
-            If (0) Then ' ty added 20170216
-                Debug.Print "Current Samples..."
-                Debug.Print "A = "; tmpA
-                Debug.Print "B = "; tmpB
-                Debug.Print "C = "; tmpC
-                Debug.Print "D = "; tmpD
-                Debug.Print "E = "; tmpE
-                Debug.Print "F = "; tmpF
-                Debug.Print "G = "; tmpG
-                Debug.Print "H = "; tmpH
-                Debug.Print "J = "; tmpJ
-                Debug.Print "K = "; tmpK
-            End If
-    
-    
-            'Search the first 5 values for sleep current minimum
-        
-            If tmpA < Sleep_Current_Min(3) Then 'search for minimum value
-                Sleep_Current_Min(3) = tmpA
-            End If
-            
-            If tmpB < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpB
-            End If
-            
-            If tmpC < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpC
-            End If
-            
-            If tmpD < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpD
-            End If
-            
-            If tmpE < Sleep_Current_Min(3) Then
-                Sleep_Current_Min(3) = tmpE
-            End If
-    
-            'I_SLEEP.pins("VBAT").Value(0) = Sleep_Current_Min(0) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(1) = Sleep_Current_Min(1) 'DEBUG
-            'I_SLEEP.pins("VBAT").Value(2) = Sleep_Current_Min(2) 'DEBUG
-            I_SLEEP.pins("VBAT").value(3) = Sleep_Current_Min(3) 'DEBUG
-            
-            'Debug.Print Sleep_Current_Min(0)
-            'Debug.Print Sleep_Current_Min(1)
-            'Debug.Print Sleep_Current_Min(2)
-            If 0 Then Debug.Print Sleep_Current_Min(3)  ' 20170216 - ty added if 0
-
-
-
-            TheExec.Sites.RestoreFromOverride
-      
-        End If 'Site 3 Active
-
-    
-'    siteStatus = TheExec.Sites.SelectNext(siteStatus)
-'
-'    If siteStatus = loopDone Then Exit Do
-'
-'    If (TheExec.Sites.ActiveCount = 0 Or TheExec.Sites.ActiveCount >= 3) Then Exit Do
-'
-'    siteStatus = .SelectNext(loopTop)
-'
-'   Loop
-  
-End With ' TheExec.Sites
-      
-      'Test to Limits and Datalog
-      
-        If ((TheExec.CurrentJob = "f1-prd-std") Or (TheExec.CurrentJob = "f1-prd-qtp")) Then
-        
-            TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.00001, , , scaleMicro, unitAmp, "%4.2f", "RN2903A_I_SLEEP_REV", , , , , , , , tlForceNone
-              
-        ElseIf ((TheExec.CurrentJob = "q1-prd-std") Or (TheExec.CurrentJob = "q1-prd-qtp")) Then
-
-            TheExec.Flow.TestLimit I_SLEEP, 0.0000001, 0.000011, , , scaleMicro, unitAmp, "%4.2f", "RN2903A_I_SLEEP_REV_qc", , , , , , , , tlForceNone
-     
-        End If
-        
-    Call TheHdw.Digital.Patgen.Halt
-        
-    Call disable_inactive_sites 'For Pass/Fail LEDs
-    
-    Exit Function
-    
-
-errHandler:
-
-
-    I_SLEEP.AddPin ("VBAT")
-            
-      For nSiteIndex = 0 To ExistingSiteCnt - 1
-      
-            I_SLEEP.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
-    
-      Next nSiteIndex
-
-     
-         TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2903A_I_SLEEP_REV", , , , , , , , tlForceNone
-
-    Call TheHdw.Digital.Patgen.Halt
-    
-    If AbortTest Then Exit Function Else Resume Next
-    
-    On Error GoTo 0
-    
-    Call TheExec.ErrorLogMessage("Function Error: rn2903a_i_sleep_rev")
-    
-    Call TheExec.ErrorReport
-    
-    rn2903a_i_sleep_rev = TL_ERROR
     
     
 End Function
@@ -3921,7 +2370,7 @@ Public Function rn2903_id_mfs(argc As Long, argv() As String) As Long
     
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1  'Initialize ID_Valid variables
         
-        ID_Valid.pins("RFHOUT").value(nSiteIndex) = 0
+        ID_Valid.pins("RFHOUT").Value(nSiteIndex) = 0
         
            ValidityCountFast(nSiteIndex) = 0
            ValidityCountSlow(nSiteIndex) = 0
@@ -3967,9 +2416,9 @@ While loopstatus <> loopDone
                     
                 patgen_fails_slow(0) = TheHdw.Digital.Patgen.FailCount
                         
-                        If (0) Then Debug.Print "Site = 0"   ' 20170216 - ty added if 0
+                        Debug.Print "Site = 0"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If (0) Then Debug.Print "FailCount_ID_Slow = "; fails_ids  ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2903_id_fast.pat").Run ("start_uart_id_fast")
             
@@ -3979,7 +2428,7 @@ While loopstatus <> loopDone
                 patgen_fails_fast(0) = TheHdw.Digital.Patgen.FailCount
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(0) = 0 Or patgen_fails_slow(0) = 0 Then 'Open socket workaround
@@ -3998,11 +2447,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(0) > 0) Or (ValidityCountSlow(0) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(0) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(0) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(0) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(0) = 0
                                 
     
                 End If
@@ -4024,9 +2473,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(1) = TheHdw.Digital.Patgen.FailCount
                         
-                        If (0) Then Debug.Print "Site = 1" ' 20170216 - ty added if 0
+                        Debug.Print "Site = 1"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If (0) Then Debug.Print "FailCount_ID_Slow = "; fails_ids ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2903_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -4036,7 +2485,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If (0) Then Debug.Print "FailCount_ID_Fast = "; fails_idf ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(1) = 0 Or patgen_fails_slow(1) = 0 Then 'Open socket workaround
@@ -4055,11 +2504,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(1) > 0) Or (ValidityCountSlow(1) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(1) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(1) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(1) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(1) = 0
                                 
     
                 End If
@@ -4081,9 +2530,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(2) = TheHdw.Digital.Patgen.FailCount
                         
-                        If 0 Then Debug.Print "Site = 2"  ' 20170216 - ty added if 0
+                        Debug.Print "Site = 2"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Slow = "; fails_ids  ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2903_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -4093,7 +2542,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If 0 Then Debug.Print "FailCount_ID_Fast = "; fails_idf  ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(2) = 0 Or patgen_fails_slow(2) = 0 Then 'Open socket workaround
@@ -4112,11 +2561,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(2) > 0) Or (ValidityCountSlow(2) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(2) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(2) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(2) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(2) = 0
                                 
     
                 End If
@@ -4138,9 +2587,9 @@ While loopstatus <> loopDone
                     
                     patgen_fails_slow(3) = TheHdw.Digital.Patgen.FailCount
                         
-                        If (0) Then Debug.Print "Site = 3"  ' 20170216 - ty added if 0
+                        Debug.Print "Site = 3"
                         fails_ids = TheHdw.Digital.Patgen.FailCount
-                        If (0) Then Debug.Print "FailCount_ID_Slow = "; fails_ids  ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Slow = "; fails_ids
                     
             TheHdw.Digital.Patterns.Pat(xTPPath & "\patterns\uart_rn2903_id_fast.pat").Run ("start_uart_id_fast")
                     
@@ -4150,7 +2599,7 @@ While loopstatus <> loopDone
                         
                         
                         fails_idf = TheHdw.Digital.Patgen.FailCount
-                        If (0) Then Debug.Print "FailCount_ID_Fast = "; fails_idf  ' 20170216 - ty added if 0
+                        Debug.Print "FailCount_ID_Fast = "; fails_idf
                             
                        'FailCount Interpretation
                 If patgen_fails_fast(3) = 0 Or patgen_fails_slow(3) = 0 Then 'Open socket workaround
@@ -4169,11 +2618,11 @@ While loopstatus <> loopDone
                             
                 If (ValidityCountFast(3) > 0) Or (ValidityCountSlow(3) > 0) Then
                             
-                    ID_Valid.AddPin("RFHOUT").value(3) = 1
+                    ID_Valid.AddPin("RFHOUT").Value(3) = 1
                             
                 Else
                             
-                    ID_Valid.AddPin("RFHOUT").value(3) = 0
+                    ID_Valid.AddPin("RFHOUT").Value(3) = 0
                                 
     
                 End If
@@ -4192,7 +2641,7 @@ Wend 'end WHILE loop
     Call TheHdw.Digital.Patgen.Halt
     
 
-    'TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================")
+    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================")
     
     TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
@@ -4279,14 +2728,14 @@ TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ==============
         
          'Call cycle_power(0.001, oprVolt, 0.01, 0.01)
     
-        TheHdw.wait (0.05)
+        TheHdw.Wait (0.05)
         
         
                     'RESET ACTIVE
             TheHdw.pins("MCLR_nRESET").InitState = chInitLo
             TheHdw.pins("MCLR_nRESET").StartState = chStartLo
             
-         TheHdw.wait (0.05)
+         TheHdw.Wait (0.05)
          
                      'RESET INACTIVE
             TheHdw.pins("MCLR_nRESET").InitState = chInitHi
@@ -4300,7 +2749,7 @@ TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ==============
 '
 '  Next nSiteIndex
         
-        TheHdw.wait (0.3)
+        TheHdw.Wait (0.3)
         
   For nSiteIndex = 0 To ExistingSiteCnt - 1
   
@@ -4308,29 +2757,29 @@ TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ==============
         
         
         
-        I_IDLE.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+        I_IDLE.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
         With TheHdw.DPS.pins("VBAT")
             .ClearLatchedCurrentLimit
             .ClearOverCurrentLimit
             .CurrentRange = dps100mA
             .CurrentLimit = 0.1
-            TheHdw.DPS.samples = 1
+            TheHdw.DPS.Samples = 1
             Call .MeasureCurrents(dps100mA, I_IDLE)
         End With
         
    
     
-            If I_IDLE.pins("VBAT").value(nSiteIndex) > 0.007 Then
+            If I_IDLE.pins("VBAT").Value(nSiteIndex) > 0.007 Then
             
-            TheHdw.wait (0.3)
+            TheHdw.Wait (0.3)
             
                  With TheHdw.DPS.pins("VBAT")
                     .ClearLatchedCurrentLimit
                     .ClearOverCurrentLimit
                     .CurrentRange = dps100mA
                     .CurrentLimit = 0.1
-                    TheHdw.DPS.samples = 1
+                    TheHdw.DPS.Samples = 1
                     Call .MeasureCurrents(dps100mA, I_IDLE)
                 End With
                 
@@ -4364,7 +2813,7 @@ errHandler:
             
       For nSiteIndex = 0 To ExistingSiteCnt - 1
       
-        I_IDLE.pins("VBAT").value(nSiteIndex) = 9999 'Failing initialization value
+        I_IDLE.pins("VBAT").Value(nSiteIndex) = 9999 'Failing initialization value
     
       Next nSiteIndex
 
@@ -4410,9 +2859,6 @@ Public Function rn2903_tx915_cw(argc As Long, argv() As String) As Long
     Dim TxPower915 As New PinListData
     Dim I_TX915_CW As New PinListData
 
-    Dim testXtalOffset As Boolean
-    Dim FreqOffset_Hz As New SiteDouble
-    Dim FreqOffset_Hz_temp As Double
     
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
@@ -4441,22 +2887,22 @@ Public Function rn2903_tx915_cw(argc As Long, argv() As String) As Long
     Select Case ExistingSiteCnt
         
     Case Is = 1
-        MeasChans(0) = AXRF_CH1
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
         
     Case Is = 2
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
         
     Case Is = 3
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
-        MeasChans(2) = AXRF_CH5
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
+        MeasChans(2) = AXRF_CHANNEL_AXRF_CH5
         
     Case Is = 4
-        MeasChans(0) = AXRF_CH1
-        MeasChans(1) = AXRF_CH3
-        MeasChans(2) = AXRF_CH5
-        MeasChans(3) = AXRF_CH7
+        MeasChans(0) = AXRF_CHANNEL_AXRF_CH1
+        MeasChans(1) = AXRF_CHANNEL_AXRF_CH3
+        MeasChans(2) = AXRF_CHANNEL_AXRF_CH5
+        MeasChans(3) = AXRF_CHANNEL_AXRF_CH7
         
         
     Case Else
@@ -4481,20 +2927,21 @@ Public Function rn2903_tx915_cw(argc As Long, argv() As String) As Long
         
     End If
     
-    testXtalOffset = True                   'set true if you want to test xtal offset
+
 
     Call read_cal_factors                   'RF Calibration Offsets Note: AXRF calibration performed with same coax cables and RF junction boxes as production AXRF with DIB
     
-    Call TevAXRF_SetMeasureSamples(8192) 'Fres = 30.5176 kHz  (Fs = 250MHz, N=8192) NOTE: Fres chosen to bound TX freq
+    
+    Call itl.Raw.AF.AXRF.SetMeasureSamples(8192) 'Fres = 30.5176 kHz  (Fs = 250MHz, N=8192) NOTE: Fres chosen to bound TX freq
   
-    TheHdw.wait 0.05
+        TheHdw.Wait 0.05
         
     Select Case TestFreq
     Case 915000000
         TxPower915.AddPin ("RFHOUT")
         
         For nSiteIndex = 0 To ExistingSiteCnt - 1
-            TxPower915.pins("RFHOUT").value(nSiteIndex) = -90
+            TxPower915.pins("RFHOUT").Value(nSiteIndex) = -90
         Next nSiteIndex
         
 
@@ -4503,14 +2950,14 @@ Public Function rn2903_tx915_cw(argc As Long, argv() As String) As Long
         TxPower915.AddPin ("RFHOUT")
         
         For nSiteIndex = 0 To ExistingSiteCnt - 1
-            TxPower915.pins("RFHOUT").value(nSiteIndex) = -90
+            TxPower915.pins("RFHOUT").Value(nSiteIndex) = -90
         Next nSiteIndex
         
         
     End Select
 
 
-    TheHdw.wait (0.002)
+    TheHdw.Wait (0.002)
     
         
         'Run pattern to put DUT into TX CW Mode @ 915 MHz, +20 dBm Power
@@ -4542,7 +2989,7 @@ End_flag_loop:
         .ClearOverCurrentLimit
         .CurrentRange = dps100mA
         .CurrentLimit = 0.1
-        TheHdw.DPS.samples = 1
+        TheHdw.DPS.Samples = 1
     End With
     
     
@@ -4556,28 +3003,29 @@ End_flag_loop:
 
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
                 
-                TevAXRF_MeasureSetup MeasChans(nSiteIndex), 20, TestFreq  'set for +20dBm
+                itl.Raw.AF.AXRF.MeasureSetup MeasChans(nSiteIndex), 20, TestFreq  'set for +20dBm
                 
-                TheHdw.wait (0.01)      'RF MUX Speed depended.
+                TheHdw.Wait (0.01)      'RF MUX Speed depended.
                 
-                Call MeasDataAXRFandCalcMax(MeasChans(nSiteIndex), MeasData, 4096, AXRF_FREQ_DOMAIN, MaxPowerTemp, FreqOffset_Hz_temp, testXtalOffset, False, "rf", False, False, False, 1, SumPowerTemp)  'True plots waveform
+                Call MeasDataAXRFandCalcMax(MeasChans(nSiteIndex), MeasData, 4096, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN, MaxPowerTemp, False, "rf", False, False, False, 1, SumPowerTemp) 'True plots waveform
                 
-                FreqOffset_Hz(nSiteIndex) = FreqOffset_Hz_temp
                 UncalMaxPower(nSiteIndex) = MaxPowerTemp
                 SumPower(nSiteIndex) = SumPowerTemp
             
+                
                 MaxPowerToSubstract(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
+                
                 
                 Select Case TestFreq
                 Case 915000000
                     
-                    TxPower915.pins("RFHOUT").value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
+                    TxPower915.pins("RFHOUT").Value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
 
                 Case Else       'Dummy  for force fail purpose
-                
-                    TxPower915.pins("RFOUT").value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
+                    TxPower915.pins("RFOUT").Value(nSiteIndex) = UncalMaxPower(nSiteIndex) + (coax_cable_db(nSiteIndex) + tx_path_db(nSiteIndex))
         
                 End Select
+
 
             End If
             
@@ -4599,23 +3047,14 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- 'TheExec.DataLog.WriteComment ("==================== TX915_CW_PWR ===================")
+ TheExec.DataLog.WriteComment ("==================== TX915_CW_PWR ===================")
  
     Select Case TestFreq
     
     Case 915000000
     
-        TheExec.Flow.TestLimit I_TX915_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
-        TheExec.Flow.TestLimit TxPower915, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_915")
-                End If
-            Next nSiteIndex
-        End If
-        
-        
+    TheExec.Flow.TestLimit I_TX915_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
+    TheExec.Flow.TestLimit TxPower915, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
         
 '        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
 '
@@ -4631,17 +3070,9 @@ End_flag_loop:
         
         
     Case Else      'Dummy for force fail purpose
-    
         TheExec.Flow.TestLimit I_TX915_CW, 0.065, 0.11, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower915, 13, 19, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_915")
-                End If
-            Next nSiteIndex
-        End If
-        
+
     End Select
 
  
@@ -4652,34 +3083,18 @@ End_flag_loop:
 errHandler:
     
     For nSiteIndex = 0 To ExistingSiteCnt - 1
-        TxPower915.pins("RFHOUT").value(nSiteIndex) = -90
+        TxPower915.pins("RFHOUT").Value(nSiteIndex) = -90
     Next nSiteIndex
         
     Select Case TestFreq
     Case 915000000
-    
         TheExec.Flow.TestLimit I_TX915_CW, 0.065, 0.11, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower915, 13, 19, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_915")
-                End If
-            Next nSiteIndex
-        End If
-            
+  
     Case Else      'Dummy for force fail purpose
-    
         TheExec.Flow.TestLimit I_TX915_CW, 0.064, 0.111, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
         TheExec.Flow.TestLimit TxPower915, 12.5, 20, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
-        If testXtalOffset Then
-            For nSiteIndex = 0 To ExistingSiteCnt - 1
-                If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                    Call sm_LogPassFail(nSiteIndex, FreqOffset_Hz, -100000000, 100000000, "RFHOUT", unitHz, tlForceNone, "FRQOFF_915")
-                End If
-            Next nSiteIndex
-        End If
-        
+
     End Select
 
     Call TheHdw.Digital.Patgen.Halt
@@ -4724,7 +3139,7 @@ TheExec.DataLog.WriteComment ("==================== GPIO CHECK =================
   Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_gpio_full").Test(pfAlways, 0)
         
         
-        TheHdw.wait (0.3)
+        TheHdw.Wait (0.3)
         
     
     Call disable_inactive_sites 'For Pass/Fail LEDs
@@ -4765,7 +3180,7 @@ Public Function rn2903_gpio(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-'TheExec.DataLog.WriteComment ("===================== GPIO CHECK ====================")
+TheExec.DataLog.WriteComment ("===================== GPIO CHECK ====================")
     
         'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         'dut_delay = 0.1
@@ -4778,7 +3193,7 @@ Public Function rn2903_gpio(argc As Long, argv() As String) As Long
   Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2903_gpio_full").Test(pfAlways, 0)
         
         
-        TheHdw.wait (0.3)
+        TheHdw.Wait (0.3)
         
     
     Call disable_inactive_sites 'For Pass/Fail LEDs
@@ -4797,6 +3212,5 @@ errHandler:
     rn2903_gpio = TL_ERROR
     
 End Function
-
 
 
