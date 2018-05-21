@@ -9,7 +9,7 @@ A0A,5/1/2015,N. Ellis,RN2483,ALL,- HT RN2483 LoRa EU (868/434 MHz) Module Initia
 A0B,6/4/2015,Phuwaneth T.,RN2483,flow_lora_rn2483
 VBT,- Revise UTL of EU_I_IDLE form 5mA to be 7mA both FT&QC to recover false fail issue.
 - Add new module "setupDlogOutput_on" in VBT for auto save data log file.,
-,,,,,,
+A0C,7/9/2015,N. Ellis,RN2483,TI, FLOW, several VB modules,- HT RN2483 LoRa EU (868/434 MHz) Module Multi-Site Candidate,
 ,,,,,,
 ,,,,,,
 ,,,,,,

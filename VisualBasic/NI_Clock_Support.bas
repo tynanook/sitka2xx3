@@ -47,7 +47,7 @@ Public Function SimpleAXRFLoopBack(SrcChan As AXRF_CHANNEL, CapChan As AXRF_CHAN
         .Source SrcChan, -20, 433920000#
         .MeasureSetup CapChan, -20, 433920000#
         'Power = .Measure(CapChan)
-        TheExec.Datalog.WriteComment ("Measured power from the LoopBack test--- " & power)
+        TheExec.DataLog.WriteComment ("Measured power from the LoopBack test--- " & power)
         .MeasureArray CapChan, data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
 '''        power = PlotDouble(data)         '(Debug)
 

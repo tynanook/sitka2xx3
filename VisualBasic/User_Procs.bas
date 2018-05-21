@@ -81,7 +81,7 @@ Option Explicit
  Function OnProgramLoaded() As Integer
 '   Immediately at the conclusion of the load process
 
-   On Error GoTo ErrHandler
+   On Error GoTo errHandler
 
    'Any user code goes here
    'This replaces the Mchp Pre_Validation_Init routine
@@ -96,7 +96,7 @@ Option Explicit
 
    OnProgramLoaded = TL_SUCCESS
 Exit Function      'normal exit of function
-ErrHandler:
+errHandler:
     OnProgramLoaded = TL_ERROR
 '    Call gerror.AddError(VBA.Err.Number, "TestProgram::OnProgramLoaded", VBA.Err.Description, True)
       'Uncomment out the code below if you want a message box to notify the user of an error.

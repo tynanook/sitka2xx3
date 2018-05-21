@@ -125,7 +125,7 @@ Public TxMTX(16, MaxSites) As Double
 ' (see online help for ExecutionCount)
 
 Function OnProgramStarted()
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     Call ITLOnProgramStarted        'Self Check inside. If Done once, no more execute
     
@@ -152,7 +152,7 @@ Function OnProgramStarted()
     Next xSite
 
     Exit Function
-ErrHandler:
+errHandler:
     MsgBox "Error encountered in Exec Interpose Function OnProgramStarted" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -164,7 +164,7 @@ End Function
 
 Function OnProgramEnded()
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
 
 Dim led_level_high As Double
@@ -176,13 +176,15 @@ Dim led_level_low As Double
 led_level_high = 4.99
 led_level_low = 0.01
 
-
+'DEBUG 07022015 Passing_Site0-3_Flag logic added here. Must validate Passing Site Flag with at least one of the individual passing sites.
 
 Call TheExec.Sites.SetAllActive(True)     'Activate all sites
 
 If TheExec.Sites.Site(0).Active = True Then
     
-     If ((site0_failed = True Or Passing_Site_Flag = False)) Then
+     If (sites_tested(0) = True And (site0_failed = True Or Passing_Site0_Flag = False)) Then
+     
+     
                 
                 TheHdw.PPMU.pins("RED2_ON").Connect
                 TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
@@ -196,7 +198,7 @@ End If
     
 If TheExec.Sites.Site(1).Active = True Then
 
-    If ((site1_failed = True Or Passing_Site_Flag = False)) Then
+    If (sites_tested(1) = True And (site1_failed = True Or Passing_Site1_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED3_ON").Connect
                 TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
@@ -210,7 +212,7 @@ End If
 
 If TheExec.Sites.Site(2).Active = True Then
 
-    If ((site2_failed = True Or Passing_Site_Flag = False)) Then
+    If (sites_tested(2) = True And (site2_failed = True Or Passing_Site2_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED4_ON").Connect
                 TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_high
@@ -225,7 +227,7 @@ End If
 
 If TheExec.Sites.Site(3).Active = True Then
     
-    If ((site3_failed = True Or Passing_Site_Flag = False)) Then
+    If (sites_tested(3) = True And (site3_failed = True Or Passing_Site3_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED1_ON").Connect
                 TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
@@ -242,7 +244,7 @@ End If
 
     Exit Function
     
-ErrHandler:
+errHandler:
     MsgBox "Error encountered in Exec Interpose Function OnProgramEnded" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -254,12 +256,12 @@ End Function
 ' known as the TDR calibration process). Called only if user DIB calibration succeeds.
 Function OnTDRCalibrated()
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 '
 '    ' Put code here
 '
     Exit Function
-ErrHandler:
+errHandler:
     MsgBox "Error encountered in Exec Interpose Function OnTDRCalibrated" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 End Function
@@ -270,7 +272,7 @@ Function RFOnProgramValidated_TW101() 'MRF34TA
 
     Dim Site As Long
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     AbortTest = True
     
@@ -287,13 +289,13 @@ Function RFOnProgramValidated_TW101() 'MRF34TA
 
     FIRSTRUN = True
     
-    TheExec.Datalog.setup.LotSetup.PartType = TheExec.CurrentPart
-    TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True
-    TheExec.Datalog.ApplySetup
+    TheExec.DataLog.setup.LotSetup.PartType = TheExec.CurrentPart
+    TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = True
+    TheExec.DataLog.ApplySetup
 
     Exit Function
     
-ErrHandler:
+errHandler:
     MsgBox "Error encountered in Exec Interpose Function RFOnProgramValidated_TW101" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 
@@ -305,7 +307,7 @@ Function RFOnProgramValidated_LoRa() 'RN2483
 
     Dim Site As Long
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     AbortTest = True
     
@@ -334,13 +336,13 @@ Function RFOnProgramValidated_LoRa() 'RN2483
     FIRSTLOAD = True
     
     
-    TheExec.Datalog.setup.LotSetup.PartType = TheExec.CurrentPart
-    TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True
-    TheExec.Datalog.ApplySetup
+    TheExec.DataLog.setup.LotSetup.PartType = TheExec.CurrentPart
+    TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = True
+    TheExec.DataLog.ApplySetup
 
     Exit Function
     
-ErrHandler:
+errHandler:
     MsgBox "Error encountered in Exec Interpose Function RFOnProgramValidated_LoRa" + vbCrLf + _
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 

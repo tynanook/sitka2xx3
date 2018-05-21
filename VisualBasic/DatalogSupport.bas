@@ -30,7 +30,7 @@ Function catch_doall() As Long
         TheExec.RunOptions.DoAll = False            ' disable Do All option.
         Call MsgBox("Do All is not supported in this flow and has been disabled." & Chr(13) & _
                     "Please contact ENGINEERING.", vbCritical, " - W A R N I N G - ")
-        TheExec.Datalog.WriteComment ("ERROR: Do All option is not supported in this flow.")
+        TheExec.DataLog.WriteComment ("ERROR: Do All option is not supported in this flow.")
         reportFail = True
    
     End If
@@ -41,7 +41,7 @@ Function catch_doall() As Long
                 Site = TheExec.Sites.SelectedSite
                 testNum = TheExec.Sites.Site(Site).testnumber
                 TheExec.Sites.Site(Site).TestResult = siteFail
-                Call TheExec.Datalog.WriteFunctionalResult(Site, testNum, logTestFail)
+                Call TheExec.DataLog.WriteFunctionalResult(Site, testNum, logTestFail)
             Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
         End If
     Else
@@ -51,7 +51,7 @@ Function catch_doall() As Long
                 Site = TheExec.Sites.SelectedSite
                 testNum = TheExec.Sites.Site(Site).testnumber
                 TheExec.Sites.Site(Site).TestResult = sitePass
-                Call TheExec.Datalog.WriteFunctionalResult(Site, testNum, logTestPass)
+                Call TheExec.DataLog.WriteFunctionalResult(Site, testNum, logTestPass)
             Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
         End If
     End If
@@ -153,14 +153,14 @@ Function autoDlog_onValidate() As Long
                                        
                                         If UCase(Trim(tmp(1))) = "ON" Then
                                         
-                                            TheExec.Datalog.setup.LotSetup.DatalogOn = True
-                                            TheExec.Datalog.setup.DatalogSetup.SetupFile = "DCS"
-                                            TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = True
+                                            TheExec.DataLog.setup.LotSetup.DatalogOn = True
+                                            TheExec.DataLog.setup.DatalogSetup.SetupFile = "DCS"
+                                            TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = True
                                         
                                         Else
                                         
                                             Call turnOffdatalog
-                                            TheExec.Datalog.ApplySetup
+                                            TheExec.DataLog.ApplySetup
                                             Exit Function
                 
                                         End If
@@ -169,12 +169,12 @@ Function autoDlog_onValidate() As Long
                                         
                                         If UCase(Trim(tmp(1))) = "ON" Then
                                             filePathNameTxt = DatalogPath & jobContext & "_" & dateTimeStamp & AUTODLOG_SUFFIX & AUTODLOG_EXT_TXT
-                                            TheExec.Datalog.setup.DatalogSetup.TextOutputFile = filePathNameTxt
-                                            TheExec.Datalog.setup.DatalogSetup.TextOutput = True
+                                            TheExec.DataLog.setup.DatalogSetup.TextOutputFile = filePathNameTxt
+                                            TheExec.DataLog.setup.DatalogSetup.TextOutput = True
                                         
                                         Else
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.TextOutput = False
+                                            TheExec.DataLog.setup.DatalogSetup.TextOutput = False
                 
                                         End If
                                         
@@ -183,12 +183,12 @@ Function autoDlog_onValidate() As Long
                                         If UCase(Trim(tmp(1))) = "ON" Then
                                         
                                             filePathNameSTD = DatalogPath & jobContext & "_" & dateTimeStamp & AUTODLOG_SUFFIX & AUTODLOG_EXT_STDF
-                                            TheExec.Datalog.setup.DatalogSetup.STDFOutputFile = filePathNameSTD
-                                            TheExec.Datalog.setup.DatalogSetup.STDFOutput = True
+                                            TheExec.DataLog.setup.DatalogSetup.STDFOutputFile = filePathNameSTD
+                                            TheExec.DataLog.setup.DatalogSetup.STDFOutput = True
                                         
                                         Else
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.STDFOutput = False
+                                            TheExec.DataLog.setup.DatalogSetup.STDFOutput = False
                 
                                         End If
                                         
@@ -196,11 +196,11 @@ Function autoDlog_onValidate() As Long
                                         
                                         If UCase(Trim(tmp(1))) = "ON" Then
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True
+                                            TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = True
                                         
                                         Else
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = False
+                                            TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = False
                 
                                         End If
                                         
@@ -208,11 +208,11 @@ Function autoDlog_onValidate() As Long
                                         
                                         If UCase(Trim(tmp(1))) = "ON" Then
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.WindowOutput = True
+                                            TheExec.DataLog.setup.DatalogSetup.WindowOutput = True
                                         
                                         Else
                                         
-                                            TheExec.Datalog.setup.DatalogSetup.WindowOutput = False
+                                            TheExec.DataLog.setup.DatalogSetup.WindowOutput = False
                 
                                         End If
                                  
@@ -228,7 +228,7 @@ Function autoDlog_onValidate() As Long
                                             
                         End If
                         
-                        TheExec.Datalog.ApplySetup
+                        TheExec.DataLog.ApplySetup
                         
                     End If
                                        
@@ -236,17 +236,17 @@ End Function
     
 Function turnOffdatalog()
        
-        TheExec.Datalog.setup.LotSetup.DatalogOn = False
-        TheExec.Datalog.setup.LotSetup.DeviceNumber = "1"
-        TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = False
-        TheExec.Datalog.setup.DatalogSetup.SetupFile = ""
-        TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = False
-        TheExec.Datalog.setup.DatalogSetup.TextOutput = False
-        TheExec.Datalog.setup.DatalogSetup.TextOutputFile = ""
-        TheExec.Datalog.setup.DatalogSetup.STDFOutput = False
-        TheExec.Datalog.setup.DatalogSetup.STDFOutputFile = ""
-        TheExec.Datalog.setup.DatalogSetup.WindowOutput = False
+        TheExec.DataLog.setup.LotSetup.DatalogOn = False
+        TheExec.DataLog.setup.LotSetup.DeviceNumber = "1"
+        TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = False
+        TheExec.DataLog.setup.DatalogSetup.SetupFile = ""
+        TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = False
+        TheExec.DataLog.setup.DatalogSetup.TextOutput = False
+        TheExec.DataLog.setup.DatalogSetup.TextOutputFile = ""
+        TheExec.DataLog.setup.DatalogSetup.STDFOutput = False
+        TheExec.DataLog.setup.DatalogSetup.STDFOutputFile = ""
+        TheExec.DataLog.setup.DatalogSetup.WindowOutput = False
         TheExec.RunOptions.DoAll = False
-        TheExec.Datalog.ApplySetup
+        TheExec.DataLog.ApplySetup
     
 End Function

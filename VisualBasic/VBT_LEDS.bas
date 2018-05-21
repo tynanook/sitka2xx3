@@ -1,6 +1,11 @@
 Attribute VB_Name = "VBT_LEDS"
 Option Explicit
 
+Public Passing_Site0_Flag As Boolean
+Public Passing_Site1_Flag As Boolean
+Public Passing_Site2_Flag As Boolean
+Public Passing_Site3_Flag As Boolean
+
 
 Public Const LED_PULSE = 0.15
 '
@@ -11,7 +16,7 @@ Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initia
     Dim nSiteIndex As Long
     
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     Call TheHdw.Digital.Patgen.Halt
     
@@ -25,16 +30,21 @@ Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initia
         
        
     max_site = 0 'Initialize global integer from Sites_control
+    
+    Passing_Site0_Flag = False  'Individual passing site flags fixed a multi-site issue.
+    Passing_Site1_Flag = False
+    Passing_Site2_Flag = False
+    Passing_Site3_Flag = False
 
     
-    Passing_Site_Flag = False
+
     
     Call first_active_test_sites
     
     
     Exit Function
     
-ErrHandler:
+errHandler:
 
     Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
     Call TheExec.ErrorReport
@@ -52,7 +62,7 @@ Public Function reset_module_static(argc As Long, argv() As String) As Long
     
     Dim nSiteIndex As Long
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
      
     For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
     
@@ -78,7 +88,7 @@ Public Function reset_module_static(argc As Long, argv() As String) As Long
     
     Exit Function
     
-ErrHandler:
+errHandler:
 
     Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
     Call TheExec.ErrorReport
@@ -92,7 +102,7 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
 
 
     
-    'This function sets Red site LED for Fail, and Green site LED for Pass.
+    'This function sets Red site LED for test flow Fail, and Green site LED for test flow Pass.
     'At least one test passes if the test program makes it to this function.
 
     'sites_active() as boolean 'global
@@ -101,7 +111,7 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
     'Dim PF_State As Long
     
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     
     'Debug.Print "set_pass_fails_leds..."
@@ -110,21 +120,25 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
     
         If (sites_tested(0) = True) Then 'test for pass
              
-            If Not (TheExec.Sites.Site(0).LastTestResult = 2) Then      'Site 0 = Module 2
+            If TheExec.Sites.Site(0).LastTestResult = 2 Then      'Site 0 = Module 2
             
+                     TheHdw.pins("RED2_ON").InitState = chInitHi
+         
+                        TheHdw.Wait (LED_PULSE)
+                                    
+                     TheHdw.pins("RED2_ON").InitState = chInitLo
+                     
+                     Passing_Site0_Flag = False
+                     
+                                       
+             Else
                      TheHdw.pins("GRN2_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
                      TheHdw.pins("GRN2_ON").InitState = chInitLo
-                             
-             Else
-             
-                     TheHdw.pins("RED2_ON").InitState = chInitHi
-         
-                                    TheHdw.Wait (LED_PULSE)
-                                    
-                     TheHdw.pins("RED2_ON").InitState = chInitLo
+                     
+                     Passing_Site0_Flag = True      'notify OnProgramEnded that site 0 passed
                       
              End If
              
@@ -136,21 +150,25 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(1) = True) Then
         
-             If Not (TheExec.Sites.Site(1).LastTestResult = 2) Then      'Site 1 = Module 3
-            
+             If TheExec.Sites.Site(1).LastTestResult = 2 Then      'Site 1 = Module 3
+             
+                     TheHdw.pins("RED3_ON").InitState = chInitHi
+         
+                        TheHdw.Wait (LED_PULSE)
+                                    
+                     TheHdw.pins("RED3_ON").InitState = chInitLo
+                     
+                     Passing_Site1_Flag = False
+                             
+             Else
+                               
                      TheHdw.pins("GRN3_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
                      TheHdw.pins("GRN3_ON").InitState = chInitLo
-                             
-             Else
-             
-                     TheHdw.pins("RED3_ON").InitState = chInitHi
-         
-                                    TheHdw.Wait (LED_PULSE)
-                                    
-                     TheHdw.pins("RED3_ON").InitState = chInitLo
+                     
+                     Passing_Site1_Flag = True      'notify OnProgramEnded that site 1 passed
                       
              End If
              
@@ -163,22 +181,27 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(2) = True) Then
         
-            If Not (TheExec.Sites.Site(2).LastTestResult = 2) Then   'Site 2 = Module 4
+            If TheExec.Sites.Site(2).LastTestResult = 2 Then   'Site 2 = Module 4
             
-                     TheHdw.pins("GRN4_ON").InitState = chInitHi
+            
+                    TheHdw.pins("RED4_ON").InitState = chInitHi
          
-                         TheHdw.Wait (LED_PULSE)
-                      
-                     TheHdw.pins("GRN4_ON").InitState = chInitLo
+                        TheHdw.Wait (LED_PULSE)
+                                    
+                    TheHdw.pins("RED4_ON").InitState = chInitLo
+                    
+                    Passing_Site2_Flag = False
                              
              Else
              
-                     TheHdw.pins("RED4_ON").InitState = chInitHi
+                    TheHdw.pins("GRN4_ON").InitState = chInitHi
          
-                                    TheHdw.Wait (LED_PULSE)
-                                    
-                     TheHdw.pins("RED4_ON").InitState = chInitLo
+                         TheHdw.Wait (LED_PULSE)
                       
+                    TheHdw.pins("GRN4_ON").InitState = chInitLo
+                     
+                    Passing_Site2_Flag = True       'notify OnProgramEnded that site 2 passed
+             
              End If
          
          End If
@@ -189,21 +212,26 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(3) = True) Then
         
-            If Not (TheExec.Sites.Site(3).LastTestResult = 2) Then   'Site 3 = Module 1
+            If TheExec.Sites.Site(3).LastTestResult = 2 Then   'Site 3 = Module 1
             
+                    TheHdw.pins("RED1_ON").InitState = chInitHi
+         
+                        TheHdw.Wait (LED_PULSE)
+                                    
+                    TheHdw.pins("RED1_ON").InitState = chInitLo
+            
+                     
+                    Passing_Site3_Flag = False
+                             
+             Else
+             
                      TheHdw.pins("GRN1_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
                      TheHdw.pins("GRN1_ON").InitState = chInitLo
-                             
-             Else
-             
-                     TheHdw.pins("RED1_ON").InitState = chInitHi
-         
-                                    TheHdw.Wait (LED_PULSE)
-                                    
-                     TheHdw.pins("RED1_ON").InitState = chInitLo
+                     
+                     Passing_Site3_Flag = True      'notify OnProgramEnded that site 3 passed
                       
              End If
         
@@ -211,11 +239,11 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
            
    End If
     
-        Passing_Site_Flag = True      'notify OnProgramEnded that a site passed
+
     
     Exit Function
     
-ErrHandler:
+errHandler:
 
 
 
@@ -231,3 +259,4 @@ Public Function selected_site()
 
 
 End Function
+

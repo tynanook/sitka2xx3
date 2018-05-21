@@ -39,12 +39,12 @@ Dim dlogFile As String
 
 Public Sub setupDlogOutput()
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
     Dim LotID As String
     
    ' StartLotID = CurrentLotNum
-    LotID = TheExec.Datalog.setup.LotSetup.LotID
+    LotID = TheExec.DataLog.setup.LotSetup.LotID
     StartLotID = LotID
 
     StartLotID = Replace(StartLotID, ".", "_")
@@ -59,7 +59,7 @@ On Error GoTo ErrHandler
     Call DlogManager
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -67,7 +67,7 @@ End Sub
 
 
 Public Sub DlogManager()
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
     Dim job As String
     Dim Part As String
@@ -87,7 +87,7 @@ On Error GoTo ErrHandler
     probeScribe = "" 'DEbug for DM920
     mchpMPC = "ZY004" 'DEbug for DM920
    
-     LotID = TheExec.Datalog.setup.LotSetup.LotID
+     LotID = TheExec.DataLog.setup.LotSetup.LotID
      'LotID = Replace(LotID, ".", "_")
      testerLotID = LotID
     'testerLotID = CurrentLotNum
@@ -107,26 +107,26 @@ On Error GoTo ErrHandler
         
 
 Exit Sub
-ErrHandler:
+errHandler:
     Debug.Print ("Fuction DlogManeger had Error")
     On Error GoTo 0
 End Sub
 
 Public Sub createProbeDlog(probeDevice As String, probeJob As String, probeMPC As String, probePart As String, probeEnv As String, probeLotID As String, probeTimeStamp As String, probeChanMap As String, probeScribe As String)
-On Error GoTo ErrHandler
+On Error GoTo errHandler
     
     Dim dlogDir As String
     dlogDir = "\\chip\datalogs\"
     dlogFile = dlogDir & "\" & probeDevice & "_" & probeJob & "_" & probeMPC & "_" & probePart & "_" & probeChanMap & "_" & probeEnv & "_" & probeLotID & "_" & probeScribe & "_" & probeTimeStamp
     Call ApplyDlogSetup("Probe_Mode", dlogFile)
 Exit Sub
-ErrHandler:
+errHandler:
     Debug.Print ("Fuction createProbeDlog had Error")
     On Error GoTo 0
 End Sub
 
 Public Sub createFTDlog(ftDevice As String, ftJob As String, ftMPC As String, ftPart As String, ftEnv As String, ftLotID As String, ftTimeStamp As String, ftChanMap As String)
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
     Dim dlogDir As String
 
@@ -152,13 +152,13 @@ On Error GoTo ErrHandler
     dlogFile = dlogDir & "\" & ftDevice & "_" & ftJob & "_" & ftMPC & "_" & ftPart & "_" & ftChanMap & "_" & ftEnv & "_" & ftLotID & "_" & ftTimeStamp
     Call ApplyDlogSetup("FT_Mode", dlogFile)
 Exit Sub
-ErrHandler:
+errHandler:
     Debug.Print ("Fuction createFTDlog had Error")
     On Error GoTo 0
 End Sub
 
 Public Function checkStripLocation() As Boolean
-On Error GoTo ErrHandler
+On Error GoTo errHandler
     
     Dim chanMap As String
     chanMap = TheExec.CurrentChanMap
@@ -168,7 +168,7 @@ On Error GoTo ErrHandler
         checkStripLocation = False
     End If
 Exit Function
-ErrHandler:
+errHandler:
     Debug.Print ("Fuction checkStripLocation had Error")
     On Error GoTo 0
 End Function
@@ -201,39 +201,39 @@ Public Sub ApplyDlogSetup(dlogMode As String, dlogPart As String)
                 Select Case UCase(Trim(tmp(0)))
                     Case "$TEXTFILE"    ' ---- Check Text type
                         If UCase(Trim(tmp(1))) = "ON" Then
-                            TheExec.Datalog.setup.LotSetup.DatalogOn = True
-                            TheExec.Datalog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
-                                                        TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = True
-                            TheExec.Datalog.setup.DatalogSetup.TextOutputFile = dlogPart
-                            TheExec.Datalog.setup.DatalogSetup.TextOutput = True
+                            TheExec.DataLog.setup.LotSetup.DatalogOn = True
+                            TheExec.DataLog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
+                                                        TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = True
+                            TheExec.DataLog.setup.DatalogSetup.TextOutputFile = dlogPart
+                            TheExec.DataLog.setup.DatalogSetup.TextOutput = True
                         Else
-                            TheExec.Datalog.setup.LotSetup.DatalogOn = True
-                            TheExec.Datalog.setup.DatalogSetup.TextOutput = False
+                            TheExec.DataLog.setup.LotSetup.DatalogOn = True
+                            TheExec.DataLog.setup.DatalogSetup.TextOutput = False
                         End If
                     Case "$STDFFILE"    ' ---- Check STDF type (!!!! FOR FT ONLY !!!!!)
                         If (dlogMode = "FT_Mode") Then
                             If UCase(Trim(tmp(1))) = "ON" Then
-                                TheExec.Datalog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
-                                TheExec.Datalog.setup.DatalogSetup.STDFOutputFile = dlogPart
-                                TheExec.Datalog.setup.DatalogSetup.STDFOutput = True
+                                TheExec.DataLog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
+                                TheExec.DataLog.setup.DatalogSetup.STDFOutputFile = dlogPart
+                                TheExec.DataLog.setup.DatalogSetup.STDFOutput = True
                             End If
                         End If
                 End Select      ' end case
                 End If          ' end line check
             Next ctr            ' end for loop
         Else
-            TheExec.Datalog.setup.LotSetup.DatalogOn = True
-            TheExec.Datalog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
-            TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = True
-            TheExec.Datalog.setup.DatalogSetup.TextOutputFile = dlogPart
-            TheExec.Datalog.setup.DatalogSetup.TextOutput = True
+            TheExec.DataLog.setup.LotSetup.DatalogOn = True
+            TheExec.DataLog.setup.DatalogSetup.SetupFile = "C:\Temp\DlogAllDC"
+            TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = True
+            TheExec.DataLog.setup.DatalogSetup.TextOutputFile = dlogPart
+            TheExec.DataLog.setup.DatalogSetup.TextOutput = True
         End If                  ' end check file exists
-    TheExec.Datalog.ApplySetup  ' Applies the selected setup file
+    TheExec.DataLog.ApplySetup  ' Applies the selected setup file
 End Sub
 
 Public Sub CheckSetupFiles()
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
     
     If Dir("C:\Temp", vbDirectory) = "" Then
         MkDir ("C:\Temp")
@@ -244,7 +244,7 @@ On Error GoTo ErrHandler
     End If
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -255,7 +255,7 @@ Public Sub CreateSetupFiles()
 
     Dim filenum As Integer
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     filenum = FreeFile
     
@@ -274,7 +274,7 @@ Public Sub CreateSetupFiles()
     Close #filenum
      
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -293,7 +293,7 @@ End Function
 
 Public Sub setupNumber()
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim currentLotID As String
     Dim probeScribe As String
@@ -306,7 +306,7 @@ Public Sub setupNumber()
     probeScribe = "" 'DEbug for DM920
     job = LCase(TheExec.CurrentJob)
      
-     LotID = TheExec.Datalog.setup.LotSetup.LotID
+     LotID = TheExec.DataLog.setup.LotSetup.LotID
     ' LotID = Replace(LotID, ".", "_")
      currentLotID = LotID
     currentLotID = Replace(currentLotID, ".", "_")
@@ -317,14 +317,14 @@ Public Sub setupNumber()
     ' ----------------------------------------------------
         
     If currentLotID <> StartLotID Then
-        TheExec.Datalog.setup.DatalogSetup.TextOutput = False
-        TheExec.Datalog.ApplySetup
+        TheExec.DataLog.setup.DatalogSetup.TextOutput = False
+        TheExec.DataLog.ApplySetup
         Call setupDlogOutput
     End If
                 
     If probeScribe <> StartScribe Then
-        TheExec.Datalog.setup.DatalogSetup.TextOutput = False
-        TheExec.Datalog.ApplySetup
+        TheExec.DataLog.setup.DatalogSetup.TextOutput = False
+        TheExec.DataLog.ApplySetup
         Call setupDlogOutput
     End If
     
@@ -336,7 +336,7 @@ Public Sub setupNumber()
 
                   
     Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
         Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
         On Error GoTo 0
 
@@ -346,7 +346,7 @@ Public Sub SetupFiles()
     
     Dim filenum As Integer
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     filenum = FreeFile
     
@@ -365,7 +365,7 @@ Public Sub SetupFiles()
     Close #filenum
      
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 

@@ -210,15 +210,15 @@ Private Sub dut_info_output()
     If TheExec.Sites.SelectFirst <> loopDone Then
         Do
             Site = TheExec.Sites.SelectedSite
-            Call TheExec.Datalog.WriteComment("  ")
-            Call TheExec.Datalog.WriteComment("   ---- SITE:" & str(Site) & " ----")
+            Call TheExec.DataLog.WriteComment("  ")
+            Call TheExec.DataLog.WriteComment("   ---- SITE:" & str(Site) & " ----")
            
 DUT_INFO_OUTPUT_PFM:
             If pfm_size = 0 Then GoTo DUT_INFO_OUTPUT_TFM:
-            Call TheExec.Datalog.WriteComment("   ---- Program Memory ----")
-            Call TheExec.Datalog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
+            Call TheExec.DataLog.WriteComment("   ---- Program Memory ----")
+            Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(pfm, 2) Step 16
-                Call TheExec.Datalog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
+                Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
                                                           & dut_info_hex(pfm(Site, mem_idx + 0), PFM_WORD_SIZE) _
                                                           & dut_info_hex(pfm(Site, mem_idx + 1), PFM_WORD_SIZE) _
                                                           & dut_info_hex(pfm(Site, mem_idx + 2), PFM_WORD_SIZE) _
@@ -239,11 +239,11 @@ DUT_INFO_OUTPUT_PFM:
 
 DUT_INFO_OUTPUT_TFM:
             If tfm_size = 0 Then GoTo DUT_INFO_OUTPUT_DFM
-            Call TheExec.Datalog.WriteComment(" ")
-            Call TheExec.Datalog.WriteComment("   ---- Test Memory ----")
-            Call TheExec.Datalog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
+            Call TheExec.DataLog.WriteComment(" ")
+            Call TheExec.DataLog.WriteComment("   ---- Test Memory ----")
+            Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(tfm, 2) Step 16
-                Call TheExec.Datalog.WriteComment("     " & dut_info_hex(mem_idx + TFM_START_ADDR, PFM_ADDR_SIZE) & " |" _
+                Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx + TFM_START_ADDR, PFM_ADDR_SIZE) & " |" _
                                                           & dut_info_hex(tfm(Site, mem_idx + 0), PFM_WORD_SIZE) _
                                                           & dut_info_hex(tfm(Site, mem_idx + 1), PFM_WORD_SIZE) _
                                                           & dut_info_hex(tfm(Site, mem_idx + 2), PFM_WORD_SIZE) _
@@ -264,11 +264,11 @@ DUT_INFO_OUTPUT_TFM:
             
 DUT_INFO_OUTPUT_DFM:
             If dfm_size = 0 Then GoTo DUT_INFO_OUTPUT_PFM_FA
-            Call TheExec.Datalog.WriteComment(" ")
-            Call TheExec.Datalog.WriteComment("   ---- Data Memory ----")
-            Call TheExec.Datalog.WriteComment("   Address | -0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F")
+            Call TheExec.DataLog.WriteComment(" ")
+            Call TheExec.DataLog.WriteComment("   ---- Data Memory ----")
+            Call TheExec.DataLog.WriteComment("   Address | -0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F")
             For mem_idx = 0 To UBound(dfm, 2) Step 16
-                Call TheExec.Datalog.WriteComment("     " & dut_info_hex(mem_idx, DFM_ADDR_SIZE) & " |" _
+                Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, DFM_ADDR_SIZE) & " |" _
                                                           & dut_info_hex(dfm(Site, mem_idx + 0), DFM_WORD_SIZE) _
                                                           & dut_info_hex(dfm(Site, mem_idx + 1), DFM_WORD_SIZE) _
                                                           & dut_info_hex(dfm(Site, mem_idx + 2), DFM_WORD_SIZE) _
@@ -289,11 +289,11 @@ DUT_INFO_OUTPUT_DFM:
             
 DUT_INFO_OUTPUT_PFM_FA:
             If pfm_size = 0 Then GoTo DUT_INFO_OUTPUT_FINISHED
-            Call TheExec.Datalog.WriteComment(" ")
-            Call TheExec.Datalog.WriteComment("   ---- Program Memory FA Verify ----")
-            Call TheExec.Datalog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
+            Call TheExec.DataLog.WriteComment(" ")
+            Call TheExec.DataLog.WriteComment("   ---- Program Memory FA Verify ----")
+            Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(pfm_fa, 2) Step 16
-                Call TheExec.Datalog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
+                Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
                                                           & dut_info_hex(pfm_fa(Site, mem_idx + 0), PFM_WORD_SIZE) _
                                                           & dut_info_hex(pfm_fa(Site, mem_idx + 1), PFM_WORD_SIZE) _
                                                           & dut_info_hex(pfm_fa(Site, mem_idx + 2), PFM_WORD_SIZE) _
@@ -313,7 +313,7 @@ DUT_INFO_OUTPUT_PFM_FA:
             Next mem_idx
             
 DUT_INFO_OUTPUT_FINISHED:
-            Call TheExec.Datalog.WriteComment("   -----------------------------------------------------------------------------------------")
+            Call TheExec.DataLog.WriteComment("   -----------------------------------------------------------------------------------------")
         Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
     End If
    

@@ -27,9 +27,8 @@ Dim total_fail As Integer
 
 Dim siteStatus() As Boolean  'added code for IDDWR
  
-
-
 Public Function init_sites_array() As Long
+
 Dim site_num As Long
 Dim i As Long
 
@@ -139,7 +138,7 @@ For site_num = 0 To max_site - 1
 Next site_num
 
 For site_num = 0 To max_site - 1
-    TheExec.Datalog.WriteComment ("   " + CStr(site_num) + " Bin Number is: " + CStr(site_bin(site_num)) _
+    TheExec.DataLog.WriteComment ("   " + CStr(site_num) + " Bin Number is: " + CStr(site_bin(site_num)) _
                                 + "   " + "Sort Number is: " + CStr(site_sort(site_num)))
 Next site_num
 
@@ -151,7 +150,7 @@ End Function
 Public Function find_first_fail(first_fail_flag)
 
 If (first_fail_flag = 0) Then
-    TheExec.Datalog.WriteComment ("   Sub Sites Failure")
+    TheExec.DataLog.WriteComment ("   Sub Sites Failure")
     first_fail_flag = 1
 End If
 
@@ -182,14 +181,14 @@ Curr_chanMap = TheExec.CurrentChanMap       'Check if this is the Engineering DI
     If (TheHdw.pins("SO_0").FailCount(site_num) > 0) Then
         If sites_failed(site_num * num_site_per_testersite) Then
             Call find_first_fail(first_fail_flag)
-            TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                         + "   " + CStr(site_num * num_site_per_testersite) + "    FAIL")
         ElseIf Not sites_failed(site_num * num_site_per_testersite) Then
             sites_failed(site_num * num_site_per_testersite) = True
             site_bin_sort_control(site_num * num_site_per_testersite) = 1
             total_fail = total_fail + 1
             Call find_first_fail(first_fail_flag)
-            TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                          + "   " + CStr(site_num * num_site_per_testersite) + "    FAIL")
         End If
     End If
@@ -198,14 +197,14 @@ Curr_chanMap = TheExec.CurrentChanMap       'Check if this is the Engineering DI
      If (TheHdw.pins("SO_1").FailCount(site_num) > 0) Then
         If sites_failed(site_num * num_site_per_testersite + 1) Then
             Call find_first_fail(first_fail_flag)
-            TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                         + "   " + CStr(site_num * num_site_per_testersite + 1) + "    FAIL")
         ElseIf Not sites_failed(site_num * num_site_per_testersite + 1) Then
             sites_failed(site_num * num_site_per_testersite + 1) = True
             site_bin_sort_control(site_num * num_site_per_testersite + 1) = 1
             total_fail = total_fail + 1
             Call find_first_fail(first_fail_flag)
-            TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                          + "   " + CStr(site_num * num_site_per_testersite + 1) + "    FAIL")
         End If
     End If
@@ -244,7 +243,7 @@ SiteCallMap:
     loopstatus = TheExec.Sites.SelectNext(loopstatus)
 Wend
 
-TheExec.Datalog.WriteComment ("   Tester Sites")
+TheExec.DataLog.WriteComment ("   Tester Sites")
 
 End Function
 
@@ -277,7 +276,7 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
      If TheExec.Sites.Site(site_num).Active = True Then
        If (TheExec.Sites.Site(site_num).LastTestResultRaw = resultFail) Then
          Call find_first_fail(first_fail_flag)
-         TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                      + "   " + CStr(site_num * num_site_per_testersite + site_offset) + "    FAIL")
        End If
      End If
@@ -290,7 +289,7 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
          sites_failed(site_num * num_site_per_testersite + site_offset) = True
          site_bin_sort_control(site_num * num_site_per_testersite + site_offset) = 1
          Call find_first_fail(first_fail_flag)
-         TheExec.Datalog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
                                      + "   " + CStr(site_num * num_site_per_testersite + site_offset) + "    FAIL")
          total_fail = total_fail + 1
        End If
@@ -303,7 +302,7 @@ If argc = 2 Then
 '  Call reActivateSelectedSites(CLng(argv(1)))          ' No Defined --> Remove PTT 05/07/15
 End If
 
- TheExec.Datalog.WriteComment ("   Tester Sites")
+ TheExec.DataLog.WriteComment ("   Tester Sites")
 
 End Function
 
@@ -313,24 +312,24 @@ Public Function print_array() As Long
 
     Dim site_num As Long
 
-    TheExec.Datalog.WriteComment ("sites_failed")
+    TheExec.DataLog.WriteComment ("sites_failed")
     For site_num = 0 To max_site - 1
-        TheExec.Datalog.WriteComment (CStr(sites_failed(site_num)))
+        TheExec.DataLog.WriteComment (CStr(sites_failed(site_num)))
     Next site_num
 
-    TheExec.Datalog.WriteComment ("site_bin")
+    TheExec.DataLog.WriteComment ("site_bin")
     For site_num = 0 To max_site - 1
-        TheExec.Datalog.WriteComment (CStr(site_bin(site_num)))
+        TheExec.DataLog.WriteComment (CStr(site_bin(site_num)))
     Next site_num
 
-    TheExec.Datalog.WriteComment ("site_sort")
+    TheExec.DataLog.WriteComment ("site_sort")
     For site_num = 0 To max_site - 1
-        TheExec.Datalog.WriteComment (CStr(site_sort(site_num)))
+        TheExec.DataLog.WriteComment (CStr(site_sort(site_num)))
     Next site_num
 
-    TheExec.Datalog.WriteComment ("site_bin_sort_control")
+    TheExec.DataLog.WriteComment ("site_bin_sort_control")
     For site_num = 0 To max_site - 1
-        TheExec.Datalog.WriteComment (CStr(site_bin_sort_control(site_num)))
+        TheExec.DataLog.WriteComment (CStr(site_bin_sort_control(site_num)))
     Next site_num
 
 End Function
@@ -338,16 +337,16 @@ End Function
 Public Function SendConfigSTDF() As Long
 
     Dim site_num As Long
-    TheExec.Datalog.WriteComment ("<ProberSite>")
-    TheExec.Datalog.WriteComment (CStr(GetSetting("MCHPOI", "J750", "PROBERSITE")))
-    TheExec.Datalog.WriteComment ("<site_bin_data>")
+    TheExec.DataLog.WriteComment ("<ProberSite>")
+    TheExec.DataLog.WriteComment (CStr(GetSetting("MCHPOI", "J750", "PROBERSITE")))
+    TheExec.DataLog.WriteComment ("<site_bin_data>")
 
     For site_num = 0 To max_site - 1
         If sites_failed(site_num) = True Then
-            TheExec.Datalog.WriteComment (CStr(Int(site_num / num_site_per_testersite)) + "," _
+            TheExec.DataLog.WriteComment (CStr(Int(site_num / num_site_per_testersite)) + "," _
             + CStr(site_num) + "," + CStr(site_sort(site_num)) + "," + "F")
         Else
-            TheExec.Datalog.WriteComment (CStr(Int(site_num / num_site_per_testersite)) + "," _
+            TheExec.DataLog.WriteComment (CStr(Int(site_num / num_site_per_testersite)) + "," _
             + CStr(site_num) + "," + CStr(site_sort(site_num)) + "," + "P") 'sdriscoll_102600: modded pass string to match fail style.
         End If
     Next site_num

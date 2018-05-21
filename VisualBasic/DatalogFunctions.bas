@@ -12,7 +12,7 @@ Dim i As Integer
 Dim j As Integer
 Dim NewCommand As CommandBarButton
      
-On Error GoTo ErrHandler
+On Error GoTo errHandler
    
 
 If ButtonsAdded = True Then Exit Sub
@@ -82,7 +82,7 @@ HramEnabled = False
 Call DatalogOff
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function AddButtons had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -93,19 +93,19 @@ Public Sub DatalogOff()
 
 Dim NewCommand As CommandBarButton
     
-On Error GoTo ErrHandler
+On Error GoTo errHandler
     
-TheExec.Datalog.setup.DatalogSetup.WindowOutput = False     'Stop Datalog from the window
-TheExec.Datalog.setup.LotSetup.DatalogOn = False             'Turns off the Datalog
-TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = False   'Un-select the setup file
-TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = False    'Off Header every Time
+TheExec.DataLog.setup.DatalogSetup.WindowOutput = False     'Stop Datalog from the window
+TheExec.DataLog.setup.LotSetup.DatalogOn = False             'Turns off the Datalog
+TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = False   'Un-select the setup file
+TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = False    'Off Header every Time
 
 DlogButton = 1
 
 Call ToggleDCButton
     
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function DatalogOff had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -117,24 +117,24 @@ Public Sub DatalogAllDC()
 
 Dim NewCommand As CommandBarButton
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 Call CheckSetupFiles
 
-TheExec.Datalog.setup.LotSetup.DatalogOn = True             'Turns the Datalog On
-TheExec.Datalog.setup.DatalogSetup.WindowOutput = True      'Create a windonw to output the Datalog
-TheExec.Datalog.setup.DatalogSetup.SetupFile _
+TheExec.DataLog.setup.LotSetup.DatalogOn = True             'Turns the Datalog On
+TheExec.DataLog.setup.DatalogSetup.WindowOutput = True      'Create a windonw to output the Datalog
+TheExec.DataLog.setup.DatalogSetup.SetupFile _
         = "C:\Temp\DlogAllDC"                               'Point to the save datalog files
-TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = True   'Select the setup file
-TheExec.Datalog.setup.DatalogSetup.HeaderEveryRun = True    'On Header every Time
-TheExec.Datalog.ApplySetup                                  'Applies the selected setup file
+TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = True   'Select the setup file
+TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = True    'On Header every Time
+TheExec.DataLog.ApplySetup                                  'Applies the selected setup file
     
 DlogButton = 2
 
 Call ToggleDCButton
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -146,24 +146,24 @@ Public Sub DatalogFailDC()
 
 Dim NewCommand As CommandBarButton
     
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 Call CheckSetupFiles
 
-TheExec.Datalog.setup.LotSetup.DatalogOn = True             'Turns the Datalog On
-TheExec.Datalog.setup.DatalogSetup.WindowOutput = True      'Create a windonw to output the Datalog
+TheExec.DataLog.setup.LotSetup.DatalogOn = True             'Turns the Datalog On
+TheExec.DataLog.setup.DatalogSetup.WindowOutput = True      'Create a windonw to output the Datalog
 
-TheExec.Datalog.setup.DatalogSetup.SetupFile _
+TheExec.DataLog.setup.DatalogSetup.SetupFile _
         = "C:\Temp\DlogFailDC"                              'Point to the save datalog files"
-TheExec.Datalog.setup.DatalogSetup.SelectSetupFile = True   'Select the setup file
-TheExec.Datalog.ApplySetup                                  'Applies the selected setup file
+TheExec.DataLog.setup.DatalogSetup.SelectSetupFile = True   'Select the setup file
+TheExec.DataLog.ApplySetup                                  'Applies the selected setup file
 
 DlogButton = 3
 
 Call ToggleDCButton
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function DatalogFailDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -174,7 +174,7 @@ Public Sub CaptureHRAMFails()
 
 Dim NewCommand As CommandBarButton
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 'If HramEnabled = True Then
 '    Call TheHdw.Digital.HRAM.SetCapture(captAll, True)              'capture all, and compress repeats
@@ -198,7 +198,7 @@ On Error GoTo ErrHandler
 'End If
     
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -209,7 +209,7 @@ Public Sub ToggleDCButton()
 Dim i As Integer
 Dim NewCommand As CommandBarButton
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog Off")
     NewCommand.State = msoButtonUp
@@ -237,7 +237,7 @@ Select Case DlogButton
 End Select
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -248,7 +248,7 @@ Public Sub CreateSetupFiles()
 
 Dim filenum As Integer
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 filenum = FreeFile
 
@@ -267,7 +267,7 @@ Print #filenum, "0|Default|1|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|"
 Close #filenum
  
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
@@ -276,7 +276,7 @@ End Sub 'CreateSetupFiles
 
 Public Sub CheckSetupFiles()
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
 If Dir("C:\Temp", vbDirectory) = "" Then
     MkDir ("C:\Temp")
@@ -287,7 +287,7 @@ If Dir("C:\Temp\DlogAllDC") = "" Or Dir("C:\Temp\DlogFailDC") = "" Then
 End If
 
 Exit Sub 'normal exit of function
-ErrHandler:
+errHandler:
     Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 

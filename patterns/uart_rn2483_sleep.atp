@@ -7,12 +7,12 @@ start_label start_i_sleep:
 repeat 50                                       
                                                 > tset576    0            0         X         1        X       ; // 
 repeat 28800, clr_fail                          
-                                                > tset576    1            0         X         1        X       ; //  After 50ms, send 'sys reset\r\n'
+                                                > tset576    1            0         X         1        X       ; //  Delay 500ms
 jump bypass                                     
                                                 > tset576    1            0         X         1        X       ; // 
                                                 > tset576    1            0         X         1        X       ; 
                                                 > tset576    1            0         X         1        X       ; 
-                                                > tset576    1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576    1            0         X         1        X       ; //  Start Bit = 0
                                                 > tset576    1            0         X         1        X       ; //  's' lsb
                                                 > tset576    1            0         X         1        X       ; //  's' 
                                                 > tset576    1            0         X         0        X       ; //  's' 
@@ -124,13 +124,13 @@ jump bypass
                                                 > tset576    1            0         X         1        X       ; //  Stop Bit = 1					
 bypass:
                                                 > tset576    1            0         X         1        X       ; 
-repeat 28800                                    
-                                                > tset576    1            0         X         1        X       ; //  Delay 100msec
 repeat 2                                        
-                                                > tset576    1            0         X         1        X       ; //  Delay 100msec
+                                                > tset576    1            0         X         1        X       ; 
+repeat 2                                        
+                                                > tset576    1            0         X         1        X       ; // 
                                                 > tset576    1            0         X         1        X       ; // 
 clr_flag (cpuA cpuB cpuC cpuD)                  
-                                                > tset576    1            0         X         1        X       ; //  After 200ms, send 'sys sleep 2000\r\n'
+                                                > tset576    1            0         X         1        X       ; //  Send 'sys sleep 2000\r\n'
                                                 > tset576    1            0         X         0        X       ; //  Start Bit = 0
                                                 > tset576    1            0         X         1        X       ; //  's' lsb
                                                 > tset576    1            0         X         1        X       ; //  's' 
@@ -292,15 +292,15 @@ clr_flag (cpuA cpuB cpuC cpuD)
                                                 > tset576    1            0         X         0        X       ; //  LF msb x0A
                                                 > tset576    1            0         X         1        X       ; //  Stop Bit = 1					
 repeat 2                                        
-                                                > tset576    1            0         X         1        X       ; //  Delay 1 sec for DUT to sleep
+                                                > tset576    1            0         X         1        X       ; //  
 repeat 2                                        
-                                                > tset576    1            0         X         1        X       ; //  Delay 1 sec for DUT to sleep
+                                                > tset576    1            0         X         1        X       ; //  
 repeat 2                                        
-                                                > tset576    1            0         X         1        X       ; //  Delay 1 sec for DUT to sleep
-repeat 57600                                    
+                                                > tset576    1            0         X         1        X       ; 
+repeat 28800                                    
                                                 > tset576    1            1         X         1        X       ; //  Delay .5 sec for DUT to sleep
 set_loopA 65535                                 
-                                                > tset576    1            1         X         1        X       ; // Timeout loop
+                                                > tset576    1            1         X         1        X       ; // Timeout loop > 1 sec
 set_cpu (cpuA)                                  
                                                 > tset576    1            1         X         1        X       ; //Set cpuA flag for VBT to read
 cpuA_wait:
@@ -313,14 +313,14 @@ finish:
                                                 > tset576    1            1         X         1        X       ; // Loop ended for better or worse
 clr_flag (cpuA), clr_fail                       
                                                 > tset576    1            1         X         1        X       ; //  clear cpuA, flush pipeline														
-repeat 57600                                    
-                                                > tset576    1            1         X         1        X       ; //  Delay 1 sec for DUT
+repeat 28800                                    
+                                                > tset576    1            1         X         1        X       ; // 
 repeat 100                                      
                                                 > tset576    0            1         X         1        X       ; 
-repeat 10000                                    
+repeat 2                                        
                                                 > tset576    1            1         X         1        X       ; 
 repeat 100                                      
-                                                > tset576    1            1         X         1        X       ; //  Delay 1 sec for DUT
+                                                > tset576    1            1         X         1        X       ; // 
 halt                                            
                                                 > tset576    1            1         X         1        X       ; //                                   
 }
