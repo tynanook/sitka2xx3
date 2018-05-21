@@ -122,7 +122,7 @@ Public Sub GetBinNumbers()
   
   Call InitVariables
 
-   strFlowSheet = ActiveWorkbook.ActiveSheet.Name
+   strFlowSheet = ActiveWorkbook.ActiveSheet.name
    
   
   
@@ -282,7 +282,7 @@ Public Sub GetBinNumbersCleanUp()
   
   Call InitVariables
 
-   strFlowSheet = ActiveWorkbook.ActiveSheet.Name
+   strFlowSheet = ActiveWorkbook.ActiveSheet.name
    
   
   

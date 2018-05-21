@@ -25,7 +25,7 @@ For i = 1 To Application.CommandBars.count
         'Debug.Print Application.CommandBars(i).Name
         
         
-        If Application.CommandBars(i).Name = "IG-XL Toolbar" Then
+        If Application.CommandBars(i).name = "IG-XL Toolbar" Then
         
             'Datalog Off
             Set NewCommand = Application.CommandBars(i).Controls.Add(msoControlButton, , , , True)

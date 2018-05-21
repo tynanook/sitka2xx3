@@ -92,6 +92,7 @@ Option Explicit
    'TheHdw.Digital.ACCalExcludePins ("mclr,ra4")
    
     TheHdw.Digital.ACCalExcludePins ("VBAT_PMU,XTAL_CONT,MW_DIG_TRIG")   'TW101
+    
     Call AddDatalogButtons
 
    OnProgramLoaded = TL_SUCCESS
@@ -142,7 +143,7 @@ Function OnProgramValidated() As Integer
     
     Call RFOnProgramValidated_LoRa
     
-    '----------------Enable Data log-------------------------------------------------------------
+'----------------Enable Data log-------------------------------------------------------------
     Dim fso As New FileSystemObject
     Dim objFile As File
     Dim objText As TextStream
@@ -152,12 +153,11 @@ Function OnProgramValidated() As Integer
         Set objText = objFile.OpenAsTextStream(ForReading)
         DatalogConfig = objText.ReadAll
         objText.Close
-        If InStr(DatalogConfig, "ZY004") <> 0 Then
+        If InStr(DatalogConfig, "ZY004") <> 0 Or InStr(DatalogConfig, "ZY003") <> 0 Then
             Call setupDlogOutput
         End If
     End If
 '---------------------------------------------------------------------------------------------
-    
     
 End Function
 

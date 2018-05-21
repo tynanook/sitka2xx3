@@ -34,7 +34,7 @@ For Each wsSheet In Worksheets
 wsSheet.Activate
 nFileNum = FreeFile
 Open csvPath & "\" & _
-  wsSheet.Name & ".csv" For Output As #nFileNum
+  wsSheet.name & ".csv" For Output As #nFileNum
 ExportToTextFile CStr(nFileNum), Sep, False
 Close nFileNum
 Next wsSheet
@@ -140,16 +140,16 @@ Public Sub ExportVisualBasicCode()
         On Error Resume Next
         err.Clear
         
-        path = directory & "\" & VBComponent.Name & extension
+        path = directory & "\" & VBComponent.name & extension
         Call VBComponent.Export(path)
         
         If err.Number <> 0 Then
             Stop
-            Call MsgBox("Failed to export " & VBComponent.Name & " to " & path, vbCritical)
+            Call MsgBox("Failed to export " & VBComponent.name & " to " & path, vbCritical)
         Else
             count = count + 1
            ' Debug.Print "Exported " & Left$(VBComponent.name & ":" & Space(Padding), Padding) & path
-            Debug.Print "Exported " & VBComponent.Name & ":" & "  " & path
+            Debug.Print "Exported " & VBComponent.name & ":" & "  " & path
         End If
 
         On Error GoTo 0

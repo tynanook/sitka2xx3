@@ -35,20 +35,7 @@ Public itl As itl
 Public Sub ITLOnProgramValidated()
      Set itl = Application.COMAddIns("TerITLAddIn").Object
      itl.Exec.TesterSvc.SetTesterExec TheExec
-     
-     Select Case UCase(TheExec.CurrentChanMap)      ' PTT added 05/14/15
-     Case "X1_MAN_47L_MODULE"
-        itl.Exec.LoadConfiguration ("ITL_x1_Config")
-        TheExec.DataLog.WriteComment (">>> ITL SetUp: Selected: Chanmap= " & UCase(TheExec.CurrentChanMap) & " ITL Config=[ITL_x1_Config]")
-     
-     Case "X2_MAN_47L_MODULE"
-        itl.Exec.LoadConfiguration ("ITL_x2_Config")
-        TheExec.DataLog.WriteComment (">>> ITL SetUp: Selected: Chanmap= " & UCase(TheExec.CurrentChanMap) & " ITL Config=[ITL_x2_Config]")
-        
-     Case Else
-        itl.Exec.LoadConfiguration
-        
-     End Select
+     itl.Exec.LoadConfiguration
 End Sub
 
 

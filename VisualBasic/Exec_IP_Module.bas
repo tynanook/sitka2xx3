@@ -133,23 +133,8 @@ Function OnProgramStarted()
     ' Put code here
     lngSitesStarting = TheExec.Sites.StartingCount
     
-    Dim xSite As Long
-    
-    ReDim sites_active(TheExec.Sites.ExistingCount - 1)
-    ReDim sites_inactive(TheExec.Sites.ExistingCount - 1)
-    ReDim sites_tested(TheExec.Sites.ExistingCount - 1)
-    
-    For xSite = 0 To TheExec.Sites.ExistingCount - 1
-        If TheExec.Sites.Site(xSite).Active Then
-            sites_tested(xSite) = False
-            sites_inactive(xSite) = False
-            sites_active(xSite) = True
-        Else
-            sites_tested(xSite) = False
-            sites_inactive(xSite) = True
-            sites_active(xSite) = False
-        End If
-    Next xSite
+
+
 
     Exit Function
 errHandler:
@@ -186,11 +171,12 @@ If TheExec.Sites.Site(0).Active = True Then
      
      
                 
-                TheHdw.PPMU.pins("RED2_ON").Connect
-                TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
+                TheHdw.PPMU.pins("RED1_ON").Connect
+                TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
                 TheHdw.Wait (LED_PULSE)
-                TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
-                TheHdw.PPMU.pins("RED2_ON").Disconnect
+                TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
+                TheHdw.PPMU.pins("RED1_ON").Disconnect
+                Debug.Print "Site 0 FAILED"
                            
      End If
      
@@ -200,11 +186,12 @@ If TheExec.Sites.Site(1).Active = True Then
 
     If (sites_tested(1) = True And (site1_failed = True Or Passing_Site1_Flag = False)) Then
     
-                TheHdw.PPMU.pins("RED3_ON").Connect
-                TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
+                TheHdw.PPMU.pins("RED2_ON").Connect
+                TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
                 TheHdw.Wait (LED_PULSE)
-                TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
-                TheHdw.PPMU.pins("RED3_ON").Disconnect
+                TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
+                TheHdw.PPMU.pins("RED2_ON").Disconnect
+                Debug.Print "Site 1 FAILED"
     
     End If
     
@@ -214,11 +201,12 @@ If TheExec.Sites.Site(2).Active = True Then
 
     If (sites_tested(2) = True And (site2_failed = True Or Passing_Site2_Flag = False)) Then
     
-                TheHdw.PPMU.pins("RED4_ON").Connect
-                TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_high
+                TheHdw.PPMU.pins("RED3_ON").Connect
+                TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
                 TheHdw.Wait (LED_PULSE)
-                TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_low
-                TheHdw.PPMU.pins("RED4_ON").Disconnect
+                TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
+                TheHdw.PPMU.pins("RED3_ON").Disconnect
+                Debug.Print "Site 2 FAILED"
     
     
     End If
@@ -229,11 +217,12 @@ If TheExec.Sites.Site(3).Active = True Then
     
     If (sites_tested(3) = True And (site3_failed = True Or Passing_Site3_Flag = False)) Then
     
-                TheHdw.PPMU.pins("RED1_ON").Connect
-                TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
+                TheHdw.PPMU.pins("RED4_ON").Connect
+                TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_high
                 TheHdw.Wait (LED_PULSE)
-                TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
-                TheHdw.PPMU.pins("RED1_ON").Disconnect
+                TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_low
+                TheHdw.PPMU.pins("RED4_ON").Disconnect
+                Debug.Print "Site 3 FAILED"
     
     End If
     
@@ -315,30 +304,37 @@ Function RFOnProgramValidated_LoRa() 'RN2483
     
     TheHdw.DIB.powerOn = True
     
+    TheHdw.Wait (0.1)
     
-    TheHdw.Digital.ACCalExcludePins ("SPI_EN,INTERIOR_TP_PINS,LED_PINS,MW_TRIG_PINS")   'TW101
+    'Call init_leds
     
+    
+    TheHdw.Digital.ACCalExcludePins ("LED_PINS,MW_TRIG_PINS")   'RN2903
+    
+
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_id_slow").Load
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_id_fast").Load
+        
+        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_gpio").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_gpio_full").Load
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_sleep").Load
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_cw").Load
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx_cw_off").Load
-        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_per_fsk_crc_on").Load
-        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_per_fsk_crc_off").Load
-        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_nocrc_pkt_rcv").Load
-        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_trig").Load
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_one").Load
+
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_one_rev").Load
         
     FIRSTRUN = True
     FIRSTLOAD = True
     
     
+    
     TheExec.DataLog.setup.LotSetup.PartType = TheExec.CurrentPart
     TheExec.DataLog.setup.DatalogSetup.HeaderEveryRun = True
     TheExec.DataLog.ApplySetup
+    
+    
 
     Exit Function
     

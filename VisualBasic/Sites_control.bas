@@ -4,16 +4,16 @@ Public sites_failed() As Boolean
 Public max_site As Long                'number of actual sites being tested (initialized to zero elsewhere)
 Public remaining_sites As Long
 
-'Public sites_tested() As Boolean            'array showing which sites tested in the flow (True = tested)
-'Public sites_active() As Boolean    'array showing which sites are active(passed) during last test in flow
-'Public sites_inactive() As Boolean
+Public sites_tested() As Boolean            'array showing which sites tested in the flow (True = tested)
+Public sites_active() As Boolean    'array showing which sites are active(passed) during last test in flow
+Public sites_inactive() As Boolean
 Public site0_failed As Boolean
 Public site1_failed As Boolean
 Public site2_failed As Boolean
 Public site3_failed As Boolean
 
 Public first_tested_flag As Boolean
-Public Passing_Site_Flag As Boolean
+
 
 
 Dim site_bin() As Integer
@@ -26,7 +26,7 @@ Dim num_site_per_testersite As Integer  'number of sub-sites in one tester site
 Dim total_fail As Integer
 
 Dim siteStatus() As Boolean  'added code for IDDWR
- 
+
 Public Function init_sites_array() As Long
 
 Dim site_num As Long
@@ -299,7 +299,7 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
  
  '*** added in for IDDW testing 9/24/14
 If argc = 2 Then
-'  Call reActivateSelectedSites(CLng(argv(1)))          ' No Defined --> Remove PTT 05/07/15
+  Call reActivateSelectedSites(CLng(argv(1)))
 End If
 
  TheExec.DataLog.WriteComment ("   Tester Sites")
@@ -462,8 +462,8 @@ For Site = 0 To TheExec.Sites.ExistingCount - 1
   
     If Not siteStatus(Site) Then TheExec.Sites.Site(Site).Active = False
     
-        'Debug.Print "Inactive = "; site
-        'Debug.Print "Status = "; siteStatus(site)
+        'Debug.Print "Inactive = "; Site
+        'Debug.Print "Status = "; siteStatus(Site)
         
         sites_inactive(Site) = True 'global
            'If (sites_tested(site) = True) Then 'test for pass
@@ -471,19 +471,20 @@ For Site = 0 To TheExec.Sites.ExistingCount - 1
         If sites_tested(Site) = True Then
        
             If (TheExec.Sites.Site(Site).LastTestResult = 2) Then
+        
                  Select Case Site
                     Case 0
                         site0_failed = True
-                        'Debug.Print "Site "; Site; " FAILED"
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 1
                         site1_failed = True
-                        'Debug.Print "Site "; Site; " FAILED"
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 2
                         site2_failed = True
-                        'Debug.Print "Site "; Site; " FAILED"
+                        Debug.Print "Site "; Site; " FAILED"
                     Case 3
                         site3_failed = True
-                        'Debug.Print "Site "; Site; " FAILED"
+                        Debug.Print "Site "; Site; " FAILED"
                     Case Else
                 End Select
                 
@@ -522,8 +523,8 @@ Public Function first_active_test_sites() As Long
         sites_tested(Site) = TheExec.Sites.Site(Site).Active
         siteStatus(Site) = TheExec.Sites.Site(Site).Active
 
-        'Debug.Print "Site "; site;
-        'Debug.Print " Testing = "; sites_tested(site)
+        'Debug.Print "Site "; Site;
+        'Debug.Print " Testing = "; sites_tested(Site)
 
 
 '        If (sites_tested(site) = True) Then
@@ -544,10 +545,8 @@ Public Function disable_inactive_sites() As Long
 
   Dim Site As Long
   
-  'Debug.Print "DisableInactiveSites..."
+  'Debug.Print "disable_inactive_sites..."
   
-'  ReDim sites_inactive(Site)
-'  ReDim sites_tested(Site)
 
 
   'we need to make sure all sites are active so we can remove power
@@ -560,9 +559,6 @@ Public Function disable_inactive_sites() As Long
   ' Loop through all sites and de-activate the original inactive sites...
   
 For Site = 0 To TheExec.Sites.ExistingCount - 1
-
-
-       
   
     If Not siteStatus(Site) Then TheExec.Sites.Site(Site).Active = False
     
@@ -610,7 +606,7 @@ Public Function enable_store_inactive_sites() As Long
   ReDim siteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
   ReDim sites_inactive(TheExec.Sites.ExistingCount - 1) As Boolean
   
-    'Debug.Print "Enable_StoreInactiveSites..."
+    'Debug.Print "enable_store_inactive_sites..."
 
   ' Loop through all sites and store active status
   
@@ -619,8 +615,8 @@ Public Function enable_store_inactive_sites() As Long
     siteStatus(Site) = TheExec.Sites.Site(Site).Active
     
     
-        'Debug.Print "Site = "; site
-        'Debug.Print "Status = "; siteStatus(site)
+        'Debug.Print "Site = "; Site
+        'Debug.Print "Status = "; siteStatus(Site)
 
     
   Next Site

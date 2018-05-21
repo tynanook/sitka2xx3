@@ -559,7 +559,7 @@ Public Function RunIE(Optional FocusArg As Integer) As Boolean
     tl_tm_FocusArg = FocusArg
     Call tl_fs_ResetIECtrl(tl_tm_InstanceEditor)
     With tl_tm_InstanceEditor
-        .Name = "PinPmu_T"
+        .name = "PinPmu_T"
         .PpmuPages = True
         .CondPatPage = True
         .LevTimPage = True

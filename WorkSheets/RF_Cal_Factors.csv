@@ -1,5 +1,4 @@
-Scalar Calibration Factors for AX-RF  - DIB Spec 14-A7288 (868 MHz) for RN2483,,,,,,,,,
+Scalar Calibration Factors for AX-RF  - DIB Spec 14-A9596 (868 MHz) for RN2483,,,,,,,,,
 ,Site 0,Site 1,Site 2,Site 3,Site 4,Site 5,Site 6,Site 7,
 TX_Path (dB),0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,
 Coax_Cable (dB),0,0,0,0,0,0,0,0,
-,,,,,,,,,

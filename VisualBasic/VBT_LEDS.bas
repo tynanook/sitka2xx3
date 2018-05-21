@@ -8,9 +8,9 @@ Public Passing_Site3_Flag As Boolean
 
 
 Public Const LED_PULSE = 0.15
-'
+
 Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initialize/Reset U11 - ALL LEDS OFF
-  
+
     'This function resets all Pass/Fail LEDs to the OFF state
        
     Dim nSiteIndex As Long
@@ -21,6 +21,16 @@ Public Function reset_all_leds(argc As Long, argv() As String) As Long   'Initia
     Call TheHdw.Digital.Patgen.Halt
     
 'Debug.Print "reset_all_leds..."
+
+If FIRSTRUN = True Then
+
+    Call init_leds
+    
+    FIRSTRUN = False
+    
+Else
+
+End If
             
         TheHdw.pins("LEDs_OFF").InitState = chInitHi
         
@@ -99,11 +109,10 @@ errHandler:
 End Function
 
 Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
-
-
     
     'This function sets Red site LED for test flow Fail, and Green site LED for test flow Pass.
     'At least one test passes if the test program makes it to this function.
+    'This function is the only function that will set a passing GREEN LED for a site.
 
     'sites_active() as boolean 'global
     
@@ -120,23 +129,23 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
     
         If (sites_tested(0) = True) Then 'test for pass
              
-            If TheExec.Sites.Site(0).LastTestResult = 2 Then      'Site 0 = Module 2
+            If TheExec.Sites.Site(0).LastTestResult = 2 Then      'Site 0 = Module 1
             
-                     TheHdw.pins("RED2_ON").InitState = chInitHi
+                     TheHdw.pins("RED1_ON").InitState = chInitHi
          
                         TheHdw.Wait (LED_PULSE)
                                     
-                     TheHdw.pins("RED2_ON").InitState = chInitLo
+                     TheHdw.pins("RED1_ON").InitState = chInitLo
                      
                      Passing_Site0_Flag = False
                      
                                        
              Else
-                     TheHdw.pins("GRN2_ON").InitState = chInitHi
+                     TheHdw.pins("GRN1_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
-                     TheHdw.pins("GRN2_ON").InitState = chInitLo
+                     TheHdw.pins("GRN1_ON").InitState = chInitLo
                      
                      Passing_Site0_Flag = True      'notify OnProgramEnded that site 0 passed
                       
@@ -150,23 +159,23 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(1) = True) Then
         
-             If TheExec.Sites.Site(1).LastTestResult = 2 Then      'Site 1 = Module 3
+             If TheExec.Sites.Site(1).LastTestResult = 2 Then      'Site 1 = Module 2
              
-                     TheHdw.pins("RED3_ON").InitState = chInitHi
+                     TheHdw.pins("RED2_ON").InitState = chInitHi
          
                         TheHdw.Wait (LED_PULSE)
                                     
-                     TheHdw.pins("RED3_ON").InitState = chInitLo
+                     TheHdw.pins("RED2_ON").InitState = chInitLo
                      
                      Passing_Site1_Flag = False
                              
              Else
                                
-                     TheHdw.pins("GRN3_ON").InitState = chInitHi
+                     TheHdw.pins("GRN2_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
-                     TheHdw.pins("GRN3_ON").InitState = chInitLo
+                     TheHdw.pins("GRN2_ON").InitState = chInitLo
                      
                      Passing_Site1_Flag = True      'notify OnProgramEnded that site 1 passed
                       
@@ -181,24 +190,24 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(2) = True) Then
         
-            If TheExec.Sites.Site(2).LastTestResult = 2 Then   'Site 2 = Module 4
+            If TheExec.Sites.Site(2).LastTestResult = 2 Then   'Site 2 = Module 3
             
             
-                    TheHdw.pins("RED4_ON").InitState = chInitHi
+                    TheHdw.pins("RED3_ON").InitState = chInitHi
          
                         TheHdw.Wait (LED_PULSE)
                                     
-                    TheHdw.pins("RED4_ON").InitState = chInitLo
+                    TheHdw.pins("RED3_ON").InitState = chInitLo
                     
                     Passing_Site2_Flag = False
                              
              Else
              
-                    TheHdw.pins("GRN4_ON").InitState = chInitHi
+                    TheHdw.pins("GRN3_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
-                    TheHdw.pins("GRN4_ON").InitState = chInitLo
+                    TheHdw.pins("GRN3_ON").InitState = chInitLo
                      
                     Passing_Site2_Flag = True       'notify OnProgramEnded that site 2 passed
              
@@ -212,24 +221,24 @@ Public Function set_pass_fail_leds(argc As Long, argv() As String) As Long
    
         If (sites_tested(3) = True) Then
         
-            If TheExec.Sites.Site(3).LastTestResult = 2 Then   'Site 3 = Module 1
+            If TheExec.Sites.Site(3).LastTestResult = 2 Then   'Site 3 = Module 4
             
-                    TheHdw.pins("RED1_ON").InitState = chInitHi
+                    TheHdw.pins("RED4_ON").InitState = chInitHi
          
                         TheHdw.Wait (LED_PULSE)
                                     
-                    TheHdw.pins("RED1_ON").InitState = chInitLo
+                    TheHdw.pins("RED4_ON").InitState = chInitLo
             
                      
                     Passing_Site3_Flag = False
                              
              Else
              
-                     TheHdw.pins("GRN1_ON").InitState = chInitHi
+                     TheHdw.pins("GRN4_ON").InitState = chInitHi
          
                          TheHdw.Wait (LED_PULSE)
                       
-                     TheHdw.pins("GRN1_ON").InitState = chInitLo
+                     TheHdw.pins("GRN4_ON").InitState = chInitLo
                      
                      Passing_Site3_Flag = True      'notify OnProgramEnded that site 3 passed
                       
@@ -260,3 +269,143 @@ Public Function selected_site()
 
 End Function
 
+Public Function init_leds() As Long  'Initialize/Reset U11 Blink LEDs
+  
+    'This function blinks all Pass/Fail LEDs, then resets them to the OFF state
+    
+Dim led_level_high As Double
+Dim led_level_low As Double
+
+On Error GoTo errHandler
+
+ 'Init LEDs once at program validation
+
+    led_level_high = 4.99
+    led_level_low = 0.01
+    
+    
+        TheHdw.PPMU.pins("GRN1_ON").Connect
+        TheHdw.PPMU.pins("GRN1_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN1_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN1_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED1_ON").Connect
+        TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED1_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN2_ON").Connect
+        TheHdw.PPMU.pins("GRN2_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN2_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN2_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED2_ON").Connect
+        TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED2_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN3_ON").Connect
+        TheHdw.PPMU.pins("GRN3_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN3_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN3_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED3_ON").Connect
+        TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED3_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN4_ON").Connect
+        TheHdw.PPMU.pins("GRN4_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN4_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN4_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED4_ON").Connect
+        TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED4_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN4_ON").Connect
+        TheHdw.PPMU.pins("GRN4_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN4_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN4_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED3_ON").Connect
+        TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED3_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN3_ON").Connect
+        TheHdw.PPMU.pins("GRN3_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN3_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN3_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED2_ON").Connect
+        TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED2_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN2_ON").Connect
+        TheHdw.PPMU.pins("GRN2_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN2_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN2_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED1_ON").Connect
+        TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("RED1_ON").Disconnect
+        
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN1_ON").Connect
+        TheHdw.PPMU.pins("GRN1_ON").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("GRN1_ON").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("GRN1_ON").Disconnect
+        
+        
+        TheHdw.PPMU.pins("LEDS_OFF").Connect
+        TheHdw.PPMU.pins("LEDS_OFF").ForceVoltage(ppmu2mA) = led_level_high
+        TheHdw.Wait (0.15)
+        TheHdw.PPMU.pins("LEDS_OFF").ForceVoltage(ppmu2mA) = led_level_low
+        TheHdw.PPMU.pins("LEDS_OFF").Disconnect
+        
+        
+    
+    Exit Function
+    
+errHandler:
+
+    Call TheExec.ErrorLogMessage("Test " & TL_C_ERRORSTR & ", Instance: " & TheExec.DataManager.instanceName)
+    Call TheExec.ErrorReport
+    'Call TheHdw.Digital.Patgen.Halt
+    
+    If AbortTest Then Exit Function Else Resume Next      'Hook into production abort routine
+    init_leds = TL_ERROR
+
+End Function

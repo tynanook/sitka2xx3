@@ -85,8 +85,19 @@ On Error GoTo errHandler
     env = TheExec.CurrentEnv
     chanMap = TheExec.CurrentChanMap
     probeScribe = "" 'DEbug for DM920
-    mchpMPC = "ZY004" 'DEbug for DM920
-   
+    
+    
+    'mchpMPC = "ZY004" 'DEbug for DM920
+    
+    '*******************************************************************
+   If LCase(Trim(Right(TheExec.CurrentJob, 6))) = "rn2483" Then
+    mchpMPC = "ZY004"
+   Else
+    mchpMPC = "ZY003"
+   End If
+    '*******************************************************************
+
+    
      LotID = TheExec.DataLog.setup.LotSetup.LotID
      'LotID = Replace(LotID, ".", "_")
      testerLotID = LotID
@@ -96,7 +107,8 @@ On Error GoTo errHandler
     If testerLotID = "" Then
         testerLotID = "NO_LOT_ID"
     End If
-    mchpDevice = UCase(Left(TheExec.ExcelHandle.ActiveWorkbook.Name, 5))
+    mchpDevice = UCase(Left(TheExec.ExcelHandle.ActiveWorkbook.name, 5))
+    mchpDevice = mchpMPC
     currentTime = Format(Now, "MM-dd-yy")
     
     If InStr(chanMap, "J") Then

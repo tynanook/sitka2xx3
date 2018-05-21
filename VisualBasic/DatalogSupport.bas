@@ -108,7 +108,7 @@ Function autoDlog_onValidate() As Long
     
             Else
     
-        If LCase(TheHdw.Computer.Name) Like "t*j750*" Or LCase(TheHdw.Computer.Name) Like "*mth*" Then
+        If LCase(TheHdw.Computer.name) Like "t*j750*" Or LCase(TheHdw.Computer.name) Like "*mth*" Then
     
             If fso.FileExists(SetupDlogPath) Then
                 Set fCommandFile = fso.OpenTextFile(SetupDlogPath, 1)
