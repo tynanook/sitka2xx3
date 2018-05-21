@@ -49,7 +49,7 @@ VBT,- Add test "EU_I_SLEEP_REV, NA_I_SLEEP_REV" for deep sleep measurement.
 - Add new part name "RN2903A"
 - Add VBT Sub routine " rn2483_i_sleep_rev, rn2903a_i_sleep_rev"
 - Add new pattern "uart_rn2483_sleep_revised",
-,,,,,,
+,1/25/2017,Phuwaneth T.,RN2483, RN2903, RN2903A,VBT,- Unload pattern "uart_rn2483r1_gpio_full" in VBT Onprogramvalidated.,
 ,,,,,,
 ,,,,,,
 ,,,,,,

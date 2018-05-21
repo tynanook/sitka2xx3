@@ -689,7 +689,8 @@ Public Function rn2483_i_sleep_rev(argc As Long, argv() As String) As Long
                 'TheExec.DataLog.WriteComment "SlpWait: " & SlpWaitLoop & " Vectors"
                 'Call TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").ModifyVectorOperand("start_i_sleep", 304, SlpWaitLoop)
             
-            
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
             TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
         
        
@@ -3265,7 +3266,8 @@ Public Function rn2903a_i_sleep_rev(argc As Long, argv() As String) As Long
             Call TheHdw.Digital.Patgen.HaltWait
             
             'Run pattern to put DUT into SLEEP Mode
-        
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Unload
+            TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").Load
             TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_sleep_revised").start ("start_i_sleep")
         
        
