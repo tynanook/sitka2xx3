@@ -42,7 +42,7 @@ B0A,11/23/2015,Phuwaneth T.,RN2483,TI, FLOW, several VB modules,- Add more sheet
 - Merge flow sheet between rn2483 and rn2903
 - Merge pinmaps sheet of rn2483 and rn2903,
 B0B,9/28/2016,Phuwaneth T.,RN2483,icsp_pfm_rd_qtp64k_cp, icsp_pfm_rd_qtp64K,- Change UID data on address 200000 - 200007 from FFFF to be F0F0 to mach with the actual reading from the module.,
-,,,,,,
+B0C,10/12/2016,Phuwaneth T.,RN2903, RN2483,icsp_pfm_rd_qtp64k_cp, icsp_pfm_rd_qtp64K, icsp_pfm_wr_qtp64K,- Separate QTP pattern file for RN2483 and RN2903 to fix UID issue.,
 ,,,,,,
 ,,,,,,
 ,,,,,,
