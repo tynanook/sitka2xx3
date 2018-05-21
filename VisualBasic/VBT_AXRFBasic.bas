@@ -3,7 +3,7 @@ Option Explicit
 'Public Function FindMyPLL_20M()
 'Dim data(1023) As Double
 'Dim x As Integer
-'RFOUT = AXRF_CHANNEL_AXRF_CH2
+'RFOUT = AXRF_CH2
 '    With itl.Pins("clock").NI.RFSG
 '
 '        .ConfigureRF 19000000#, -50
@@ -24,7 +24,7 @@ Option Explicit
 '    TheHdw.Wait 0.01
 '    Call itl.Raw.AF.AXRF.MeasureSetup(RFOUT, -2, 20000000#)
 '    power = itl.Raw.AF.AXRF.Measure(RFOUT)
-'    Call itl.Raw.AF.AXRF.MeasureArray(AXRF_CHANNEL_AXRF_CH2, data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN)
+'    Call itl.Raw.AF.AXRF.MeasureArray(AXRF_CH2, data, AXRF_FREQ_DOMAIN)
 '    For x = 0 To 1023
 '
 '    If data(x) > -20 Then
@@ -42,7 +42,7 @@ Option Explicit
 '
 'End Function
 '
-'Public Function axrfWlanBasicTest() As Long
+''Public Function axrfWlanBasicTest() As Long
 '
 '    Dim SampleRate As Double
 '    Dim NumSamples As Long
@@ -59,7 +59,7 @@ Option Explicit
 '
 '    Dim evmResult As Double
 '    Dim avgPowerResult As Double
-'    Dim WlanName As String
+''    Dim WlanName As String
 '    Dim attn_dB As Double
 '
 '
@@ -68,8 +68,8 @@ Option Explicit
 '    Dim Arr_data(1023) As Double
 '
 '
-'    RFIN = AXRF_CHANNEL_AXRF_CH1
-'    RFOUT = AXRF_CHANNEL_AXRF_CH2
+'    RFIN = AXRF_CH1
+'    RFOUT = AXRF_CH2
 '
 '    SampleRate = 54000000# * 3
 '    NumSamples = 93750
@@ -79,9 +79,9 @@ Option Explicit
 '    '??????? sourceLevel = targetPout - dut_gain; //Pin start
 '    measureLevel = -7 '+dut_gain-attn_dB
 '
-'    WlanName = "WlanBasic1"
+''    WlanName = "WlanBasic1"
 '
-'    ConfigureAnalysisWLAN WlanName, SampleRate, 0
+''    ConfigureAnalysisWLAN WlanName, SampleRate, 0
 '
 '    With itl.Raw.AF.AXRF
 '
@@ -91,22 +91,22 @@ Option Explicit
 '        TheHdw.Wait 0.01
 '
 '        Result = .Measure(RFOUT)
-'        .MeasureArray RFOUT, Arr_data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
+'        .MeasureArray RFOUT, Arr_data, AXRF_FREQ_DOMAIN
 '
 '        status = .StartModulation(RFIN, TheBook.Path + "\Modulation\11apn9.aiq")
 '
-'        status = .SetIQSampleFrequency(AXRF_CHANNEL_AXRF_CH1, SampleRate)  'changed for new AXRF
+'        status = .SetIQSampleFrequency(AXRF_CH1, SampleRate)  'changed for new AXRF
 '
 '        TheHdw.Wait 0.01
 '
 '        .GetMeasureFactor RFOUT, levelcal
 '
-'        itl.RF.AF.WLAN.Analysis(WlanName).Configuration.RfLevelCal = levelcal + attn_dB ' //attn_dB = 20dB (external)
+''        itl.RF.AF.WLAN.Analysis(WlanName).Configuration.RfLevelCal = levelcal + attn_dB ' //attn_dB = 20dB (external)
 '
 '        'Set up DUT
-'        CaptureWLAN RFOUT, NumSamples, iData, qData
+''        CaptureWLAN RFOUT, NumSamples, iData, qData
 '
-'        AnalyseWLAN WlanName, NumSamples, iData, qData, burstpower, evmResult, avgPowerResult
+''        AnalyseWLAN WlanName, NumSamples, iData, qData, burstpower, evmResult, avgPowerResult
 '
 '        .StopModulation RFIN
 '
@@ -123,11 +123,11 @@ Option Explicit
 '
 'End Function
 '
-'Public Sub ConfigureAnalysisWLAN(Name As String, SampleRate As Double, ByRef minsamples As Integer)
+''Public Sub ConfigureAnalysisWLAN(Name As String, SampleRate As Double, ByRef minsamples As Integer)
 '
-'    With itl.RF.AF.WLAN.Analysis(Name).Configuration
-'        .SpectrumAnalysisMode = WlanSpectrumAnalysisMode_SpectrumAnalysisGated
-'        .AnalysisMode = WlanAnalysisMode_AnalysisMode11a
+''    With itl.RF.AF.WLAN.Analysis(Name).Configuration
+''        .SpectrumAnalysisMode = WlanSpectrumAnalysisMode_SpectrumAnalysisGated
+''        .AnalysisMode = WlanAnalysisMode_AnalysisMode11a
 '        .NumSymbolsToAnalyseAutoDetect = True
 '        .SamplingFreq = SampleRate
 '
@@ -135,13 +135,13 @@ Option Explicit
 '        .PilotTrackingAmplitude = False
 '        .PilotTrackingTiming = False
 '        .PilotTrackingPhase = True
-'        .SpectrumAnalysisMode = WlanSpectrumAnalysisMode_SpectrumAnalysisNonGated
-'        .BurstProfileMode = WlanBurstProfileMode_PeakPower
+''        .SpectrumAnalysisMode = WlanSpectrumAnalysisMode_SpectrumAnalysisNonGated
+''        .BurstProfileMode = WlanBurstProfileMode_PeakPower
 '    End With
 '
 'End Sub
 
-'Public Function CaptureWLAN(chan As AXRF_CHANNEL, NumOfSamples As Long, ByRef iData() As Single, ByRef qData() As Single) As Long
+''Public Function CaptureWLAN(chan As AXRF_CHANNEL, NumOfSamples As Long, ByRef iData() As Single, ByRef qData() As Single) As Long
 '
 '    Dim status As Integer
 '
@@ -153,7 +153,7 @@ Option Explicit
 '
 'End Function
 
-'Public Function AnalyseWLAN(Name As String, NumSamples As Long, ByRef iData() As Single, ByRef qData() As Single, ByRef burstpower As Single, ByRef EVM As Double, ByRef averPower As Double) As Long
+''Public Function AnalyseWLAN(Name As String, NumSamples As Long, ByRef iData() As Single, ByRef qData() As Single, ByRef burstpower As Single, ByRef EVM As Double, ByRef averPower As Double) As Long
 '
 '    burstpower = -130#
 '    Dim freqError As Single
@@ -163,7 +163,7 @@ Option Explicit
 '    Dim Result As Double
 '    Dim passfail As Integer
 '    Dim bPassFail As Boolean
-'    Dim nMeasurement As WlanMeasurement
+''    Dim nMeasurement As WlanMeasurement
 '
 '    freqError = 0
 '    evmError = 0#
@@ -176,9 +176,9 @@ Option Explicit
 '
 '    'Analyse
 '
-'    nMeasurement = WlanMeasurement_LocateBurst + WlanMeasurement_ModAccuracy + WlanMeasurement_BurstPower
+''    nMeasurement = WlanMeasurement_LocateBurst + WlanMeasurement_ModAccuracy + WlanMeasurement_BurstPower
 '
-'    With itl.RF.AF.WLAN.Analysis(Name)
+''    With itl.RF.AF.WLAN.Analysis(Name)
 '         .Analyse nMeasurement, iData, qData
 '
 '        '*-----------------*
@@ -201,7 +201,7 @@ Option Explicit
 
 
 
-'        public void SetupDigitizerWLAN(double SAMPLERATE)
+''        public void SetupDigitizerWLAN(double SAMPLERATE)
 '        {
 '            long status = 0;
 '
@@ -210,7 +210,7 @@ Option Explicit
 '
 '            status = afdig.Modulation.Mode_Set(afDigitizerDll_32Wrapper.afDigitizerDll_mmModulationMode_t.afDigitizerDll_mmGeneric);
 '            status = afdig.Modulation.GenericDecimationRatio_Set(1);
-'            //status += TevWRxDriver_GetDigitizerHandle (0, &digitizerWLAN);
+''            //status += TevWRxDriver_GetDigitizerHandle (0, &digitizerWLAN);
 '    //change generic re-sampling rate
 '
 '            status = afdig.Modulation.GenericSamplingFrequency_Set(SAMPLERATE);
@@ -239,7 +239,7 @@ Public Function axrfZigbeeBasicTest() As Long
     Dim sourceFactor As Double
     Dim sourceLevel As Double
     Dim measureLevel As Double
-    Dim status As Long
+    Dim Status As Long
     Dim iData() As Single
     Dim qData() As Single
     
@@ -252,8 +252,8 @@ Public Function axrfZigbeeBasicTest() As Long
     Dim Result As Double
     Dim levelcal As Double
     
-'''    RFIN = AXRF_CHANNEL_AXRF_CH1
-'''    RFOUT = AXRF_CHANNEL_AXRF_CH2
+'''    RFIN = AXRF_CH1
+'''    RFOUT = AXRF_CH2
 '''
 '''    SampleRate = 100000000
 '''    NumSamples = 320000
@@ -275,20 +275,20 @@ Public Function axrfZigbeeBasicTest() As Long
 '''        TheHdw.Wait 0.01
 '''
 '''        Result = .Measure(RFOUT)
-'''        .MeasureArray RFOUT, Arr_data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
+'''        .MeasureArray RFOUT, Arr_data, AXRF_FREQ_DOMAIN
 '''
 '''        Call PlotDouble(Arr_data)
 '''
 '''        status = .StartModulation(RFIN, TheBook.Path + "\Modulation\Zigbee_250KHz_100Symbols.aiq")
 '''
-'''        status = .SetIQSampleFrequency(AXRF_CHANNEL_AXRF_CH1, SampleRate) 'changed for new AXRF
+'''        status = .SetIQSampleFrequency(AXRF_CH1, SampleRate) 'changed for new AXRF
 '''
 '''
 '''        TheHdw.Wait 0.01
 '''
 '''        .GetMeasureFactor RFOUT, levelcal
 '''
-'''        'itl.RF.AF.WLAN.Analysis(WlanName).Configuration.RfLevelCal = levelcal + attn_dB ' //attn_dB = 20dB (external)
+''''        'itl.RF.AF.WLAN.Analysis(WlanName).Configuration.RfLevelCal = levelcal + attn_dB ' //attn_dB = 20dB (external)
 '''        itl.RF.AF.Generic.Analysis(ZigbeeName).Configuration.RfLevelCal = 0 'levelcal
 '''        'Set up DUT
 '''        CaptureZigbee RFOUT, NumSamples, iData, qData
@@ -310,6 +310,7 @@ Public Function axrfZigbeeBasicTest() As Long
  
      
 End Function
+
 
 
 

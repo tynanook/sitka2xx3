@@ -1,4 +1,5 @@
 Attribute VB_Name = "J750_VARIABLES_v2"
+Option Explicit
 '---------------------------------------------------------------------------------------------------------
 ' Module:       J750_VARIABLES
 ' Purpose:      Routine to dereference specification values using native IG-XL commands.  To optimize test
@@ -26,7 +27,7 @@ Attribute VB_Name = "J750_VARIABLES_v2"
 ' <0>   DePaul      08/05/2008  - Initial release
 '---------------------------------------------------------------------------------------------------------
 
-Option Explicit
+
 
 Private spec_info() As String           ' Specification Information: Name, DC Cat, DC Sel, AC Cat, AC Sel
 Private spec_data() As Variant          ' Specification Data
@@ -110,3 +111,4 @@ Public Function resolve_spec(ByVal spec_name As String, Optional ByVal test_name
         resolve_spec = spec_data(spec_cnt)
     End If
 End Function
+

@@ -1,5 +1,6 @@
 Attribute VB_Name = "DatalogSupport"
 
+Option Explicit
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AutoDatalog Module :
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -19,7 +20,7 @@ Function catch_doall() As Long
     ' execution of the flow.
         
     Dim testNum As Long
-    Dim Site As Long
+    Dim site As Long
     Dim reportFail As Boolean
     
     
@@ -38,20 +39,20 @@ Function catch_doall() As Long
     If reportFail Then
         If TheExec.Sites.SelectFirst <> loopDone Then
             Do
-                Site = TheExec.Sites.SelectedSite
-                testNum = TheExec.Sites.Site(Site).testnumber
-                TheExec.Sites.Site(Site).TestResult = siteFail
-                Call TheExec.DataLog.WriteFunctionalResult(Site, testNum, logTestFail)
+                site = TheExec.Sites.SelectedSite
+                testNum = TheExec.Sites.site(site).testnumber
+                TheExec.Sites.site(site).TestResult = siteFail
+                Call TheExec.DataLog.WriteFunctionalResult(site, testNum, logTestFail)
             Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
         End If
     Else
         ' report pass
         If TheExec.Sites.SelectFirst <> loopDone Then
             Do
-                Site = TheExec.Sites.SelectedSite
-                testNum = TheExec.Sites.Site(Site).testnumber
-                TheExec.Sites.Site(Site).TestResult = sitePass
-                Call TheExec.DataLog.WriteFunctionalResult(Site, testNum, logTestPass)
+                site = TheExec.Sites.SelectedSite
+                testNum = TheExec.Sites.site(site).testnumber
+                TheExec.Sites.site(site).TestResult = sitePass
+                Call TheExec.DataLog.WriteFunctionalResult(site, testNum, logTestPass)
             Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
         End If
     End If
@@ -60,6 +61,11 @@ Function catch_doall() As Long
 End Function
 
 Function autoDlog_onValidate() As Long
+
+' 20170216 - ty added following variable (FSOobj) bc not declared, guessing on type
+Stop
+
+    Dim FSOobj As Object
 
     Dim fso As New FileSystemObject
     Dim fCommandFile As Object
@@ -91,7 +97,7 @@ Function autoDlog_onValidate() As Long
     
     Call TheExec.DataManager.GetJobContext(job, dev, env)
     jobContext = dev & "_" & job & "_" & env
-    dateTimeStamp = Format(Now, "yy_mm_dd_hh_mm_ss")
+    dateTimeStamp = format(Now, "yy_mm_dd_hh_mm_ss")
    ' LotID = TheExec.Datalog.setup.LotSetup.LotID
     CntSite = LCase(TheExec.CurrentChanMap)
     CntSite = Mid$(CntSite, 3, 1)
@@ -250,3 +256,4 @@ Function turnOffdatalog()
         TheExec.DataLog.ApplySetup
     
 End Function
+

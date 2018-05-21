@@ -25,7 +25,7 @@ Dim site_bin_sort_control() As Integer
 Dim num_site_per_testersite As Integer  'number of sub-sites in one tester site
 Dim total_fail As Integer
 
-Dim siteStatus() As Boolean  'added code for IDDWR
+Dim SiteStatus() As Boolean  'added code for IDDWR
 
 Public Function init_sites_array() As Long
 
@@ -64,14 +64,14 @@ Public Function stuff_bin_sort(argc As Long, argv() As String) As Long
 
 For site_num = 0 To max_site - 1
     If ((site_bin_sort_control(site_num) = 1) And (sites_failed(site_num) = True)) Then
-        site_bin(site_num) = TheExec.Sites.Site(site_num \ num_site_per_testersite).BinNumber
-        site_sort(site_num) = TheExec.Sites.Site(site_num \ num_site_per_testersite).SortNumber
+        site_bin(site_num) = TheExec.Sites.site(site_num \ num_site_per_testersite).BinNumber
+        site_sort(site_num) = TheExec.Sites.site(site_num \ num_site_per_testersite).SortNumber
         site_bin_sort_control(site_num) = 2
     End If
 Next site_num
 
 For i = 0 To 15
-    If TheExec.Sites.Site(i).Active = False Then
+    If TheExec.Sites.site(i).Active = False Then
         site_bin(i * 2) = -1
         site_sort(i * 2) = -1
         site_bin(i * 2 + 1) = -1
@@ -88,7 +88,8 @@ Next
 
 '*** added in for IDDW testing 9/24/14
 If argc = 1 Then
-  Call ActivateSelectedSites(CLng(argv(0)))
+    Stop ' this function does exist in program; ty noticed it on 20170216
+    'Call ActivateSelectedSites(CLng(argv(0)))  20170316 - ty commented out to allow prg compile
 End If
 
 
@@ -101,14 +102,14 @@ Dim i As Long
 
 For site_num = 0 To max_site - 1
     If ((site_bin_sort_control(site_num) = 1) And (sites_failed(site_num) = True)) Then
-        site_bin(site_num) = TheExec.Sites.Site(site_num \ num_site_per_testersite).BinNumber
-        site_sort(site_num) = TheExec.Sites.Site(site_num \ num_site_per_testersite).SortNumber
+        site_bin(site_num) = TheExec.Sites.site(site_num \ num_site_per_testersite).BinNumber
+        site_sort(site_num) = TheExec.Sites.site(site_num \ num_site_per_testersite).SortNumber
         site_bin_sort_control(site_num) = 2
     End If
 Next site_num
 
 For i = 0 To 15
-    If TheExec.Sites.Site(i).Active = False Then
+    If TheExec.Sites.site(i).Active = False Then
         site_bin(i * 2) = -1
         site_sort(i * 2) = -1
         site_bin(i * 2 + 1) = -1
@@ -131,8 +132,8 @@ Public Function print_bin_sort() As Long
 Dim site_num As Long
 For site_num = 0 To max_site - 1
     If ((site_bin_sort_control(site_num) = 1) And (sites_failed(site_num) = True)) Then
-        site_bin(site_num) = TheExec.Sites.Site(site_num \ 4).BinNumber
-        site_sort(site_num) = TheExec.Sites.Site(site_num \ 4).SortNumber
+        site_bin(site_num) = TheExec.Sites.site(site_num \ 4).BinNumber
+        site_sort(site_num) = TheExec.Sites.site(site_num \ 4).SortNumber
         site_bin_sort_control(site_num) = 2
     End If
 Next site_num
@@ -181,14 +182,14 @@ Curr_chanMap = TheExec.CurrentChanMap       'Check if this is the Engineering DI
     If (TheHdw.pins("SO_0").FailCount(site_num) > 0) Then
         If sites_failed(site_num * num_site_per_testersite) Then
             Call find_first_fail(first_fail_flag)
-            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                         + "   " + CStr(site_num * num_site_per_testersite) + "    FAIL")
         ElseIf Not sites_failed(site_num * num_site_per_testersite) Then
             sites_failed(site_num * num_site_per_testersite) = True
             site_bin_sort_control(site_num * num_site_per_testersite) = 1
             total_fail = total_fail + 1
             Call find_first_fail(first_fail_flag)
-            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                          + "   " + CStr(site_num * num_site_per_testersite) + "    FAIL")
         End If
     End If
@@ -197,14 +198,14 @@ Curr_chanMap = TheExec.CurrentChanMap       'Check if this is the Engineering DI
      If (TheHdw.pins("SO_1").FailCount(site_num) > 0) Then
         If sites_failed(site_num * num_site_per_testersite + 1) Then
             Call find_first_fail(first_fail_flag)
-            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                         + "   " + CStr(site_num * num_site_per_testersite + 1) + "    FAIL")
         ElseIf Not sites_failed(site_num * num_site_per_testersite + 1) Then
             sites_failed(site_num * num_site_per_testersite + 1) = True
             site_bin_sort_control(site_num * num_site_per_testersite + 1) = 1
             total_fail = total_fail + 1
             Call find_first_fail(first_fail_flag)
-            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+            TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                          + "   " + CStr(site_num * num_site_per_testersite + 1) + "    FAIL")
         End If
     End If
@@ -273,10 +274,10 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
  For site_num = 0 To all_sites \ num_site_per_testersite - 1
    'If this site already failed other tests before
    If sites_failed(site_num * num_site_per_testersite + site_offset) Then
-     If TheExec.Sites.Site(site_num).Active = True Then
-       If (TheExec.Sites.Site(site_num).LastTestResultRaw = resultFail) Then
+     If TheExec.Sites.site(site_num).Active = True Then
+       If (TheExec.Sites.site(site_num).LastTestResultRaw = resultFail) Then
          Call find_first_fail(first_fail_flag)
-         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                      + "   " + CStr(site_num * num_site_per_testersite + site_offset) + "    FAIL")
        End If
      End If
@@ -284,12 +285,12 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
 
    'If this site hasn't failed yet. This is the first time it fails
    If Not sites_failed(site_num * num_site_per_testersite + site_offset) Then
-     If TheExec.Sites.Site(site_num).Active = True Then
-       If (TheExec.Sites.Site(site_num).LastTestResultRaw = resultFail) Then
+     If TheExec.Sites.site(site_num).Active = True Then
+       If (TheExec.Sites.site(site_num).LastTestResultRaw = resultFail) Then
          sites_failed(site_num * num_site_per_testersite + site_offset) = True
          site_bin_sort_control(site_num * num_site_per_testersite + site_offset) = 1
          Call find_first_fail(first_fail_flag)
-         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.Site(site_num).testnumber) _
+         TheExec.DataLog.WriteComment ("   " + CStr(TheExec.Sites.site(site_num).testnumber) _
                                      + "   " + CStr(site_num * num_site_per_testersite + site_offset) + "    FAIL")
          total_fail = total_fail + 1
        End If
@@ -299,7 +300,8 @@ Public Function Find_failed_site_param_test(argc As Long, argv() As String) As L
  
  '*** added in for IDDW testing 9/24/14
 If argc = 2 Then
-  Call reActivateSelectedSites(CLng(argv(1)))
+    Stop ' ty noticed the following function doesn't exist in prg - 20170216
+    'Call reActivateSelectedSites(CLng(argv(1))) ' 20170116 - ty commented out for prg compile
 End If
 
  TheExec.DataLog.WriteComment ("   Tester Sites")
@@ -399,25 +401,25 @@ Public Function Enable_StoreInactiveSites(argc As Long, argv() As String) As Lon
 'Interpose function to store inactive site numbers and enable any site that has been disabled because of
 'test failures.  Should be called as a StartOfBody function in a Test Instance.
 
-  Dim Site As Long
+  Dim site As Long
   
-  ReDim siteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
+  ReDim SiteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
   ReDim sites_inactive(TheExec.Sites.ExistingCount - 1) As Boolean
   
     'Debug.Print "Enable_StoreInactiveSites..."
 
   ' Loop through all sites and store active status
   
-  For Site = 0 To TheExec.Sites.ExistingCount - 1
+  For site = 0 To TheExec.Sites.ExistingCount - 1
   
-    siteStatus(Site) = TheExec.Sites.Site(Site).Active
+    SiteStatus(site) = TheExec.Sites.site(site).Active
     
     
         'Debug.Print "Site = "; site
         'Debug.Print "Status = "; siteStatus(site)
 
     
-  Next Site
+  Next site
   
 
 
@@ -440,7 +442,7 @@ Public Function DisableInactiveSites(argc As Long, argv() As String) As Long
 'Interpose function to take stored SiteStatus and use that information to disable previously disabled
 'tester sites.  Should be called as an EndOfBody function in a Test Instance
 
-  Dim Site As Long
+  Dim site As Long
   
   'Debug.Print "DisableInactiveSites..."
   
@@ -455,36 +457,36 @@ Public Function DisableInactiveSites(argc As Long, argv() As String) As Long
 
   ' Loop through all sites and de-activate the original inactive sites...
   
-For Site = 0 To TheExec.Sites.ExistingCount - 1
+For site = 0 To TheExec.Sites.ExistingCount - 1
 
 
        
   
-    If Not siteStatus(Site) Then TheExec.Sites.Site(Site).Active = False
+    If Not SiteStatus(site) Then TheExec.Sites.site(site).Active = False
     
         'Debug.Print "Inactive = "; Site
         'Debug.Print "Status = "; siteStatus(Site)
         
-        sites_inactive(Site) = True 'global
+        sites_inactive(site) = True 'global
            'If (sites_tested(site) = True) Then 'test for pass
         
-        If sites_tested(Site) = True Then
+        If sites_tested(site) = True Then
        
-            If (TheExec.Sites.Site(Site).LastTestResult = 2) Then
+            If (TheExec.Sites.site(site).LastTestResult = 2) Then
         
-                 Select Case Site
+                 Select Case site
                     Case 0
                         site0_failed = True
-                        Debug.Print "Site "; Site; " FAILED"
+                        If 0 Then Debug.Print "Site "; site; " FAILED" ' 20170216 - ty added if 0
                     Case 1
                         site1_failed = True
-                        Debug.Print "Site "; Site; " FAILED"
+                        If 0 Then Debug.Print "Site "; site; " FAILED" ' 20170216 - ty added if 0
                     Case 2
                         site2_failed = True
-                        Debug.Print "Site "; Site; " FAILED"
+                        If 0 Then Debug.Print "Site "; site; " FAILED" ' 20170216 - ty added if 0
                     Case 3
                         site3_failed = True
-                        Debug.Print "Site "; Site; " FAILED"
+                        If 0 Then Debug.Print "Site "; site; " FAILED" ' 20170216 - ty added if 0
                     Case Else
                 End Select
                 
@@ -492,7 +494,7 @@ For Site = 0 To TheExec.Sites.ExistingCount - 1
             
         End If
     
-Next Site
+Next site
    
  
 
@@ -502,12 +504,12 @@ Public Function first_active_test_sites() As Long
 '
 'This function determines active sites testing.
 
-  Dim Site As Long
+  Dim site As Long
 
     'Debug.Print "first_active_test_sites..."
           
     ReDim sites_tested(TheExec.Sites.ExistingCount - 1) As Boolean
-    ReDim siteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
+    ReDim SiteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
  
 
   ' Loop through all sites and store active status
@@ -517,11 +519,11 @@ Public Function first_active_test_sites() As Long
   site2_failed = False
   site3_failed = False
   
-  For Site = 0 To TheExec.Sites.ExistingCount - 1
+  For site = 0 To TheExec.Sites.ExistingCount - 1
   
 
-        sites_tested(Site) = TheExec.Sites.Site(Site).Active
-        siteStatus(Site) = TheExec.Sites.Site(Site).Active
+        sites_tested(site) = TheExec.Sites.site(site).Active
+        SiteStatus(site) = TheExec.Sites.site(site).Active
 
         'Debug.Print "Site "; Site;
         'Debug.Print " Testing = "; sites_tested(Site)
@@ -532,7 +534,7 @@ Public Function first_active_test_sites() As Long
 '        End If
 
 
-  Next Site
+  Next site
   
   
     'Debug.Print "max_site = "; max_site
@@ -543,7 +545,7 @@ Public Function disable_inactive_sites() As Long
 
 'duplicate of DisableInactiveSites for use as a called function from within a test function, rather than from a Template
 
-  Dim Site As Long
+  Dim site As Long
   
   'Debug.Print "disable_inactive_sites..."
   
@@ -558,20 +560,20 @@ Public Function disable_inactive_sites() As Long
 
   ' Loop through all sites and de-activate the original inactive sites...
   
-For Site = 0 To TheExec.Sites.ExistingCount - 1
+For site = 0 To TheExec.Sites.ExistingCount - 1
   
-    If Not siteStatus(Site) Then TheExec.Sites.Site(Site).Active = False
+    If Not SiteStatus(site) Then TheExec.Sites.site(site).Active = False
     
         'Debug.Print "Inactive = "; site
         'Debug.Print "Status = "; siteStatus(site)
         
-        sites_inactive(Site) = True 'global
+        sites_inactive(site) = True 'global
            'If (sites_tested(site) = True) Then 'test for pass
         
-        If sites_tested(Site) = True Then
+        If sites_tested(site) = True Then
        
-            If (TheExec.Sites.Site(Site).LastTestResult = 2) Then
-                 Select Case Site
+            If (TheExec.Sites.site(site).LastTestResult = 2) Then
+                 Select Case site
                     Case 0
                         site0_failed = True
                         'Debug.Print "Site "; site; " FAILED"
@@ -591,7 +593,7 @@ For Site = 0 To TheExec.Sites.ExistingCount - 1
             
         End If
     
-Next Site
+Next site
    
  
 
@@ -601,25 +603,25 @@ Public Function enable_store_inactive_sites() As Long
 
 'duplicate of Enable_StoreInactiveSites for use as a called function from within another function instead of a template
 
-  Dim Site As Long
+  Dim site As Long
   
-  ReDim siteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
+  ReDim SiteStatus(TheExec.Sites.ExistingCount - 1) As Boolean
   ReDim sites_inactive(TheExec.Sites.ExistingCount - 1) As Boolean
   
     'Debug.Print "enable_store_inactive_sites..."
 
   ' Loop through all sites and store active status
   
-  For Site = 0 To TheExec.Sites.ExistingCount - 1
+  For site = 0 To TheExec.Sites.ExistingCount - 1
   
-    siteStatus(Site) = TheExec.Sites.Site(Site).Active
+    SiteStatus(site) = TheExec.Sites.site(site).Active
     
     
         'Debug.Print "Site = "; Site
         'Debug.Print "Status = "; siteStatus(Site)
 
     
-  Next Site
+  Next site
   
 
 
@@ -636,3 +638,4 @@ Public Function enable_store_inactive_sites() As Long
   Call TheHdw.PinLevels.ApplyPower
 
 End Function
+

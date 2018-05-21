@@ -29,6 +29,7 @@ Public Function globals_onValidate()
     ReDim HfIntOsc_Values(0 To NOS)
     ReDim HfIntOscTempCo_Values(0 To NOS)
     ReDim LdoCalVal(0 To NOS)                   'added ldoCalVal to be redimensioned. - MT (09-11-20)
+    
 
 End Function
 
@@ -44,4 +45,5 @@ End Function
 Public Function DummyFunc(argc As Long, argv() As String) As Long
     'Call MsgBox("You just called Dummy Func!", vbInformation, "DummyFunc")
 End Function
+
 

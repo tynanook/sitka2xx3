@@ -1,0 +1,178 @@
+
+import tset tset576, tset576x, tset576x5, tset576x5_99, tset576xx;
+vector                                          ( $tset       , MCLR_nRESET, UART_CTS, UART_RTS, UART_RX, UART_TX)
+{
+start_label start_uart_id:
+                                                > tset576       1            0         X         1        X       ; //  tset576xx runs 100x faster than tset576
+                                                > tset576       1            0         X         1        X       ; // 
+                                                > tset576       1            0         X         1        X       ; // 
+repeat 3000, clr_fail                           
+                                                > tset576       1            0         X         1        X       ; //  After 50ms, send 'sys reset\r\n'
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  's' lsb
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' msb x73
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1				
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  'y' lsb
+                                                > tset576       1            0         X         0        X       ; //  'y' 
+                                                > tset576       1            0         X         0        X       ; //  'y' 
+                                                > tset576       1            0         X         1        X       ; //  'y' 
+                                                > tset576       1            0         X         1        X       ; //  'y' 
+                                                > tset576       1            0         X         1        X       ; //  'y' 
+                                                > tset576       1            0         X         1        X       ; //  'y' 
+                                                > tset576       1            0         X         0        X       ; //  'y' msb x79
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1				
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  's' lsb
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' msb x73
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1				
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         0        X       ; //  space lsb
+                                                > tset576       1            0         X         0        X       ; //  space 
+                                                > tset576       1            0         X         0        X       ; //  space 
+                                                > tset576       1            0         X         0        X       ; //  space 
+                                                > tset576       1            0         X         0        X       ; //  space 
+                                                > tset576       1            0         X         1        X       ; //  space 
+                                                > tset576       1            0         X         0        X       ; //  space 
+                                                > tset576       1            0         X         0        X       ; //  space msb x20
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1				
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         0        X       ; //  'r' lsb
+                                                > tset576       1            0         X         1        X       ; //  'r' 
+                                                > tset576       1            0         X         0        X       ; //  'r' 
+                                                > tset576       1            0         X         0        X       ; //  'r' 
+                                                > tset576       1            0         X         1        X       ; //  'r' 
+                                                > tset576       1            0         X         1        X       ; //  'r' 
+                                                > tset576       1            0         X         1        X       ; //  'r' 
+                                                > tset576       1            0         X         0        X       ; //  'r' msb x72
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  'e' lsb
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' msb x65
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  's' lsb
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         1        X       ; //  's' 
+                                                > tset576       1            0         X         0        X       ; //  's' msb x73
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  'e' lsb
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         1        X       ; //  'e' 
+                                                > tset576       1            0         X         0        X       ; //  'e' msb x65
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         0        X       ; //  't' lsb
+                                                > tset576       1            0         X         0        X       ; //  't' 
+                                                > tset576       1            0         X         1        X       ; //  't' 
+                                                > tset576       1            0         X         0        X       ; //  't' 
+                                                > tset576       1            0         X         1        X       ; //  't' 
+                                                > tset576       1            0         X         1        X       ; //  't' 
+                                                > tset576       1            0         X         1        X       ; //  't' 
+                                                > tset576       1            0         X         0        X       ; //  't' msb x74
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1		
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         1        X       ; //  CR lsb
+                                                > tset576       1            0         X         0        X       ; //  CR 
+                                                > tset576       1            0         X         1        X       ; //  CR 
+                                                > tset576       1            0         X         1        X       ; //  CR 
+                                                > tset576       1            0         X         0        X       ; //  CR 
+                                                > tset576       1            0         X         0        X       ; //  CR 
+                                                > tset576       1            0         X         0        X       ; //  CR 
+                                                > tset576       1            0         X         0        X       ; //  CR msb x0D
+repeat 10                                       
+                                                > tset576       1            0         X         1        X       ; //  Stop Bit = 1					
+                                                > tset576       1            0         X         0        X       ; //  Start Bit = 0
+                                                > tset576       1            0         X         0        X       ; //  LF lsb
+                                                > tset576       1            0         X         1        X       ; //  LF 
+                                                > tset576       1            0         X         0        X       ; //  LF 
+                                                > tset576       1            0         X         1        X       ; //  LF 
+                                                > tset576       1            0         X         0        X       ; //  LF 
+                                                > tset576       1            0         X         0        X       ; //  LF 
+                                                > tset576       1            0         X         0        X       ; //  LF 
+                                                > tset576       1            0         X         0        X       ; //  LF msb x0A
+repeat 2                                        
+                                                > tset576       1            1         X         1        X       ; // not valid;  Delay 50msec
+repeat 1250                                     
+                                                > tset576       1            1         X         1        X       ; //invalid 1250
+repeat 3700                                     
+                                                > tset576       1            1         X         1        X       ; //hi 3900
+sync:
+loopA 65536                                     
+                                                > tset576xx     1            1         X         1        L       ; //L
+set_code 1                                      
+                                                > tset576xx     1            1         X         1        X       ; //X
+pipe_minus 0                                    
+                                                > tset576xx     1            1         X         1        X       ; //X
+if (pass) jump found                            
+                                                > tset576xx     1            1         X         1        X       ; //X
+clr_flag (fail)                                 
+                                                > tset576xx     1            1         X         1        X       ; //X
+end_loopA sync                                  
+                                                > tset576xx     1            1         X         1        X       ; //X
+syncb:
+loopC 65535                                     
+                                                > tset576xx     1            1         X         1        L       ; //L
+set_code 1                                      
+                                                > tset576xx     1            1         X         1        X       ; //X
+pipe_minus 0                                    
+                                                > tset576xx     1            1         X         1        X       ; //X
+if (pass) jump found                            
+                                                > tset576xx     1            1         X         1        X       ; //X
+clr_flag (fail)                                 
+                                                > tset576xx     1            1         X         1        X       ; //X
+end_loopC syncb                                 
+                                                > tset576xx     1            1         X         1        X       ; //X
+jump notFound                                   
+                                                > tset576xx     1            1         X         1        X       ; //X
+found:
+                                                > tset576xx     1            1         X         1        X       ; //X
+CaptureLoop:
+loopB 232, stv                                  
+                                                > tset576xx     1            1         X         1        X       ; //X
+stv                                             
+                                                > tset576x5_99  1            1         X         1        X       ; //X
+repeat 9, stv                                   
+                                                > tset576x5     1            1         X         1        X       ; //X
+end_loopB CaptureLoop, stv                      
+                                                > tset576x5     1            1         X         1        X       ; //X
+repeat 40                                       
+                                                > tset576       1            0         X         1        X       ; //X
+halt                                            
+                                                > tset576xx     1            0         X         1        X       ; //X
+notFound:
+                                                > tset576xx     1            0         X         1        X       ; //X
+set_code 3                                      
+                                                > tset576xx     1            0         X         1        X       ; //X
+halt                                            
+                                                > tset576xx     1            0         X         1        X       ; //X
+                                                > -             -            -         -         -        -       ; //-
+}
+

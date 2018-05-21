@@ -127,14 +127,31 @@ Public TxMTX(16, MaxSites) As Double
 Function OnProgramStarted()
     On Error GoTo errHandler
     
-    Call ITLOnProgramStarted        'Self Check inside. If Done once, no more execute
+    Dim lockedStatus As Long
+    Dim LogInName As String
     
+    LogInName = Application.UserName
+    
+'    If (LogInName = "finalop") Then
+'        TheExec.Datalog.Setup.LotSetup.TestMode = TL_LOTPRODMODE
+'    Else
+'        TheExec.Datalog.Setup.LotSetup.TestMode = TL_LOTENGMODE
+'    End If
+
+    lockedStatus = -1
+         
+    'Initiate AXRF Lock status check for primary AXRF subsystem
+    lockedStatus = TevAXRF_CheckLocked(0)
+  
+    'Evaluate if both source generator and digitizer is locked to the 10 MHz clock
+    If (lockedStatus <> 0) Or (Initialize_status <> 0) Then
+        AXRF_Error_Flag = True
+    Else
+        Call niSync_init("PXI44::15::INSTR", True, True, Dev1)  'Initialize NI-6652 and create NI-Sync Driver session
+    End If
 '    CreateZigbeeAnalysisObjects
     ' Put code here
     lngSitesStarting = TheExec.Sites.StartingCount
-    
-
-
 
     Exit Function
 errHandler:
@@ -149,7 +166,8 @@ End Function
 
 Function OnProgramEnded()
 
-    On Error GoTo errHandler
+
+On Error GoTo errHandler
 
 
 Dim led_level_high As Double
@@ -161,11 +179,18 @@ Dim led_level_low As Double
 led_level_high = 4.99
 led_level_low = 0.01
 
+    'Reset all attributesd of the NI Clock
+    Call niSync_reset(Dev1)
+    
+    'Close Ni-6652 and close all handles
+    Call niSync_close(Dev1)   ' Closes the NI-Sync I/O session and destroys all its attributes from Dev1 handle 'MJD. 020516
+
+
 'DEBUG 07022015 Passing_Site0-3_Flag logic added here. Must validate Passing Site Flag with at least one of the individual passing sites.
 
 Call TheExec.Sites.SetAllActive(True)     'Activate all sites
 
-If TheExec.Sites.Site(0).Active = True Then
+If TheExec.Sites.site(0).Active = True Then
     
      If (sites_tested(0) = True And (site0_failed = True Or Passing_Site0_Flag = False)) Then
      
@@ -173,56 +198,56 @@ If TheExec.Sites.Site(0).Active = True Then
                 
                 TheHdw.PPMU.pins("RED1_ON").Connect
                 TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_high
-                TheHdw.Wait (LED_PULSE)
+                TheHdw.wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED1_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED1_ON").Disconnect
-                Debug.Print "Site 0 FAILED"
+                If 0 Then Debug.Print "Site 0 FAILED" ' 20170216 - ty added if 0
                            
      End If
      
 End If
     
-If TheExec.Sites.Site(1).Active = True Then
+If TheExec.Sites.site(1).Active = True Then
 
     If (sites_tested(1) = True And (site1_failed = True Or Passing_Site1_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED2_ON").Connect
                 TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_high
-                TheHdw.Wait (LED_PULSE)
+                TheHdw.wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED2_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED2_ON").Disconnect
-                Debug.Print "Site 1 FAILED"
+                If (0) Then Debug.Print "Site 1 FAILED"  ' 20170216 - ty added if 0
     
     End If
     
 End If
 
-If TheExec.Sites.Site(2).Active = True Then
+If TheExec.Sites.site(2).Active = True Then
 
     If (sites_tested(2) = True And (site2_failed = True Or Passing_Site2_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED3_ON").Connect
                 TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_high
-                TheHdw.Wait (LED_PULSE)
+                TheHdw.wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED3_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED3_ON").Disconnect
-                Debug.Print "Site 2 FAILED"
+                If 0 Then Debug.Print "Site 2 FAILED" ' 20170216 - ty added if 0
     
     
     End If
     
 End If
 
-If TheExec.Sites.Site(3).Active = True Then
+If TheExec.Sites.site(3).Active = True Then
     
     If (sites_tested(3) = True And (site3_failed = True Or Passing_Site3_Flag = False)) Then
     
                 TheHdw.PPMU.pins("RED4_ON").Connect
                 TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_high
-                TheHdw.Wait (LED_PULSE)
+                TheHdw.wait (LED_PULSE)
                 TheHdw.PPMU.pins("RED4_ON").ForceVoltage(ppmu2mA) = led_level_low
                 TheHdw.PPMU.pins("RED4_ON").Disconnect
-                Debug.Print "Site 3 FAILED"
+                If 0 Then Debug.Print "Site 3 FAILED" ' 20170216 - ty added if 0
     
     End If
     
@@ -259,7 +284,7 @@ Function RFOnProgramValidated_TW101() 'MRF34TA
 
    Dim i As Long, loopstatus As Long
 
-    Dim Site As Long
+    Dim site As Long
 
     On Error GoTo errHandler
     
@@ -293,26 +318,54 @@ End Function
 Function RFOnProgramValidated_LoRa() 'RN2483
 
    Dim i As Long, loopstatus As Long
-
-    Dim Site As Long
-
+   Dim site As Long
+    
     On Error GoTo errHandler
     
     AbortTest = True
+    Initialize_status = -1
+    ReferenceTime = 0
+
+    On Error GoTo errHandler
     
-    Call ITLOnProgramValidated          'Self Check inside. If Done once, no more execute
+    'Close all AXRF handles first prior initializion
+    Call TevAXRF_Close
     
+    ReferenceTime = TheExec.Timer           ' Initiate timer
+  
+    Initialize_status = TevAXRF_Initialize  ' Initializes the AXRF susbsystem
+    
+    ElapsedTime = TheExec.Timer(ReferenceTime) 'Check elapsed time of initialization
+
+    'Evaluate if AXRF initialization is successful
+    'An error code returned bu the API idnetifies any AXRF Module
+    'exhibiting a problem during initialization.
+    'Refer to AXRF RF subsystem and Autocal Unit User Manual
+    
+    If (Initialize_status <> 0) Or (ElapsedTime > 20) Then
+        AXRFInitialized = False
+        AXRF_Error_Flag = True
+    Else
+        AXRF_Error_Flag = False
+        AXRFInitialized = True
+    End If
+    
+ 
     TheHdw.DIB.powerOn = True
     
-    TheHdw.Wait (0.1)
+    TheHdw.wait (0.1)
     
     'Call init_leds
     
     
     TheHdw.Digital.ACCalExcludePins ("LED_PINS,MW_TRIG_PINS")   'RN2903
     
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_id_slow").Load
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_id_fast").Load
+    
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_tx915_fsk_pkt_one_rev2").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_one_rev2").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx433_fsk_pkt_one_rev2").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_id_ver2").Load
+        
         
         'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_gpio_full").Load
         
@@ -320,26 +373,22 @@ Function RFOnProgramValidated_LoRa() 'RN2483
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_tx915_cw").Load
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_tx_cw_off").Load
-        
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2903_tx915_fsk_pkt_one_rev").Load
-    
-    
-    
-    
 
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_id_slow").Load
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_id_fast").Load
-        
+
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_gpio_full").Load
+        'TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483r1_gpio_full").Load 'FW Revision 1.0.0
+        
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_sleep").Load
+        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_sleep_revised").Load
+        
         
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_cw").Load
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx_cw_off").Load
 
-        TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_one_rev").Load
-        
-        TheHdw.Digital.Patterns.Pat(".\patterns\icsp_subr").Load
+   TheHdw.Digital.Patterns.Pat("./patterns/uart_rn2483_tx433_cw").Load ' ("start_tx_cw_on")  'TS added 2017-01-10 for 433 MHz TX power test
+   
+     TheHdw.Digital.Patterns.Pat(".\patterns\icsp_subr").Load
         
         
     FIRSTRUN = True
@@ -360,3 +409,4 @@ errHandler:
            "VBT Error # " + Trim(str(err.Number)) + ": " + err.Description
 
 End Function
+

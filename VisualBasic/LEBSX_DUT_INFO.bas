@@ -148,7 +148,7 @@ End Function
 '               mem_lbl_read    String      Pattern Label For Read
 '               mem_lbl_exit    String      Pattern Label For Exit
 Private Sub dut_info_read_hram(ByRef mem_ary() As Long, ByVal mem_pat As String, ByVal mem_word_size As Long, ByVal mem_word_hram As Long, ByVal mem_word_pins As String, ByVal mem_msb_first As Boolean, ByVal mem_lbl_read As String, ByVal mem_lbl_exit As String)
-    Dim Site As Long                ' Site Number
+    Dim site As Long                ' Site Number
     Dim bit_idx As Long             ' Bit Index
     Dim mem_idx As Long             ' Memory Array Index
     Dim hram_idx As Long            ' HRAM Array Index
@@ -164,8 +164,8 @@ Private Sub dut_info_read_hram(ByRef mem_ary() As Long, ByVal mem_pat As String,
         For hram_idx = 0 To HRAM_SIZE - 1 Step mem_word_hram
             If TheExec.Sites.SelectFirst <> loopDone Then
                 Do
-                    Site = TheExec.Sites.SelectedSite
-                    mem_ary(Site, mem_idx) = 0
+                    site = TheExec.Sites.SelectedSite
+                    mem_ary(site, mem_idx) = 0
                     
                     hram_data = ""
                     For hram_data_idx = 0 To mem_word_hram - 1
@@ -181,10 +181,10 @@ Private Sub dut_info_read_hram(ByRef mem_ary() As Long, ByVal mem_pat As String,
                     
                     For bit_idx = 0 To mem_word_size - 1 Step 1
                         Select Case UCase(Mid(hram_data, mem_word_size - bit_idx, 1))
-                        Case "H": mem_ary(Site, mem_idx) = mem_ary(Site, mem_idx) + (2 ^ bit_idx)
-                        Case "L": mem_ary(Site, mem_idx) = mem_ary(Site, mem_idx)
-                        Case "M": mem_ary(Site, mem_idx) = mem_ary(Site, mem_idx) Or 2 ^ mem_word_size
-                        Case "G": mem_ary(Site, mem_idx) = mem_ary(Site, mem_idx) Or 2 ^ mem_word_size + 1
+                        Case "H": mem_ary(site, mem_idx) = mem_ary(site, mem_idx) + (2 ^ bit_idx)
+                        Case "L": mem_ary(site, mem_idx) = mem_ary(site, mem_idx)
+                        Case "M": mem_ary(site, mem_idx) = mem_ary(site, mem_idx) Or 2 ^ mem_word_size
+                        Case "G": mem_ary(site, mem_idx) = mem_ary(site, mem_idx) Or 2 ^ mem_word_size + 1
                         End Select
                     Next bit_idx
                 Loop While TheExec.Sites.SelectNext(loopTop) <> loopDone
@@ -203,15 +203,15 @@ End Sub
 ' Params:       None
 ' Returns:      Nothing
 Private Sub dut_info_output()
-    Dim Site As Long            ' Site Number
+    Dim site As Long            ' Site Number
     Dim mem_idx As Long         ' Memory Address Index
     
     ' Loop through each active device
     If TheExec.Sites.SelectFirst <> loopDone Then
         Do
-            Site = TheExec.Sites.SelectedSite
+            site = TheExec.Sites.SelectedSite
             Call TheExec.DataLog.WriteComment("  ")
-            Call TheExec.DataLog.WriteComment("   ---- SITE:" & str(Site) & " ----")
+            Call TheExec.DataLog.WriteComment("   ---- SITE:" & str(site) & " ----")
            
 DUT_INFO_OUTPUT_PFM:
             If pfm_size = 0 Then GoTo DUT_INFO_OUTPUT_TFM:
@@ -219,22 +219,22 @@ DUT_INFO_OUTPUT_PFM:
             Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(pfm, 2) Step 16
                 Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 0), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 1), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 2), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 3), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 4), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 5), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 6), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 7), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 8), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 9), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 10), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 11), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 12), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 13), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 14), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm(Site, mem_idx + 15), PFM_WORD_SIZE))
+                                                          & dut_info_hex(pfm(site, mem_idx + 0), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 1), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 2), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 3), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 4), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 5), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 6), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 7), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 8), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 9), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 10), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 11), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 12), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 13), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 14), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm(site, mem_idx + 15), PFM_WORD_SIZE))
             Next mem_idx
 
 DUT_INFO_OUTPUT_TFM:
@@ -244,22 +244,22 @@ DUT_INFO_OUTPUT_TFM:
             Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(tfm, 2) Step 16
                 Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx + TFM_START_ADDR, PFM_ADDR_SIZE) & " |" _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 0), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 1), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 2), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 3), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 4), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 5), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 6), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 7), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 8), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 9), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 10), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 11), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 12), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 13), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 14), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(tfm(Site, mem_idx + 15), PFM_WORD_SIZE))
+                                                          & dut_info_hex(tfm(site, mem_idx + 0), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 1), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 2), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 3), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 4), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 5), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 6), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 7), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 8), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 9), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 10), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 11), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 12), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 13), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 14), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(tfm(site, mem_idx + 15), PFM_WORD_SIZE))
             Next mem_idx
             
 DUT_INFO_OUTPUT_DFM:
@@ -269,22 +269,22 @@ DUT_INFO_OUTPUT_DFM:
             Call TheExec.DataLog.WriteComment("   Address | -0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F")
             For mem_idx = 0 To UBound(dfm, 2) Step 16
                 Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, DFM_ADDR_SIZE) & " |" _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 0), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 1), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 2), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 3), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 4), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 5), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 6), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 7), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 8), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 9), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 10), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 11), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 12), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 13), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 14), DFM_WORD_SIZE) _
-                                                          & dut_info_hex(dfm(Site, mem_idx + 15), DFM_WORD_SIZE))
+                                                          & dut_info_hex(dfm(site, mem_idx + 0), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 1), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 2), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 3), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 4), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 5), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 6), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 7), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 8), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 9), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 10), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 11), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 12), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 13), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 14), DFM_WORD_SIZE) _
+                                                          & dut_info_hex(dfm(site, mem_idx + 15), DFM_WORD_SIZE))
             Next mem_idx
             
 DUT_INFO_OUTPUT_PFM_FA:
@@ -294,22 +294,22 @@ DUT_INFO_OUTPUT_PFM_FA:
             Call TheExec.DataLog.WriteComment("   Address | ---0 ---1 ---2 ---3 ---4 ---5 ---6 ---7 ---8 ---9 ---A ---B ---C ---D ---E ---F")
             For mem_idx = 0 To UBound(pfm_fa, 2) Step 16
                 Call TheExec.DataLog.WriteComment("     " & dut_info_hex(mem_idx, PFM_ADDR_SIZE) & " |" _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 0), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 1), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 2), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 3), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 4), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 5), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 6), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 7), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 8), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 9), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 10), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 11), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 12), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 13), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 14), PFM_WORD_SIZE) _
-                                                          & dut_info_hex(pfm_fa(Site, mem_idx + 15), PFM_WORD_SIZE))
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 0), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 1), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 2), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 3), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 4), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 5), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 6), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 7), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 8), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 9), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 10), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 11), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 12), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 13), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 14), PFM_WORD_SIZE) _
+                                                          & dut_info_hex(pfm_fa(site, mem_idx + 15), PFM_WORD_SIZE))
             Next mem_idx
             
 DUT_INFO_OUTPUT_FINISHED:
@@ -381,4 +381,5 @@ Private Function dut_info_hex(ByVal data As Long, ByVal word_size As Long) As St
     
     dut_info_hex = " " & hex_str
 End Function
+
 

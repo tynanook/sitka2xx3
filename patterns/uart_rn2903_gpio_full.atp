@@ -4847,8 +4847,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 msec
+repeat 289    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 5 msec
               > tset576  1            HXXXXXXXXXXXXX  0         X         1        X       ; //    Check for H 
 repeat 58     
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    After 1ms, send 'sys set pindig GPIO0 0\r\n'               

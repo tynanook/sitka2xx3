@@ -1,4 +1,6 @@
 Attribute VB_Name = "VDD_Voltage_Disturb"
+Option Explicit
+
 ' [=============================================================================]
 ' [ DEVICE :                                                                    ]
 ' [ MASK NO:                                                                    ]
@@ -105,7 +107,7 @@ Dim i As Integer
     ' Wait
     'Call tl_wait(CDbl(val(argv(1))))
 '    Call tl_wait(ResolveArgv(argv(1)))
-     Call TheHdw.Wait(ResolveArgv(argv(1)))
+     Call TheHdw.wait(ResolveArgv(argv(1)))
     
     ' Restore original voltages
 '    Call tl_DpsSetPrimaryVoltages(chans, OriginalVoltages)
@@ -152,5 +154,6 @@ Public Function IntCycle_power(argc As Long, argv() As String) As Long
 End Function
 
 Public Function WaitXSec(argc As Long, argv() As String) As Long
-    If argc > 0 Then TheHdw.Wait (CDbl(argv(0)))
+    If argc > 0 Then TheHdw.wait (CDbl(argv(0)))
 End Function
+
