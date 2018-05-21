@@ -382,3 +382,4 @@ Private Function dut_info_hex(ByVal data As Long, ByVal word_size As Long) As St
     dut_info_hex = " " & hex_str
 End Function
 
+

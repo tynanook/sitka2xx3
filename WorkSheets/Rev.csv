@@ -52,7 +52,9 @@ B0E,1/25/2017,Phuwaneth T.,RN2483, RN2903, RN2903A,VBT,- Unload pattern "uart_rn
 B0F,2/16/2017,Ty S.,RN2483, RN2903, RN2903A,VBT, -Added xtal offset test,
 ,2/20/2017,Phuwaneth T.,RN2483A,flow_pkg_lora
 VBT,- Added new part name "RN2483A",
-,,,,,,
+C0A,2/23/2017,Phuwaneth T.,All,flow_pkg_lora
+VBT,- API conversion project. Added/Modified specific modules for the TevAXRF and NISync conversion
+- Optimize settling time of IPD test from 3.75s to be 4.5s.,
 ,,,,,,
 ,,,,,,
 ,,,,,,

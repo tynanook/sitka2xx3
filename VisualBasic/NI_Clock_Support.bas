@@ -5,16 +5,16 @@ Option Explicit
 Public Function ArmClock20M(argc As Long, argv() As String) As Long
 
 
-Call itl.Raw.NI.Sync("Dev1").ConnectClkTerminals(NISYNC_CONSTS.Clkin, NISYNC_CONSTS.Clk10In) 'set DDS reference to CLKIN from AXRF
+Call niSync_ConnectClkTerminals(Dev1, NISYNC_VAL_CLKIN, NISYNC_VAL_CLK10) 'set DDS reference to CLKIN from AXRF
 
-Call itl.Raw.NI.Sync("Dev1").ConnectClkTerminals(NISYNC_CONSTS.Dds, NISYNC_CONSTS.Clkout) 'route DDS to CLKOUT
+Call niSync_ConnectClkTerminals(Dev1, NISYNC_VAL_DDS, NISYNC_VAL_CLKOUT) 'route DDS to CLKOUT
 
-Call itl.Raw.NI.Sync("Dev1").SetBoolean(niSyncProperties_ClkoutGainEnable, "", True) 'set high clk output (2.5vpk into 50 ohms) Note: EVM fails unless clk output high (True) is enabled
+Call niSync_SetAttributeViBoolean(Dev1, NISYNC_ATTR_CLKOUT_GAIN_ENABLE, "", True) 'set high clk output (Dev1, 2.5vpk into 50 ohms) Note: EVM fails unless clk output high (Dev1, True) is enabled
 
 
-Call itl.Raw.NI.Sync("Dev1").SetDouble_2(niSyncProperties_DdsFreq, 20000000#)
+Call niSync_SetAttributeViReal64(Dev1, NISYNC_ATTR_DDS_FREQ, 20000000#)
 
-TheHdw.Wait (0.00001) 'debug trap
+TheHdw.wait (0.00001) 'debug trap
 
 
 
@@ -23,18 +23,18 @@ End Function
 
 Public Function Ref_Clock_On(ByVal ClockFreq As Double) As Long
 
-Call itl.Raw.NI.Sync("Dev1").ConnectClkTerminals(NISYNC_CONSTS.Clkin, NISYNC_CONSTS.Clk10In) 'set DDS reference to CLKIN from AXRF
+Call niSync_ConnectClkTerminals(Dev1, NISYNC_VAL_CLKIN, NISYNC_VAL_CLK10) 'set DDS reference to CLKIN from AXRF
 
-Call itl.Raw.NI.Sync("Dev1").ConnectClkTerminals(NISYNC_CONSTS.Dds, NISYNC_CONSTS.Clkout) 'route DDS to CLKOUT
+Call niSync_ConnectClkTerminals(Dev1, NISYNC_VAL_DDS, NISYNC_VAL_CLKOUT) 'route DDS to CLKOUT
 
-Call itl.Raw.NI.Sync("Dev1").SetBoolean(niSyncProperties_ClkoutGainEnable, "", True) 'set high clk output (2.5vpk into 50 ohms) Note: EVM fails unless clk output high (True) is enabled
+Call niSync_SetAttributeViBoolean(Dev1, NISYNC_ATTR_CLKOUT_GAIN_ENABLE, "", True) 'set high clk output (Dev1, 2.5vpk into 50 ohms) Note: EVM fails unless clk output high (Dev1, True) is enabled
 
-Call itl.Raw.NI.Sync("Dev1").SetDouble_2(niSyncProperties_DdsFreq, ClockFreq)
+Call niSync_SetAttributeViReal64(Dev1, NISYNC_ATTR_DDS_FREQ, ClockFreq)
 
 End Function
 Public Function Ref_Clock_Off() As Long
 
-Call itl.Raw.NI.Sync("Dev1").DisconnectClkTerminals(NISYNC_CONSTS.Dds, NISYNC_CONSTS.Clkout)
+Call niSync_DisconnectClkTerminals(Dev1, NISYNC_VAL_DDS, NISYNC_VAL_CLKOUT)
 
 End Function
 
@@ -42,18 +42,19 @@ Public Function SimpleAXRFLoopBack(SrcChan As AXRF_CHANNEL, CapChan As AXRF_CHAN
 
     Dim power As Double
     Dim data(1023) As Double
-    With itl.Raw.AF.AXRF
 
-        .Source SrcChan, -20, 433920000#
-        .MeasureSetup CapChan, -20, 433920000#
-        'Power = .Measure(CapChan)
-        TheExec.DataLog.WriteComment ("Measured power from the LoopBack test--- " & power)
-        .MeasureArray CapChan, data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
+
+        TevAXRF_Source SrcChan, -20, 433920000#
+        TevAXRF_MeasureSetup CapChan, -20, 433920000#
+        'Power = TevAXRF_Measure(CapChan)
+        TheExecTevAXRF_DataLogTevAXRF_WriteComment ("Measured power from the LoopBack test--- " & power)
+        TevAXRF_MeasureArray CapChan, data(0)(0), AXRF_FREQ_DOMAIN
 '''        power = PlotDouble(data)         '(Debug)
 
 
-    End With
+
 End Function
+
 
 
 

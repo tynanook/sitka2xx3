@@ -311,7 +311,7 @@ Function Body() As Integer
             .PPMU.ForceVoltage(ppmu2mA) = 0#
             'add delay for mode switching, if specified
             If Not byPassDelay Then
-                TheHdw.Wait (DelayTime)
+                TheHdw.wait (DelayTime)
             End If
             If (Arg_Fload = TL_C_YES) Or (Arg_VClampLo <> TL_C_EMPTYSTR) Or (Arg_VClampHi <> TL_C_EMPTYSTR) Then
                 .Relays.Connect rlyPPMU_PE      ' connect PPMU and PE relays
@@ -569,13 +569,13 @@ Public Function RunIE(Optional FocusArg As Integer) As Boolean
         .HelpValue = TL_C_PPMU_HELP
         .UserOptPage1 = True                  'ps_t
         .UserOptName = "Sink Current"         'ps_t
-        .UserOptArg1.Enabled = True           'ps_t
+        .UserOptArg1.enabled = True           'ps_t
         .UserOptArg1.CheckBoxVisible = False  'ps_t
         .UserOptArg1.EvalBoxEnabled = False   'ps_t
         .UserOptArg1.ComboNotTextBox = True   'ps_t
         .UserOptArg1.ButtonVisible = False    'ps_t
         .UserOptArg1.EvalBoxEnabled = False   'ps_t
-        .UserOptArg2.Enabled = True           'ps_t
+        .UserOptArg2.enabled = True           'ps_t
         .UserOptArg2.CheckBoxVisible = False  'ps_t
         .UserOptArg2.EvalBoxEnabled = False   'ps_t
         .UserOptArg2.ComboNotTextBox = True   'ps_t
@@ -1070,7 +1070,7 @@ End Function
 
 
 Private Function Local_tl_PpmuMeasureValue(pins As String, _
-    MeasureMode As String, Samples As Long, lowLimit As Double, _
+    MeasureMode As String, samples As Long, lowLimit As Double, _
     highLimit As Double, SettlingTime As Double, ForceValue As Double, _
     HiLoLimValid As String, RelayMode As String, Irange As String, PeRlyClosed As String) As Long
     
@@ -1101,8 +1101,8 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
     End If
     
     'Prepare to test
-    If Samples = 0 Then Samples = 1 ' Samples should never be 0...
-    TheHdw.PPMU.Samples = Samples
+    If samples = 0 Then samples = 1 ' Samples should never be 0...
+    TheHdw.PPMU.samples = samples
     
     ' Don't know what "loc" is used for in Parametric Datalog
     loc = 0
@@ -1170,7 +1170,7 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
         TheHdw.PPMU.pins(pins).Disconnect
     End If
     
-    If tl_TestTheMeas("Ppmu", measured, (Samples * nchannels - 1)) = TL_ERROR Then
+    If tl_TestTheMeas("Ppmu", measured, (samples * nchannels - 1)) = TL_ERROR Then
         Local_tl_PpmuMeasureValue = TL_ERROR
         Exit Function
     End If
@@ -1181,10 +1181,10 @@ Private Function Local_tl_PpmuMeasureValue(pins As String, _
         
         ' Average the results across all samples
         SampleAvg = 0#
-        For sampleLoop = 0 To Samples * nchannels - 1 Step nchannels
+        For sampleLoop = 0 To samples * nchannels - 1 Step nchannels
             SampleAvg = SampleAvg + measured(sampleLoop + ChanNdx)
         Next sampleLoop
-        SampleAvg = SampleAvg / Samples
+        SampleAvg = SampleAvg / samples
        
         siteIndex = ChanNdx Mod nsites   'ps_t  Determine the site 'dgnuarin copied from PPMU adjusted
         If Arg_StoreBaseIpd = "YES" Then
@@ -1361,7 +1361,7 @@ Public Function InitBaseIpd() As Long
 Exit Function 'normal exit of function
 errHandler:
     InitBaseIpd = TL_ERROR
-    Call TheExec.ErrorLogMessage("Function InitBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function InitBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
     Call TheExec.ErrorReport
 '
@@ -1389,7 +1389,7 @@ Public Function InitIdd() As Long
 Exit Function 'normal exit of function
 errHandler:
     InitIdd = TL_ERROR
-    Call TheExec.ErrorLogMessage("Function InitIdd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function InitIdd had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
     Call TheExec.ErrorReport
 '
@@ -1481,7 +1481,7 @@ Public Function StoreBaseIpd(lngSite As Long, ByVal dblIpdValue As Double) As Lo
 Exit Function 'normal exit of function
 errHandler:
     StoreBaseIpd = TL_ERROR
-    Call TheExec.ErrorLogMessage("Function StoreBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function StoreBaseIpd had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
     Call TheExec.ErrorReport
 '
@@ -1523,7 +1523,7 @@ Public Function DblToEngStr(ByVal dblValue As Double, ByVal strUnit As String) A
   lngRange = 0
   
   If (dblLocValue < 0.000000000000001) Or (dblLocValue > 1000000#) Then '<1E-15 or >1E6
-        strTmp = Format(dblLocValue, "+0.0000E+00") & " " & strUnit
+        strTmp = format(dblLocValue, "+0.0000E+00") & " " & strUnit
         'add sign or space
         If blnNegNum Then
            strTmp = "-" & strTmp
@@ -1542,7 +1542,7 @@ Public Function DblToEngStr(ByVal dblValue As Double, ByVal strUnit As String) A
           lngRange = lngRange + 1
           End If
         Wend
-        strTmp = Format(dblLocValue, "###.0000")
+        strTmp = format(dblLocValue, "###.0000")
         If blnNegExponet Then
           Select Case lngRange
           Case 0
@@ -1590,7 +1590,7 @@ Public Function DblToEngStr(ByVal dblValue As Double, ByVal strUnit As String) A
 Exit Function 'normal exit of function
 errHandler:
     DblToEngStr = "Error in function DblToEngStr, converting to engineering format"
-    Call TheExec.ErrorLogMessage("Function DblToEngStr had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function DblToEngStr had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
     Call TheExec.ErrorReport
 '
@@ -1646,11 +1646,12 @@ Public Function StoreIddMeas(lngSite As Long, ByVal dblIpdValue As Double) As Lo
 Exit Function 'normal exit of function
 errHandler:
     StoreIddMeas = TL_ERROR
-    Call TheExec.ErrorLogMessage("Function StoreIddMeas had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Call TheExec.ErrorLogMessage("Function StoreIddMeas had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
     Call TheExec.ErrorReport
 '
 End Function  'StoreIddMeas
+
 
 
 

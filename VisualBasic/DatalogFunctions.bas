@@ -35,7 +35,7 @@ For i = 1 To Application.CommandBars.count
             NewCommand.TooltipText = "Datalog Off"
             NewCommand.OnAction = "DatalogOff"
             NewCommand.FaceId = 342
-            NewCommand.Enabled = True
+            NewCommand.enabled = True
             NewCommand.Visible = True
             NewCommand.BeginGroup = True
                    
@@ -46,7 +46,7 @@ For i = 1 To Application.CommandBars.count
             NewCommand.TooltipText = "Datalog All DC"
             NewCommand.OnAction = "DatalogAllDC"
             NewCommand.FaceId = 343
-            NewCommand.Enabled = True
+            NewCommand.enabled = True
             NewCommand.Visible = True
             
             
@@ -57,7 +57,7 @@ For i = 1 To Application.CommandBars.count
             NewCommand.TooltipText = "Datalog Fail DC"
             NewCommand.OnAction = "DatalogFailDC"
             NewCommand.FaceId = 352
-            NewCommand.Enabled = True
+            NewCommand.enabled = True
             NewCommand.Visible = True
             
                 'Capture HRAM Fails
@@ -67,7 +67,7 @@ For i = 1 To Application.CommandBars.count
             NewCommand.TooltipText = "Capture HRAM Fails"
             NewCommand.OnAction = "CaptureHRAMFails"
             NewCommand.FaceId = 214
-            NewCommand.Enabled = True
+            NewCommand.enabled = True
             NewCommand.Visible = True
             NewCommand.BeginGroup = True
       
@@ -84,7 +84,7 @@ Call DatalogOff
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function AddButtons had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function AddButtons had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'AddButtons
@@ -107,7 +107,7 @@ Call ToggleDCButton
     
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function DatalogOff had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function DatalogOff had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'DatalogOff
@@ -136,7 +136,7 @@ Call ToggleDCButton
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function DatalogAllDC had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'DatalogAllDC
@@ -165,7 +165,7 @@ Call ToggleDCButton
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function DatalogFailDC had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function DatalogFailDC had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'DatalogFailDC
@@ -192,7 +192,7 @@ On Error GoTo errHandler
     Call TheHdw.Digital.HRAM.SetCapture(captFailSTV, True)          'capture Fais + stv, and compress repeats
     Call TheHdw.Digital.HRAM.GetTrigger(trigFirst, False, 0, True)  'Trigger on first fail and stop on full
     Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Capture HRAM Fails")
-    NewCommand.State = msoButtonDown
+    NewCommand.state = msoButtonDown
     NewCommand.TooltipText = "Capture HRAM Fails:ON"
     HramEnabled = True
     'Exit Sub
@@ -200,7 +200,7 @@ On Error GoTo errHandler
     
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 End Sub 'CaptureHRAMFails
@@ -213,33 +213,33 @@ Dim NewCommand As CommandBarButton
 On Error GoTo errHandler
 
 Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog Off")
-    NewCommand.State = msoButtonUp
+    NewCommand.state = msoButtonUp
 Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog All DC")
-    NewCommand.State = msoButtonUp
+    NewCommand.state = msoButtonUp
 Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog Fail DC")
-    NewCommand.State = msoButtonUp
+    NewCommand.state = msoButtonUp
 
 
 Select Case DlogButton
 
     Case 1
         Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog Off")
-        NewCommand.State = msoButtonDown
+        NewCommand.state = msoButtonDown
   
     Case 2
         Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog All DC")
-        NewCommand.State = msoButtonDown
+        NewCommand.state = msoButtonDown
         
     Case 3
         Set NewCommand = Application.CommandBars("IG-XL Toolbar").Controls("Datalog Fail DC")
-        NewCommand.State = msoButtonDown
+        NewCommand.state = msoButtonDown
     
     
 End Select
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CaptureHRAMFails had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 
@@ -269,7 +269,7 @@ Close #filenum
  
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CreateSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 
@@ -289,8 +289,9 @@ End If
 
 Exit Sub 'normal exit of function
 errHandler:
-    Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
+    Debug.Print ("Function CheckSetupFiles had Error" & VBA.vbCrLf & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf & VBA.err.Description & VBA.vbCrLf)
     On Error GoTo 0
 
 
 End Sub 'CheckSetupFiles
+

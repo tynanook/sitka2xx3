@@ -34,7 +34,7 @@ Public Function SetAXRFinTxMode(TxChannels() As AXRF_CHANNEL, ExpectedPower As D
         
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
             
-                itl.Raw.AF.AXRF.MeasureSetup TxChannels(nSiteIndex), ExpectedPower, freq
+                TevAXRF_MeasureSetup TxChannels(nSiteIndex), ExpectedPower, freq
                 
             End If
             
@@ -56,7 +56,7 @@ Public Function SetAXRFinRxMode(RxChannels() As AXRF_CHANNEL, power As Double, f
         Dim nSiteIndex As Long
         For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                itl.Raw.AF.AXRF.Source RxChannels(nSiteIndex), power, freq
+                TevAXRF_Source RxChannels(nSiteIndex), power, freq
 
             End If
         Next nSiteIndex
@@ -75,7 +75,7 @@ Public Function MeasPowerAXRF(TxChannels() As AXRF_CHANNEL, MeasPower() As Doubl
         MeasPower(nSiteIndex) = -100
         For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                MeasPower(nSiteIndex) = itl.Raw.AF.AXRF.Measure(TxChannels(nSiteIndex))
+                MeasPower(nSiteIndex) = TevAXRF_Measure(TxChannels(nSiteIndex))
 
             End If
         Next nSiteIndex
@@ -96,7 +96,7 @@ Public Function MeasDataAXRFandBasicDSP(TxChannels As AXRF_CHANNEL, MeasData() A
     #If Connected_to_AXRF Then
 
 
-        itl.Raw.AF.AXRF.MeasureArray TxChannels, MeasData, CapType
+        TevAXRF_MeasureArray TxChannels, MeasData(0), CapType
         If PlotData Or CalcMaxPower Or SumPowerBins Or FindIndexOfMaxPower Then
             FFT.data = MeasData
 
@@ -133,7 +133,7 @@ Public Function calcMaxFromAXRFData(TxChannels() As AXRF_CHANNEL, MeasData() As 
         ReDim MeasData(TheExec.Sites.ExistingCount - 1, NumSamples)
         For nSiteIndex = 0 To TheExec.Sites.ExistingCount - 1
             If TheExec.Sites.Site(nSiteIndex).Active = True Then
-                itl.Raw.AF.AXRF.MeasureArray TxChannels(nSiteIndex), MeasData, CapType
+                TevAXRF_MeasureArray TxChannels(nSiteIndex), MeasData(0), CapType
 
             End If
         Next nSiteIndex
@@ -145,7 +145,7 @@ End Function
 
 
 
-Public Function MeasDataAXRFandCalcMax(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Long, CapType As AXRF_ARRAY_TYPE, ByRef MaxPwr As Double, ByRef FreqOffset As Double, Optional testXtalOffset As Boolean, Optional PlotData As Boolean = False, Optional plotName As String = "", Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
+Public Function MeasDataAXRFandCalcMax(TxChannels As AXRF_CHANNEL, MeasData() As Double, NumSamples As Long, CapType As AXRF_ARRAY_TYPE, ByRef MaxPwr As Double, ByRef freqOffset As Double, Optional testXtalOffset As Boolean, Optional PlotData As Boolean = False, Optional plotName As String = "", Optional FindIndexOfMaxPower As Boolean = False, Optional IndexofMaxPower As Double, Optional SumPowerBins As Boolean = False, Optional NumBinstoInclude As Long = 0, Optional SummedPower As Double) As Long
     
 On Error GoTo errHandler
     
@@ -159,7 +159,7 @@ On Error GoTo errHandler
     
     #If Connected_to_AXRF Then
 
-        itl.Raw.AF.AXRF.MeasureArray TxChannels, MeasData, CapType
+        TevAXRF_MeasureArray TxChannels, MeasData(0), CapType
         FFT.data = MeasData
         FFT.CalcMinMax temp, MaxPwr, temp, temp
 
@@ -182,13 +182,13 @@ On Error GoTo errHandler
         End If
         
         If testXtalOffset Then
-            FreqOffset = 0#
+            freqOffset = 0#
             Dim capd As New DspWave, capax() As Double, ht() As Variant, cap As New DspWave
             Dim fs As Double, fres As Double, ifFrq As Double, ss As Long, hsize As Long
             Dim o As Double, phzo As Double, capr() As Double, caph() As Double, capi() As Double
             Dim phz() As Double, dp() As Double, pramp() As Double, j As Long
             ReDim capax(NumSamples * 2)
-            itl.Raw.AF.AXRF.MeasureArray TxChannels, capax, AXRF_ARRAY_TYPE_AXRF_TIME_DOMAIN
+            TevAXRF_MeasureArray TxChannels, capax(0), AXRF_TIME_DOMAIN
             capd.data = capax
             hsize = 35
             ss = NumSamples
@@ -256,9 +256,9 @@ On Error GoTo errHandler
             For i = 0 To UBound(dp)
                 o = o + dp(i)
             Next i
-            FreqOffset = (o * fs / (8# * Atn(1#) * (UBound(dp) + 1))) - ifFrq
+            freqOffset = (o * fs / (8# * Atn(1#) * (UBound(dp) + 1))) - ifFrq
         Else
-            FreqOffset = -99999
+            freqOffset = -99999
         End If
 
     #End If
@@ -279,17 +279,17 @@ Public Function CaptureAndPlotAXRF(CapChan As AXRF_CHANNEL, power As Double, fre
     On Error GoTo errHandler
     
     
-    With itl.Raw.AF.AXRF
-        .SetMeasureSamples 2048
-        '.Source SrcChan, -50, 2450000000#
-        .MeasureSetup CapChan, power, freq
-        ' Power = .Measure(CapChan)
-        'TheExec.DataLog.WriteComment ("Measured power from the LoopBack test--- " & Power)
-        .MeasureArray CapChan, data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
+
+        TevAXRF_SetMeasureSamples 2048
+        'TevAXRF_Source SrcChan, -50, 2450000000#
+        TevAXRF_MeasureSetup CapChan, power, freq
+        ' Power = TevAXRF_Measure(CapChan)
+        'TheExecTevAXRF_DataLogTevAXRF_WriteComment ("Measured power from the LoopBack test--- " & Power)
+        TevAXRF_MeasureArray CapChan, data(0)(0), AXRF_FREQ_DOMAIN
 ''        power = PlotDouble(data)      ' Debug
 
 
-    End With
+
     
      Exit Function
 errHandler:
@@ -371,7 +371,7 @@ Public Function cycle_power(InitVolt As Double, FinalVolt As Double, Optional Fi
 '    Call tl_DpsSetOutputSourceChannels(chans, TL_DPS_PrimaryVoltage)
     TheHdw.DPS.chans(chans).OutputSource = dpsPrimaryVoltage
     
-    TheHdw.Wait (FstWait)
+    TheHdw.wait (FstWait)
     
     ' Set Final voltages
     If FinalVolt > 0.001 Then
@@ -397,7 +397,7 @@ Public Function cycle_power(InitVolt As Double, FinalVolt As Double, Optional Fi
     'Call tl_wait(ResolveArgv(argv(1)))
 '     Call TheHdw.Wait(ResolveArgv(argv(1)))
     
-    TheHdw.Wait (ScnWait)
+    TheHdw.wait (ScnWait)
 '    TheHdw.Wait (0.01)
     
 '    ' Restore original voltages
@@ -406,12 +406,12 @@ Public Function cycle_power(InitVolt As Double, FinalVolt As Double, Optional Fi
 ''     Call tl_DpsSetOutputSourceChannels(chans, TL_DPS_PrimaryVoltage)
 '    TheHdw.DPS.chans(chans).OutputSource = dpsPrimaryVoltage
     
-    TheHdw.Wait (0.0001)
+    TheHdw.wait (0.0001)
     
 End Function
 
 Public Function LoadZbData() As Long
-    itl.Raw.AF.AXRF.LoadModulationFile RFIN, TheBook.path + ".\Modulation\Zigbee_250KHz_100Symbols.aiq"
+    TevAXRF_LoadModulationFile RFIN, TheBook.path + ".\Modulation\Zigbee_250KHz_100Symbols.aiq"
 End Function
 
 Public Function CreateZigbeeAnalysisObjects() As Long
@@ -420,7 +420,7 @@ Public Function CreateZigbeeAnalysisObjects() As Long
 
     Set Zigbee = CreateObject("Scripting.Dictionary")
 
-    ' Add all of the names for WLAN Analysis here
+'    ' Add all of the names for WLAN Analysis here
     Zigbee.Add "ZigbeeBasic1", ""
 
     For Each Key In Zigbee.Keys
@@ -446,20 +446,51 @@ Public Function Freq_Estimate_AXRF(CapChan As AXRF_CHANNEL, power As Double, fre
     On Error GoTo errHandler
     
     
-    With itl.Raw.AF.AXRF
-        .SetMeasureSamples 2048
-        '.Source SrcChan, -50, 2450000000#
-        .MeasureSetup CapChan, power, freq
-        ' Power = .Measure(CapChan)
-        'TheExec.DataLog.WriteComment ("Measured power from the LoopBack test--- " & Power)
-        .MeasureArray CapChan, data, AXRF_ARRAY_TYPE_AXRF_FREQ_DOMAIN
+
+        TevAXRF_SetMeasureSamples 2048
+        'TevAXRF_Source SrcChan, -50, 2450000000#
+        TevAXRF_MeasureSetup CapChan, power, freq
+        ' Power = TevAXRF_Measure(CapChan)
+        'TheExecTevAXRF_DataLogTevAXRF_WriteComment ("Measured power from the LoopBack test--- " & Power)
+        TevAXRF_MeasureArray CapChan, data(0)(0), AXRF_FREQ_DOMAIN
 ''        power = PlotDouble(data)      ' Debug
 
-    End With
+
     
      Exit Function
 errHandler:
     If AbortTest Then Exit Function Else Resume Next
     
     
+End Function
+
+Public Function check_AXRF_error_flag(argc As Long, argv() As String) As Long
+    Dim TestStat As Long, testNum As Long, TestParm As Long
+    Dim nSiteIndex As Long
+    Dim axrffailflag As Double
+ 
+    Site_Stat = TheExec.Sites.SelectFirst()
+     AXRF_Error_Flag = False
+       Do  'For each site loop
+            nSiteIndex = TheExec.Sites.SelectedSite()
+            If TheExec.Sites.Site(nSiteIndex).Active = True Then
+            
+                If (AXRF_Error_Flag = True) Then
+                    TestStat = logTestFail
+                    TestParm = parmPass
+                    axrffailflag = Initialize_status
+                    TheExec.Sites.Site(nSiteIndex).TestResult = siteFail
+                Else
+                    TestStat = logTestPass
+                    TestParm = parmLow
+                    axrffailflag = 0
+                    TheExec.Sites.Site(nSiteIndex).TestResult = sitePass
+                End If
+            End If
+                
+        Call TheExec.DataLog.WriteParametricResult(nSiteIndex, 101030, TestStat, TestParm, "NA", -1, 0, axrffailflag, 0, unitCustom, 0, unitNone, 0, "check_AXRF_Init", "")
+        Loop While (TheExec.Sites.SelectNext(Site_Stat) <> loopDone)
+
+Exit Function
+
 End Function

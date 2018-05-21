@@ -97,7 +97,7 @@ Stop
     
     Call TheExec.DataManager.GetJobContext(job, dev, env)
     jobContext = dev & "_" & job & "_" & env
-    dateTimeStamp = Format(Now, "yy_mm_dd_hh_mm_ss")
+    dateTimeStamp = format(Now, "yy_mm_dd_hh_mm_ss")
    ' LotID = TheExec.Datalog.setup.LotSetup.LotID
     CntSite = LCase(TheExec.CurrentChanMap)
     CntSite = Mid$(CntSite, 3, 1)
@@ -256,3 +256,4 @@ Function turnOffdatalog()
         TheExec.DataLog.ApplySetup
     
 End Function
+

@@ -136,29 +136,29 @@ Public Sub GetBinNumbers()
   lngLastRow = ActiveCell.row
   
   'verify that the selected sheet is a flow sheet
-  If ActiveSheet.Cells(1, 2).Value <> "Flow Table" Then
+  If ActiveSheet.Cells(1, 2).value <> "Flow Table" Then
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
           & "Active worksheet is not a flow table, cell B1 <> Flow Table " & VBA.vbCrLf _
-          & "cell B1 is " & ActiveSheet.Cells(1, 2).Value & VBA.vbCrLf
+          & "cell B1 is " & ActiveSheet.Cells(1, 2).value & VBA.vbCrLf
     MsgBox StrMsg
     Exit Sub
   End If
   
   'verify that the selected flow sheet has the correct revision
-  If ActiveSheet.Cells(1, 1).Value <> "DFF 1.1" Then
+  If ActiveSheet.Cells(1, 1).value <> "DFF 1.1" Then
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
           & "Selected flow table is of the incorrect revision, cell A1 <> DFF 1.1" & VBA.vbCrLf _
-          & "cell A1 is " & ActiveSheet.Cells(1, 1).Value & VBA.vbCrLf
+          & "cell A1 is " & ActiveSheet.Cells(1, 1).value & VBA.vbCrLf
     MsgBox StrMsg
     Exit Sub
   End If
   
   'simple test of the MasterBinList sheet
   Worksheets(strBinLisName).Activate
-  If ActiveSheet.Cells(2, 3).Value <> "TName" Then
+  If ActiveSheet.Cells(2, 3).value <> "TName" Then
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
           & "Header of MasterBinList does not appear to be correct, cell C2 <> TName " & VBA.vbCrLf _
-          & "cell C2 is " & ActiveSheet.Cells(2, 3).Value & VBA.vbCrLf
+          & "cell C2 is " & ActiveSheet.Cells(2, 3).value & VBA.vbCrLf
     MsgBox StrMsg
     Exit Sub
   End If
@@ -168,11 +168,11 @@ Public Sub GetBinNumbers()
   'find the bin for each row with a test opcode and copy the bin number.
   For j = FirstRow To lngLastRow
     Worksheets(strFlowSheet).Activate
-    strOpcode = ActiveSheet.Cells(j, lngOpcodeCol).Value
+    strOpcode = ActiveSheet.Cells(j, lngOpcodeCol).value
     If (strOpcode = "Test") Or (strOpcode = "nop") Then
-       strTestName = ActiveSheet.Cells(j, lngTnameCol).Value
+       strTestName = ActiveSheet.Cells(j, lngTnameCol).value
        If strTestName = "" Then
-          strTestName = ActiveSheet.Cells(j, lngParameterCol).Value
+          strTestName = ActiveSheet.Cells(j, lngParameterCol).value
        End If
        If (strTestName <> "") Then
           Worksheets(strBinLisName).Activate
@@ -182,20 +182,20 @@ Public Sub GetBinNumbers()
                  If rngFind Is Nothing Then
                     Set rngFind = .Range(strParameterSrcRng).Find(strTestName)  'look in the Test name column
                     If Not rngFind Is Nothing Then
-                       strFirstAddress = rngFind.address
+                       strFirstAddress = rngFind.Address
                        Do
                          lngRow = rngFind.row
-                         vntTmp = ActiveSheet.Cells(lngRow, lngTNameSrcCol).Value
-                         If ActiveSheet.Cells(lngRow, lngTNameSrcCol).Value <> Empty Then  'test to see if there is a name in the tname column and then skip it if there is.
+                         vntTmp = ActiveSheet.Cells(lngRow, lngTNameSrcCol).value
+                         If ActiveSheet.Cells(lngRow, lngTNameSrcCol).value <> Empty Then  'test to see if there is a name in the tname column and then skip it if there is.
                             Set rngFind = .Range(strParameterSrcRng).FindNext(rngFind)
                             'MsgBox ("found address = " & rngFind.address)
                          Else
                             Exit Do  'found correct cell
                          End If   'If ActiveSheet.Cells(lngRow, lngTnameCol).value = "" Then
-                       Loop While Not rngFind Is Nothing And rngFind.address <> strFirstAddress
+                       Loop While Not rngFind Is Nothing And rngFind.Address <> strFirstAddress
                        If Not rngFind Is Nothing Then  'recheck that the tname parameter is blank, the above code misses one condition
                           lngRow = rngFind.row
-                          If ActiveSheet.Cells(lngRow, lngTNameSrcCol).Value <> Empty Then
+                          If ActiveSheet.Cells(lngRow, lngTNameSrcCol).value <> Empty Then
                              Set rngFind = Nothing  'remove the result becasuse it is wrong
                           End If   'If ActiveSheet.Cells(lngRow, 3).value <> Empty Then
                        End If      'If Not rngFind Is Nothing Then
@@ -215,7 +215,7 @@ Public Sub GetBinNumbers()
               Else     'failed to find the string
                   If (strOpcode = "Test") Then
                      StrMsg = "Failed to find string: " & strTestName & VBA.vbCrLf _
-                            & "Row number on flow sheet is: " & VBA.Format(j) & VBA.vbCrLf _
+                            & "Row number on flow sheet is: " & VBA.format(j) & VBA.vbCrLf _
                             & "Enter OK to continue, Cancel to abort search"
                      vntTmp = MsgBox(StrMsg, vbOKCancel)
                      If vntTmp = vbCancel Then
@@ -233,7 +233,7 @@ Public Sub GetBinNumbers()
    Worksheets(strFlowSheet).Activate
   For j = FirstRow To lngLastRow
     For i = 0 To 4
-       If ActiveSheet.Cells(j, lngTnumCol + i).Value <> ActiveSheet.Cells(j, lngBinDestCol + i).Value Then
+       If ActiveSheet.Cells(j, lngTnumCol + i).value <> ActiveSheet.Cells(j, lngBinDestCol + i).value Then
           ActiveSheet.Cells(j, lngBinDestCol + i).Interior.ColorIndex = 6
           ActiveSheet.Cells(j, lngBinDestCol + i).Interior.Pattern = xlSolid
        End If       'If ActiveSheet.Cells(j, lngTnumCol + i).value <>
@@ -255,7 +255,7 @@ Public Sub GetBinNumbers()
 ErrorHandler:
     
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
-          & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf _
+          & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf _
           & VBA.err.Description & VBA.vbCrLf
     MsgBox StrMsg
     On Error GoTo 0
@@ -296,19 +296,19 @@ Public Sub GetBinNumbersCleanUp()
   lngLastRow = ActiveCell.row
   
   'verify that the selected sheet is a flow sheet
-  If ActiveSheet.Cells(1, 2).Value <> "Flow Table" Then
+  If ActiveSheet.Cells(1, 2).value <> "Flow Table" Then
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
           & "Active worksheet is not a flow table, cell B1 <> Flow Table " & VBA.vbCrLf _
-          & "cell B1 is " & ActiveSheet.Cells(1, 2).Value & VBA.vbCrLf
+          & "cell B1 is " & ActiveSheet.Cells(1, 2).value & VBA.vbCrLf
     MsgBox StrMsg
     Exit Sub
   End If
   
   'verify that the selected flow sheet has the correct revision
-  If ActiveSheet.Cells(1, 1).Value <> "DFF 1.1" Then
+  If ActiveSheet.Cells(1, 1).value <> "DFF 1.1" Then
      StrMsg = "Error in maco GetBinNumbers" & VBA.vbCrLf _
           & "Selected flow table is of the incorrect revision, cell A1 <> DFF 1.1" & VBA.vbCrLf _
-          & "cell A1 is " & ActiveSheet.Cells(1, 1).Value & VBA.vbCrLf
+          & "cell A1 is " & ActiveSheet.Cells(1, 1).value & VBA.vbCrLf
     MsgBox StrMsg
     Exit Sub
   End If
@@ -340,7 +340,7 @@ Public Sub GetBinNumbersCleanUp()
 ErrorHandler:
     
      StrMsg = "Error in maco GetBinNumbersCleanUp" & VBA.vbCrLf _
-          & "VBA Error number is " & Format(VBA.err.Number) & VBA.vbCrLf _
+          & "VBA Error number is " & format(VBA.err.Number) & VBA.vbCrLf _
           & VBA.err.Description & VBA.vbCrLf
     MsgBox StrMsg
     On Error GoTo 0
@@ -348,6 +348,7 @@ ErrorHandler:
     
 
 End Sub  'GetBinNumbersCleanUp
+
 
 
 

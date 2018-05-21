@@ -638,3 +638,4 @@ Public Function enable_store_inactive_sites() As Long
   Call TheHdw.PinLevels.ApplyPower
 
 End Function
+

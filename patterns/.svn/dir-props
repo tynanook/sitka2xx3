@@ -1,5 +1,71 @@
+K 18
+mchpSVN:Attributes
+V 1880
+fsk_31b_415_ccitt.aiq:R
+fsk_31b_ccitt.iqs:R
+fsk_31b_ccitt_gauss03.aiq:R
+fsk_31b_ccitt_trailer.aiq:R
+fsk_31b_ccitt_view_crc.aiq:R
+fsk_31b_noninv_ccitt_trailer.aiq:R
+fsk_31b_noninv_swap_ccitt.aiq:R
+fsk_31b_noninv_swap_ccitt_trailer.aiq:R
+fsk_31b_swap_ccitt.aiq:R
+fsk_31b_swap_ccitt_trailer.aiq:R
+fsk_50khz_30b_per_x7056.aiq:R
+icsp_bulk_erase.pat:R
+icsp_cfg_rd_qtp.pat:R
+icsp_cfg_wr_qtp.pat:R
+icsp_dm_rd_qtp1K.pat:R
+icsp_dm_rd_qtp1k_cp.PAT:R
+icsp_dm_wr_qtp1K.pat:R
+icsp_pfm_rd_qtp64k_cp_RN2483.pat:R
+icsp_pfm_rd_qtp64k_cp_RN2903.pat:R
+icsp_pfm_rd_qtp64K_RN2483.pat:R
+icsp_pfm_rd_qtp64K_RN2903.pat:R
+icsp_pfm_wr_qtp64K_RN2483.pat:R
+icsp_pfm_wr_qtp64K_RN2903.pat:R
+icsp_subr.PAT:R
+LastViewed.pvs:R
+mwd_dig_trig_pos.atp:R
+uart_por_rn2483_id.atp:R
+uart_rn2483_dummy.PAT:R
+uart_rn2483_gpio_full.pat:R
+uart_rn2483_id.atp:R
+uart_rn2483_id.pat:R
+uart_rn2483_id_fast.PAT:R
+uart_rn2483_id_rev.pat:R
+uart_rn2483_id_rev.txt:R
+uart_rn2483_id_slow.PAT:R
+uart_rn2483_sleep.PAT:R
+uart_rn2483_sleep_revised.pat:R
+uart_rn2483_tx868_cw.atp:R
+uart_rn2483_tx868_cw.pat:R
+uart_rn2483_tx868_cw_short.PAT:R
+uart_rn2483_tx868_fsk_pkt_one.PAT:R
+uart_rn2483_tx868_fsk_pkt_one_rev.PAT:R
+uart_rn2483_tx868_fsk_pkt_trig.atp:R
+uart_rn2483_tx868_fsk_pkt_trig.pat:R
+uart_rn2483_tx868_fsk_pkt_trig.txt:R
+uart_rn2483_tx868_nocrc_pkt_rcv.atp:R
+uart_rn2483_tx868_nocrc_pkt_rcv.PAT:R
+uart_rn2483_tx868_per_fsk.atp:R
+uart_rn2483_tx868_per_fsk.pat:R
+uart_rn2483_tx868_per_fsk_crc_off.atp:R
+uart_rn2483_tx868_per_fsk_crc_off.PAT:R
+uart_rn2483_tx868_per_fsk_crc_on.PAT:R
+uart_rn2483_tx_cw_off.atp:R
+uart_rn2483_tx_cw_off.pat:R
+uart_rn2903_gpio_full.pat:R
+uart_rn2903_gpio_full_Original.pat:R
+uart_rn2903_id_fast.PAT:R
+uart_rn2903_id_slow.PAT:R
+uart_rn2903_sleep.PAT:R
+uart_rn2903_tx915_cw.PAT:R
+uart_rn2903_tx915_fsk_pkt_one_rev.PAT:R
+uart_rn2903_tx_cw_off.PAT:R
+
 K 20
 mchpSVN:CheckOutDate
 V 20
-5/17/2018 7:41:19 PM
+5/17/2018 7:43:15 PM
 END

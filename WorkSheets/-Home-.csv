@@ -13,6 +13,7 @@
 ,Job List,Jobs,,,,,
 ,Test,Wait3Sec,,,,No categories or selectors,
 ,Test,POWER_RESET_LEDS,tm_std_rf,,lvl_std_lora,{Freq_1Mhz.Typ} {::std.Typ},
+,Test,check_AXRF_init,,,,No categories or selectors,
 ,Test,EU_c_cont_vss_ppmu_RF,tm_cont_lora,,lvl_cont_lora,{Freq_100khz.Typ} {Cont.Min},
 ,Test,EU_c_cont_vdd_ppmu_RF,tm_cont_lora,,lvl_cont_lora,{Freq_100khz.Typ} {Cont.Min},
 ,Test,NA_c_cont_vss_ppmu_RF,tm_cont_lora,,lvl_cont_lora,{Freq_100khz.Typ} {Cont.Min},
