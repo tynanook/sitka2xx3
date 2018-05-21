@@ -9767,8 +9767,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXHXXX  0         X         1        X       ; //    Check for H              
 repeat 58     
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    After 1ms, send 'sys set pindig GPIO10 0\r\n'          
@@ -10022,8 +10022,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXLXXX  0         X         1        X       ; //    Check for L                                 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //   debug label
 repeat 58     
@@ -10278,8 +10278,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXHXX  0         X         1        X       ; //    Check for H              
 repeat 58     
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    After 1ms, send 'sys set pindig GPIO11 0\r\n'          
@@ -10533,8 +10533,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXLXX  0         X         1        X       ; //    Check for L                                  
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //   debug label
 repeat 58     
@@ -10789,8 +10789,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXXHX  0         X         1        X       ; //    Check for H              
 repeat 58     
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    After 1ms, send 'sys set pindig GPIO12 0\r\n'          
@@ -11044,8 +11044,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXXLX  0         X         1        X       ; //    Check for L                                   
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //   debug label
 repeat 58     
@@ -11300,8 +11300,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXXXH  0         X         1        X       ; //    Check for H              
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //   debug label
 repeat 58     
@@ -11556,8 +11556,8 @@ repeat 58
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF  
               > tset576  1            XXXXXXXXXXXXXX  0         X         0        X       ; //    LF msb x0A 
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Stop Bit = 1     
-repeat 173    
-              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 3 ms
+repeat 240    
+              > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //    Delay 4 ms
               > tset576  1            XXXXXXXXXXXXXL  0         X         1        X       ; //    Check for L                                                                 
 repeat 100    
               > tset576  1            XXXXXXXXXXXXXX  0         X         1        X       ; //   clear pipeline			               

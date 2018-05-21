@@ -101,6 +101,17 @@ Public Function rn2483_tx868_cw(argc As Long, argv() As String) As Long
     
     'AXRF Channel assignments
     
+    Dim LoLimit_I As Double
+    Dim LoLimit_Tx As Double
+    Dim HiLimit_I As Double
+    Dim HiLimit_Tx As Double
+    '--------Argument processing--------'
+    LoLimit_I = argv(2)
+    HiLimit_I = argv(3)
+    LoLimit_Tx = argv(4)
+    HiLimit_Tx = argv(5)
+    '------- end of argument process -------'
+    
     Select Case ExistingSiteCnt
         
     Case Is = 1
@@ -264,24 +275,32 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- TheExec.DataLog.WriteComment ("==================  TX868_CW_PWR =================== ")
+ TheExec.DataLog.WriteComment ("=================== TX868_CW_PWR =====================")
  
     Select Case TestFreq
     
     Case 868300000
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit I_TX868_CW, 0.035, 0.085, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
-            TheExec.Flow.TestLimit TxPower868, 10, 16, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
-        
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-   
-            TheExec.Flow.TestLimit I_TX868_CW, 0.034, 0.086, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW_qc", , , , , , , , tlForceNone
-            TheExec.Flow.TestLimit TxPower868, 9, 17, , , , unitDb, "%2.1f", "TxPower_868_qc", , , , , , , , tlForceNone
-    
-         End If
-        
+                    TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
+                    TheExec.Flow.TestLimit TxPower868, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
+                
+'                Select Case TheExec.CurrentJob
+'                Case "f1-prd-std-rn2483"
+'                    TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
+'                    TheExec.Flow.TestLimit TxPower868, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
+'
+'                Case "f1-pgm-rn2483"
+'                    TheExec.Flow.TestLimit I_TX868_CW, 0.035, 0.085, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
+'                    TheExec.Flow.TestLimit TxPower868, 10, 16, , , , unitDb, "%2.1f", "TxPower_868", , , , , , , , tlForceNone
+'
+'                Case "q1-prd-std-rn2483"
+'                    TheExec.Flow.TestLimit I_TX868_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW_qc", , , , , , , , tlForceNone
+'                    TheExec.Flow.TestLimit TxPower868, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_868_qc", , , , , , , , tlForceNone
+'
+'                Case Else
+'
+'                End Select
+
         
     Case Else      'Dummy for force fail purpose
         TheExec.Flow.TestLimit I_TX868_CW, 0.03, 0.09, , , scaleMilli, unitAmp, "%2.2f", "I_TX868_CW", , , , , , , , tlForceNone
@@ -340,6 +359,14 @@ Public Function rn2483_i_sleep(argc As Long, argv() As String) As Long
     
     Dim ExistingSiteCnt As Integer
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
+    
+    
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
     On Error GoTo errHandler
@@ -358,7 +385,7 @@ Public Function rn2483_i_sleep(argc As Long, argv() As String) As Long
     
     TheHdw.Digital.Patgen.ThreadingForActiveSites = False
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP =====================================")
+TheExec.DataLog.WriteComment ("================= MEASURE I_SLEEP ====================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
         
@@ -434,16 +461,22 @@ Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
     
     Call TheHdw.Digital.Patgen.HaltWait
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP", , , , , , , , tlForceNone
-              
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_qc", , , , , , , , tlForceNone
-        
-        End If
-        
+    TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP", , , , , , , , tlForceNone
+    
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2483_I_SLEEP_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
+                
     Call TheHdw.Digital.Patgen.Halt
         
     Call disable_inactive_sites 'For Pass/Fail LEDs
@@ -512,6 +545,12 @@ Public Function rn2483_id_mfs(argc As Long, argv() As String) As Long
     
     Dim ID_Valid As New PinListData
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
     
  On Error GoTo errHandler
  
@@ -799,17 +838,21 @@ Wend 'end WHILE loop
 
     TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
     
+    TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
-    If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-   
-        TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
-    
-    ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-            
-        TheExec.Flow.TestLimit ID_Valid, 0.4, 1.6, , , , unitNone, "%2.1f", "ID_qc", , , , , , , , tlForceNone
-
-    End If
-      
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit ID_Valid, 0.4, 1.6, , , , unitNone, "%2.1f", "ID_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
    
         Call disable_inactive_sites 'For Pass/Fail LEDs
  
@@ -862,6 +905,12 @@ Public Function rn2483_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
     
     Dim PKTs_RCVd As New PinListData
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
     
  On Error GoTo errHandler
  
@@ -921,7 +970,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-TheExec.DataLog.WriteComment ("================== PKTs_RCVd =================== ")
+TheExec.DataLog.WriteComment ("===================== PKTs_RCVd ======================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -1013,16 +1062,22 @@ Do While siteStatus <> loopDone
             
      'Datalog site here
      
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-         
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+     TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+        
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
                
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-            
-             TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-             
-        End If
-                
         TheExec.Sites.RestoreFromOverride
         siteStatus = TheExec.Sites.SelectNext(siteStatus)
      
@@ -1108,16 +1163,21 @@ Do While siteStatus <> loopDone
             
         
         'Datalog site here
+        TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
         
         TheExec.Sites.RestoreFromOverride
         siteStatus = TheExec.Sites.SelectNext(siteStatus)
@@ -1205,16 +1265,21 @@ Do While siteStatus <> loopDone
             
         
         'Datalog site here
+        TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
         
         TheExec.Sites.RestoreFromOverride
         siteStatus = TheExec.Sites.SelectNext(siteStatus)
@@ -1300,16 +1365,21 @@ Do While siteStatus <> loopDone
             
         
         'Datalog site here
+        TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        Select Case TheExec.CurrentJob
+'            Case "f1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "f1-pgm-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'            Case "q1-prd-std-rn2483"
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'            Case Else
+'
+'        End Select
         
         TheExec.Sites.RestoreFromOverride
         siteStatus = TheExec.Sites.SelectNext(siteStatus)
@@ -1376,7 +1446,19 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
       Dim nSiteIndex As Long
       
     Dim ExistingSiteCnt As Integer
+    
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
+    
     ExistingSiteCnt = TheExec.Sites.ExistingCount
+    
+
+    
+    
     
     On Error GoTo errHandler
     
@@ -1384,7 +1466,7 @@ Public Function rn2483_idle_current(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_IDLE ==============================================")
+TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ===================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         dut_delay = 0.1
@@ -1475,16 +1557,23 @@ TheExec.DataLog.WriteComment ("============================= MEASURE I_IDLE ====
         
     Next nSiteIndex
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit I_IDLE, 0.002, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2483", , , , , , , , tlForceNone
-              
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2483" Then
-        
-            TheExec.Flow.TestLimit I_IDLE, 0.001, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2483_qc", , , , , , , , tlForceNone
-        
-        End If
+    TheExec.Flow.TestLimit I_IDLE, LoLimit, HiLimit, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE", , , , , , , , tlForceNone
     
+        
+''        Select Case TheExec.CurrentJob
+''        Case "f1-prd-std-rn2483"
+''            TheExec.Flow.TestLimit I_IDLE, 0.002, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2483", , , , , , , , tlForceNone
+''
+''        Case "f1-pgm-rn2483"
+''            TheExec.Flow.TestLimit I_IDLE, 0.002, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2483", , , , , , , , tlForceNone
+''
+''        Case "q1-prd-std-rn2483"
+''            TheExec.Flow.TestLimit I_IDLE, 0.001, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2483_qc", , , , , , , , tlForceNone
+''
+''        Case Else
+''
+''        End Select
+   
     Call disable_inactive_sites 'For Pass/Fail LEDs
     
     Exit Function
@@ -1548,6 +1637,12 @@ Public Function rn2903_fsk_pkt_rcv_m_rev(argc As Long, argv() As String) As Long
     
     Dim PKTs_RCVd As New PinListData
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
     
  On Error GoTo errHandler
  
@@ -1607,7 +1702,7 @@ TheHdw.Digital.Patgen.ThreadingForActiveSites = False
 
 'Serial Site Loop
 
-TheExec.DataLog.WriteComment ("================== PKTs_RCVd =================== ")
+TheExec.DataLog.WriteComment ("====================== PKTs_RCVd ====================")
 
 ' Loop through all the active sites
 With TheExec.Sites
@@ -1699,15 +1794,17 @@ Do While siteStatus <> loopDone
             
      'Datalog site here
      
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
-         
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-               
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-            
-             TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-             
-        End If
+    TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+        
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'             TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'        End If
                 
         TheExec.Sites.RestoreFromOverride
         
@@ -1797,15 +1894,17 @@ Do While siteStatus <> loopDone
         
         'Datalog site here
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+    TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'        End If
         
         TheExec.Sites.RestoreFromOverride
         
@@ -1894,16 +1993,18 @@ Do While siteStatus <> loopDone
             
         
         'Datalog site here
+                    
+    TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
-        
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'        End If
         
         TheExec.Sites.RestoreFromOverride
         
@@ -1991,15 +2092,17 @@ Do While siteStatus <> loopDone
         
         'Datalog site here
         
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+    TheExec.Flow.TestLimit PKTs_RCVd, LoLimit, HiLimit, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
         
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
-            
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-            
-            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
-            
-        End If
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.5, 1.5, , , , unitNone, "%2.1f", "PktCnt", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit PKTs_RCVd, 0.4, 1.6, , , , unitNone, "%2.1f", "PktCnt_qc", , , , , , , , tlForceNone
+'
+'        End If
         
         TheExec.Sites.RestoreFromOverride
         siteStatus = TheExec.Sites.SelectNext(siteStatus)
@@ -2068,6 +2171,13 @@ Public Function rn2903_i_sleep(argc As Long, argv() As String) As Long
     
     Dim ExistingSiteCnt As Integer
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
+    
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
     On Error GoTo errHandler
@@ -2086,7 +2196,7 @@ Public Function rn2903_i_sleep(argc As Long, argv() As String) As Long
     
     TheHdw.Digital.Patgen.ThreadingForActiveSites = False
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_SLEEP =====================================")
+TheExec.DataLog.WriteComment ("================== MEASURE I_SLEEP ==================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check Test Instance Parms for 3.3v
         
@@ -2162,15 +2272,17 @@ Call TheHdw.Digital.Patgen.Continue(FlagsSet, FlagsClear)
     
     Call TheHdw.Digital.Patgen.HaltWait
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+    TheExec.Flow.TestLimit I_SLEEP, LoLimit, HiLimit, , , scaleMicro, unitAmp, "%4.0f", "RN2903_I_SLEEP", , , , , , , , tlForceNone
         
-            TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2903_I_SLEEP", , , , , , , , tlForceNone
-              
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-        
-            TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2903_I_SLEEP_qc", , , , , , , , tlForceNone
-        
-        End If
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_SLEEP, 0.00005, 0.0005, , , scaleMicro, unitAmp, "%4.0f", "RN2903_I_SLEEP", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_SLEEP, 0.00004, 0.0006, , , scaleMicro, unitAmp, "%4.0f", "RN2903_I_SLEEP_qc", , , , , , , , tlForceNone
+'
+'        End If
         
     Call TheHdw.Digital.Patgen.Halt
         
@@ -2238,6 +2350,12 @@ Public Function rn2903_id_mfs(argc As Long, argv() As String) As Long
     
     Dim ID_Valid As New PinListData
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
     
  On Error GoTo errHandler
  
@@ -2523,18 +2641,19 @@ Wend 'end WHILE loop
     Call TheHdw.Digital.Patgen.Halt
     
 
-    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================== ")
+    TheExec.DataLog.WriteComment ("==================  READ_MODULE_ID  =================")
     
+    TheExec.Flow.TestLimit ID_Valid, LoLimit, HiLimit, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
     
-    If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
-   
-        TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
-    
-    ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-            
-        TheExec.Flow.TestLimit ID_Valid, 0.4, 1.6, , , , unitNone, "%2.1f", "ID_qc", , , , , , , , tlForceNone
-
-    End If
+'    If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'        TheExec.Flow.TestLimit ID_Valid, 0.5, 1.5, , , , unitNone, "%2.1f", "ID", , , , , , , , tlForceNone
+'
+'    ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'        TheExec.Flow.TestLimit ID_Valid, 0.4, 1.6, , , , unitNone, "%2.1f", "ID_qc", , , , , , , , tlForceNone
+'
+'    End If
       
    
         Call disable_inactive_sites 'For Pass/Fail LEDs
@@ -2568,13 +2687,20 @@ Public Function rn2903_idle_current(argc As Long, argv() As String) As Long
     Dim ExistingSiteCnt As Integer
     ExistingSiteCnt = TheExec.Sites.ExistingCount
     
+    Dim LoLimit As Double
+    Dim HiLimit As Double
+    '--------Argument processing--------'
+    LoLimit = argv(1)
+    HiLimit = argv(2)
+    '------- end of argument process -------'
+    
     On Error GoTo errHandler
     
         rn2903_idle_current = TL_SUCCESS
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("============================= MEASURE I_IDLE ==============================================")
+TheExec.DataLog.WriteComment ("=================== MEASURE I_IDLE ==================")
     
         oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         dut_delay = 0.1
@@ -2660,22 +2786,20 @@ TheExec.DataLog.WriteComment ("============================= MEASURE I_IDLE ====
             End If 'failing first attempt
             
       End If 'Site active
-    
-    
-    
-    
         
     Next nSiteIndex
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
-        
-            TheExec.Flow.TestLimit I_IDLE, 0.002, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2903", , , , , , , , tlForceNone
-              
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-        
-            TheExec.Flow.TestLimit I_IDLE, 0.001, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2903_qc", , , , , , , , tlForceNone
-        
-        End If
+    TheExec.Flow.TestLimit I_IDLE, LoLimit, HiLimit, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2903", , , , , , , , tlForceNone
+    
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_IDLE, 0.002, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2903", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_IDLE, 0.001, 0.007, , , scaleMilli, unitAmp, "%2.2f", "I_IDLE_RN2903_qc", , , , , , , , tlForceNone
+'
+'        End If
     
     Call disable_inactive_sites 'For Pass/Fail LEDs
     
@@ -2742,6 +2866,17 @@ Public Function rn2903_tx915_cw(argc As Long, argv() As String) As Long
     ReDim MaxPowerToSubstract(0 To ExistingSiteCnt - 1)
     ReDim UncalMaxPower(0 To ExistingSiteCnt - 1)
     ReDim SumPower(0 To ExistingSiteCnt - 1)
+    
+    Dim LoLimit_I As Double
+    Dim LoLimit_Tx As Double
+    Dim HiLimit_I As Double
+    Dim HiLimit_Tx As Double
+    '--------Argument processing--------'
+    LoLimit_I = argv(2)
+    HiLimit_I = argv(3)
+    LoLimit_Tx = argv(4)
+    HiLimit_Tx = argv(5)
+    '------- end of argument process -------'
     
     On Error GoTo errHandler
     
@@ -2912,23 +3047,26 @@ End_flag_loop:
         'TheHdw.Wait (0.1) 'avoids LVM Priming patgen RTE
         Call TheHdw.Digital.Patgen.HaltWait 'Wait for pattern to halt.
 
- TheExec.DataLog.WriteComment ("==================  TX915_CW_PWR =================== ")
+ TheExec.DataLog.WriteComment ("==================== TX915_CW_PWR ===================")
  
     Select Case TestFreq
     
     Case 915000000
     
-        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+    TheExec.Flow.TestLimit I_TX915_CW, LoLimit_I, HiLimit_I, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
+    TheExec.Flow.TestLimit TxPower915, LoLimit_Tx, HiLimit_Tx, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
         
-            TheExec.Flow.TestLimit I_TX915_CW, 0.065, 0.11, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
-            TheExec.Flow.TestLimit TxPower915, 13, 19, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
-        
-        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
-   
-            TheExec.Flow.TestLimit I_TX915_CW, 0.064, 0.111, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW_qc", , , , , , , , tlForceNone
-            TheExec.Flow.TestLimit TxPower915, 12.5, 20, , , , unitDb, "%2.1f", "TxPower_915_qc", , , , , , , , tlForceNone
-    
-         End If
+'        If TheExec.CurrentJob = "f1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_TX915_CW, 0.065, 0.11, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW", , , , , , , , tlForceNone
+'            TheExec.Flow.TestLimit TxPower915, 13, 19, , , , unitDb, "%2.1f", "TxPower_915", , , , , , , , tlForceNone
+'
+'        ElseIf TheExec.CurrentJob = "q1-prd-std-rn2903" Then
+'
+'            TheExec.Flow.TestLimit I_TX915_CW, 0.064, 0.111, , , scaleMilli, unitAmp, "%2.2f", "I_TX915_CW_qc", , , , , , , , tlForceNone
+'            TheExec.Flow.TestLimit TxPower915, 12.5, 20, , , , unitDb, "%2.1f", "TxPower_915_qc", , , , , , , , tlForceNone
+'
+'         End If
         
         
     Case Else      'Dummy for force fail purpose
@@ -2988,7 +3126,7 @@ Public Function rn2483_gpio(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("============================= GPIO CHECK =======================================")
+TheExec.DataLog.WriteComment ("==================== GPIO CHECK ======================")
     
         'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         'dut_delay = 0.1
@@ -3042,7 +3180,7 @@ Public Function rn2903_gpio(argc As Long, argv() As String) As Long
     
     Call enable_store_inactive_sites 'For Pass/Fail LEDs
     
-TheExec.DataLog.WriteComment ("============================= GPIO CHECK =======================================")
+TheExec.DataLog.WriteComment ("===================== GPIO CHECK ====================")
     
         'oprVolt = ResolveArgv(argv(0))  ' Operating Voltage - check TI Parms
         'dut_delay = 0.1

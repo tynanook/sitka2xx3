@@ -1,0 +1,581 @@
+// Created 1/19/2011 3:08:02 PM using VecGen 5.0b
+// Source File: G:\Test Programs\34062\Tests\baby_pfm\asm\pfm_test_int_redo.LST
+// Template File: G:\Test Programs\34062\vg5\vg5_34062.atp
+// Product:     34062 PIC18F14K22-LIN
+// Author:      Joseph Sanders
+// Test Mode:   Test Mode 1, <ICSP>
+// Description: <DESCRIPTION>
+// Comments:    <COMMENTS>
+//
+//-------------------------------------------------------------------------------------------------
+//---------------------------------------REVISION HISTORY------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//- REV       DATE        ENGINEER      DESCRIPTION
+//- <0>       --/--/----                - Initial Release
+//-------------------------------------------------------------------------------------------------
+import tset hld_10us, icsp_clk, icsp_dly1, icsp_dly2, icsp_ent, icsp_pfm;
+import subr tdly7;
+import svm_subr vppFirst;
+import svm_subr vppLast;
+
+pin_setup = {
+        MCLR_nRESET high_voltage ;
+}
+
+vector         ( $tset    , MCLR_nRESET, (PGC, PGD))
+{
+//                               rr  v  r  pp  r  rrrrrr  n  v  l  rr
+//                               aa  p  a  gg  b  cccccc  F  r  b  ll
+//                               54  p  2  cd  4  543210  a  e  u  yy
+//                                                        u  g  s  nS
+//                                                        l        Rr
+//                                                        t        ec
+//                                                                 fR
+//                                                                  c
+//                                                                  0
+// TestMode1p Entry
+               > icsp_ent   0            00         ; 
+call vppFirst  
+               > icsp_ent   2            00         ; 
+               > icsp_ent   2            00         ; 
+// Handshake
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000000 0000           00021    nop             
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            10         ; // Bit 9
+               > icsp_clk   2            10         ; // Bit 10
+               > icsp_clk   2            10         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000002 0E55           00022     movlw   0x55    
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            11         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            11         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000004 6EF5           00023     movwf   TABLAT                   
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            11         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            11         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000006 0000           00024     nop
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            10         ; // Bit 9
+               > icsp_clk   2            10         ; // Bit 10
+               > icsp_clk   2            10         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0010 (LSB First) - TBLOUT: Shift out TABLAT register (pseudo TBLRD)
+// 000008 0055           00026     data    0x55
+               > icsp_clk   2            10         ; // Q1                                       
+               > icsp_clk   2            11         ; // Q2                                          
+repeat 2       
+               > icsp_clk   2            10         ; // Q3:Q4                                          
+               > icsp_dly1  2            00         ; // P5:End Opcode            
+repeat 8       
+               > icsp_clk   2            10         ; // Bit 0:7                                     
+               > icsp_dly2  2            0X         ; // P6:PGD I/O Transistion   
+               > icsp_clk   2            1H         ; // Bit 8  TABLAT:0                             
+               > icsp_clk   2            1L         ; // Bit 9  TABLAT:1                             
+               > icsp_clk   2            1H         ; // Bit 10 TABLAT:2                             
+               > icsp_clk   2            1L         ; // Bit 11 TABLAT:3                             
+               > icsp_clk   2            1H         ; // Bit 12 TABLAT:4                             
+               > icsp_clk   2            1L         ; // Bit 13 TABLAT:5                             
+               > icsp_clk   2            1H         ; // Bit 14 TABLAT:6                             
+               > icsp_clk   2            1L         ; // Bit 15 TABLAT:7                             
+               > icsp_dly1  2            0X         ; // P5:End Payload         
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 00000A 0EAA           00029     movlw   0xAA    
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            11         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            11         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 00000C 6EF5           00030     movwf   TABLAT
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            11         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            11         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 00000E 0000           00031     nop                   
+repeat 4       
+               > icsp_clk   2            10         ; // Q1::Q4
+               > icsp_dly1  2            00         ; // P5:End Opcode
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            10         ; // Bit 9
+               > icsp_clk   2            10         ; // Bit 10
+               > icsp_clk   2            10         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+               > icsp_dly1  2            00         ; // P5:End Payload
+// Opcode = 0010 (LSB First) - TBLOUT: Shift out TABLAT register (pseudo TBLRD)
+// 000010 00AA           00033     data    0xAA  
+               > icsp_clk   2            10         ; // Q1:Q2                                       
+               > icsp_clk   2            11         ; // Q3                                          
+repeat 2       
+               > icsp_clk   2            10         ; // Q4                                          
+               > icsp_dly1  2            00         ; // P5:End Opcode            
+repeat 8       
+               > icsp_clk   2            10         ; // Bit 0:7                                     
+               > icsp_dly2  2            0X         ; // P6:PGD I/O Transistion   
+               > icsp_clk   2            1L         ; // Bit 8  TABLAT:0                             
+               > icsp_clk   2            1H         ; // Bit 9  TABLAT:1                             
+               > icsp_clk   2            1L         ; // Bit 10 TABLAT:2                             
+               > icsp_clk   2            1H         ; // Bit 11 TABLAT:3                             
+               > icsp_clk   2            1L         ; // Bit 12 TABLAT:4                             
+               > icsp_clk   2            1H         ; // Bit 13 TABLAT:5                             
+               > icsp_clk   2            1L         ; // Bit 14 TABLAT:6                             
+               > icsp_clk   2            1H         ; // Bit 15 TABLAT:7                             
+               > icsp_dly1  2            0X         ; // P5:End Payload 
+// 6AE9   00027   clrf           FSROL 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            11         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            11         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            10         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// 6AEA   00027   clrf           FSROH 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            11         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            11         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            10         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15            
+//Select Addr 0x300000 for config fuse
+// 0E30     00063         movlw   0x30 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// 6EF8   00030         movwf   TBLPTRU 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            11         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15             
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 00002E 0E00           00063     movlw   0x00
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000030 6EF7           00064     movwf   TBLPTRH  
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            11         ; // Bit 0
+               > icsp_clk   2            11         ; // Bit 1
+               > icsp_clk   2            11         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000032 0E00           00065     movlw   0x00   
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            10         ; // Bit 1
+               > icsp_clk   2            10         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            10         ; // Bit 4
+               > icsp_clk   2            10         ; // Bit 5
+               > icsp_clk   2            10         ; // Bit 6
+               > icsp_clk   2            10         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            10         ; // Bit 13
+               > icsp_clk   2            10         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// Opcode = 0000 - (LSB First) ICSP(NOP): Core Instruction (Shift in 16-bit Instruction)
+// 000034 6EF6           00066     movwf   TBLPTRL
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; 
+               > icsp_clk   2            10         ; // Bit 0
+               > icsp_clk   2            11         ; // Bit 1
+               > icsp_clk   2            11         ; // Bit 2
+               > icsp_clk   2            10         ; // Bit 3
+               > icsp_clk   2            11         ; // Bit 4
+               > icsp_clk   2            11         ; // Bit 5
+               > icsp_clk   2            11         ; // Bit 6
+               > icsp_clk   2            11         ; // Bit 7
+               > icsp_clk   2            10         ; // Bit 8
+               > icsp_clk   2            11         ; // Bit 9
+               > icsp_clk   2            11         ; // Bit 10
+               > icsp_clk   2            11         ; // Bit 11
+               > icsp_clk   2            10         ; // Bit 12
+               > icsp_clk   2            11         ; // Bit 13
+               > icsp_clk   2            11         ; // Bit 14
+               > icsp_clk   2            10         ; // Bit 15
+// Opcode = 1001 (LSB First) - TBLRD *+: Table Read (post-increment TBLPTR)
+               > icsp_clk   2            11         ; // Q1                     
+repeat 2       
+               > icsp_clk   2            10         ; // Q2:Q3                  
+               > icsp_clk   2            11         ; // Q4                     
+               > icsp_dly1  2            00         ; // P5:End Opcode          
+repeat 8       
+               > icsp_clk   2            10         ; // Bit 0:7                
+               > icsp_dly2  2            0X         ; // P6:PGD I/O Transistion 
+//--------------------
+//Begin Configuration Fuse Read
+//--------------------
+//Configuration Fuses Address 300000                                      
+start_label icsp_cfg_rd_qtp_st:
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300001 
+               > icsp_clk   2            1H         ; // Bit 0  FOSC0
+               > icsp_clk   2            1H         ; // Bit 1  FOSC1
+               > icsp_clk   2            1H         ; // Bit 2  FOSC2
+               > icsp_clk   2            1H         ; // Bit 3  FOSC3
+               > icsp_clk   2            1H         ; // Bit 4  PLL_EN
+               > icsp_clk   2            1H         ; // Bit 5  PCLKEN
+               > icsp_clk   2            1H         ; // Bit 6  FCMEN
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  IESO
+//Configuration Fuses Address 300002                                      
+               > icsp_clk   2            1H         ; // Bit 0  nPWRTEN
+               > icsp_clk   2            1H         ; // Bit 1  BOREN0
+               > icsp_clk   2            1H         ; // Bit 2  BOREN1
+               > icsp_clk   2            1H         ; // Bit 3  BORV0
+               > icsp_clk   2            1H         ; // Bit 4  BORV1
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300003
+               > icsp_clk   2            1H         ; // Bit 0  WDTEN 
+               > icsp_clk   2            1H         ; // Bit 1  WDTPS0
+               > icsp_clk   2            1H         ; // Bit 2  WDTPS1
+               > icsp_clk   2            1H         ; // Bit 3  WDTPS2
+               > icsp_clk   2            1H         ; // Bit 4  WDTPS3
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300004 
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300005
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  HFOFST
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  MCLRE
+//Configuration Fuses Address 300006
+               > icsp_clk   2            1H         ; // Bit 0  STVREN  
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  LVP
+               > icsp_clk   2            1H         ; // Bit 3  BBSIZ
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  ENHCPU
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  nBKBUG
+//Configuration Fuses Address 300007
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300008  
+               > icsp_clk   2            1H         ; // Bit 0  CP0
+               > icsp_clk   2            1H         ; // Bit 1  CP1
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 300009              
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  CPD
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  CPB
+//Configuration Fuses Address 30000A                                     
+               > icsp_clk   2            1H         ; // Bit 0  WRT0
+               > icsp_clk   2            1H         ; // Bit 1  WRT1
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 30000B              
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  WRTC
+               > icsp_clk   2            1H         ; // Bit 6  WRTB
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  WRTD
+//Configuration Fuses Address 30000C                                      
+               > icsp_clk   2            1H         ; // Bit 0  EBTR1
+               > icsp_clk   2            1H         ; // Bit 1  EBTR0
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  Unimplemented
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+//Configuration Fuses Address 30000D              
+               > icsp_clk   2            1H         ; // Bit 0  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 1  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 2  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 3  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 4  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 5  Unimplemented
+               > icsp_clk   2            1H         ; // Bit 6  EBTRB
+call lInc      
+               > icsp_clk   2            1H         ; // Bit 7  Unimplemented
+// Pattern Exit
+               > icsp_ent   2            00         ; 
+call vppLast   
+               > icsp_ent   2            00         ; 
+               > icsp_ent   0            00         ; 
+halt           
+               > icsp_ent   0            00         ; 
+               > icsp_ent   0            00         ; 
+subr lInc:
+               > icsp_dly1  2            0X         ; // P5:End Payload         
+// Opcode = 1001 (LSB First) - TBLRD *+: Table Read (post-increment TBLPTR)
+               > icsp_clk   2            11         ; // Q1                     
+repeat 2       
+               > icsp_clk   2            10         ; // Q2:Q3                  
+               > icsp_clk   2            11         ; // Q4                     
+               > icsp_dly1  2            00         ; // P5:End Opcode          
+repeat 8       
+               > icsp_clk   2            10         ; // Bit 0:7                
+return         
+               > icsp_dly2  2            0X         ; // P6:PGD I/O Transistion 
+}
+

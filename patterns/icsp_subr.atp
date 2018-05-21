@@ -1,0 +1,94 @@
+// Created 10/29/2010 3:42:43 PM using VecGen 5.0c
+// Source File: \\Overseer\smtd\Test Programs\34062\users\Forst\asm\dev_id_rd.LST
+// Template File: \\Overseer\smtd\Test Programs\34062\vg5\vg5_34062.atp
+// Product:     34062 PIC18F14K22-LIN
+// Author:      <AUTHOR>
+// Test Mode:   Test Mode 1, <ICSP>
+// Description: <DESCRIPTION>
+// Comments:    <COMMENTS>
+//
+//-------------------------------------------------------------------------------------------------
+//---------------------------------------REVISION HISTORY------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//- REV       DATE        ENGINEER      DESCRIPTION
+//- <0>       11/01/2010  J. Sanders    - Initial Release
+//-------------------------------------------------------------------------------------------------
+import tset hld_pgm, icsp_clk, icsp_dly1, icsp_ent, icsp_pfm;
+
+pin_setup = {
+        MCLR_nRESET high_voltage ;
+}
+
+vector                  ( $tset   , MCLR_nRESET, (PGC, PGD))
+{
+//                               rr  v  r  pp  r  rrrrrr  n  v  l  rr
+//                               aa  p  a  gg  b  cccccc  F  r  b  ll
+//                               54  p  2  cd  4  543210  a  e  u  yy
+//                                                        u  g  s  nS
+//                                                        l        Rr
+//                                                        t        ec
+//                                                                 fR
+//                                                                  c
+//                                                                  0
+// Test Mode 1 Entry                                               
+global subr tm1ent:
+                        > icsp_ent  0            00         ; 
+repeat 100              
+                        > icsp_ent  0            10         ; 
+repeat 100              
+                        > icsp_ent  2            10         ; 
+return                  
+                        > icsp_ent  2            00         ; 
+//Vpp First Test Mode 1 Entry
+global subr vppFirst:
+repeat 100              
+                        > icsp_ent  2            00         ; 
+call hold_state         
+                        > icsp_ent  2            00         ; 
+repeat 100              
+                        > icsp_ent  2            00         ; 
+return                  
+                        > icsp_ent  2            00         ; 
+//Vpp Last Test Mode 1 Exit
+global subr vppLast:
+call hold_state         
+                        > icsp_ent  2            00         ; 
+repeat 100              
+                        > icsp_ent  2            00         ; 
+repeat 100              
+                        > icsp_ent  0            00         ; 
+return                  
+                        > icsp_ent  0            00         ; 
+// Delay to allow Self-Timed Data Write or Bulk Erase to occur
+global subr tdly7:
+repeat 10000            
+                        > icsp_pfm  0            00         ; 
+return                  
+                        > icsp_pfm  0            00         ; 
+//-----------------------------------------
+//Subroutine:   hold_state
+//Purpose:      Perform vector loop that will set the cpuA flag for interpose functions.
+//              Loop is meant to be generic to hold the calling vector's current states.
+//Params:       All vectors will hold previously driven values from calling vector.
+//Note:         Calling vector should only contain '0', '1', or 'X' to prevent unknown
+//              Strobe failures.  Any specific functions will require generation of local
+//              hold state (i.e. IDD testing).
+//Time:         (3+N)*[Vector Speed]
+//-----------------------------------------
+global subr hold_state:
+set_cpu (cpuA)          
+                        > icsp_ent  2            00         ; 
+enable (cpuA)           
+                        > icsp_ent  2            00         ; 
+hld_st:
+if (cpuA_cond) jump hld_st 
+                        > icsp_ent  2            00         ; 
+return                  
+                        > icsp_ent  2            00         ; 
+// Pattern Exit
+                        > icsp_ent  0            00         ; 
+halt                    
+                        > icsp_ent  0            00         ; 
+                        > icsp_ent  0            00         ; 
+}
+

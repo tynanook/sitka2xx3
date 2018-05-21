@@ -14,11 +14,34 @@ A0D,9/1/2015,N. Ellis,RN2483 & RN2903,MOST,HT x4 RN2483 and RN2903 Combination F
 ,,,,,RN2483 expanded to x4 (128-pin J750_AERO). NOTE: RN2903 not implemented.,
 ,,,,,New GPIO functional test for testing programmability of GPIO0-GPIO13 on module.,
 ,10/12/2015,Phuwaneth T.,,,Revise the TP to match with MTAI format.,
-B0A,10/29/2015,N. Ellis,RN2903,MOST RN2903,- HT x4 RN2483 and RN2903 Combination FT/QC Program.,
+A0E,10/29/2015,N. Ellis,RN2903,MOST RN2903,- HT x4 RN2483 and RN2903 Combination FT/QC Program.,
 ,,,,RN2483,- Expanded to x4 (128-pin J750_AERO). RN2903 x4 implemented.,
 ,11/9/2015,Phuwaneth T.,RN2483 & RN2903,All,- Revise the TP to match with MTAI format.,
-,,,,,,
-,,,,,,
+B0A,11/23/2015,Phuwaneth T.,RN2483,TI, FLOW, several VB modules,- Add more sheet below to support qtp module
+     1. flow_pkg_lora
+     2. MasterBinList
+     3. lvl_pgm
+     4. tm_std
+     5. Pattern_sub
+     6. (S)QTP Setup
+     8. ti_prod_rn
+- Add 9 patterns for qtp module
+     1. icsp_dm_rd_qtp1k_cp.PAT
+     2. icsp_pfm_rd_qtp64k_cp.pat
+     3. icsp_subr.PAT
+     4. icsp_pfm_wr_qtp64K.pat
+     5. icsp_pfm_rd_qtp64K.pat
+     6. icsp_dm_wr_qtp1K.pat
+     7. icsp_dm_rd_qtp1K.pat
+     8. icsp_cfg_wr_qtp.pat
+     9. icsp_cfg_rd_qtp.pat
+    10.icsp_bulk_erase.pat
+    11.uart_rn2483_gpio_full.pat
+- Increase the settling time in pattern "uart_rn2483_gpio_full.pat" and "uart_rn2903_gpio_full.pat" from 3mS to be 4mS
+- Add new job "f1-prd-std", "q1-prd-std", "f1-prd-qtp" and "q1-prd-qtp"
+- Merge flow sheet between rn2483 and rn2903
+- Merge pinmaps sheet of rn2483 and rn2903,
+B0B,9/28/2016,Phuwaneth T.,RN2483,icsp_pfm_rd_qtp64k_cp, icsp_pfm_rd_qtp64K,- Change UID data on address 200000 - 200007 from FFFF to be F0F0 to mach with the actual reading from the module.,
 ,,,,,,
 ,,,,,,
 ,,,,,,

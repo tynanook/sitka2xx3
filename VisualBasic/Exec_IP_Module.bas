@@ -339,7 +339,7 @@ Function RFOnProgramValidated_LoRa() 'RN2483
 
         TheHdw.Digital.Patterns.Pat(".\patterns\uart_rn2483_tx868_fsk_pkt_one_rev").Load
         
-        
+        TheHdw.Digital.Patterns.Pat(".\patterns\icsp_subr").Load
         
         
     FIRSTRUN = True
