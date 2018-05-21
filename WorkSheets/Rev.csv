@@ -55,7 +55,7 @@ VBT,- Added new part name "RN2483A",
 C0A,2/23/2017,Phuwaneth T.,All,flow_pkg_lora
 VBT,- API conversion project. Added/Modified specific modules for the TevAXRF and NISync conversion
 - Optimize settling time of IPD test from 3.75s to be 4.5s.,
-,,,,,,
+,10/11/2017,Phuwaneth T.,All,VBT,- Edit UID Pattern to match with the actual part of RN2483A.,
 ,,,,,,
 ,,,,,,
 ,,,,,,

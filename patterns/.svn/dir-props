@@ -1,6 +1,6 @@
 K 18
 mchpSVN:Attributes
-V 1880
+V 1898
 fsk_31b_415_ccitt.aiq:R
 fsk_31b_ccitt.iqs:R
 fsk_31b_ccitt_gauss03.aiq:R
@@ -18,9 +18,9 @@ icsp_cfg_wr_qtp.pat:R
 icsp_dm_rd_qtp1K.pat:R
 icsp_dm_rd_qtp1k_cp.PAT:R
 icsp_dm_wr_qtp1K.pat:R
-icsp_pfm_rd_qtp64k_cp_RN2483.pat:R
+icsp_pfm_rd_qtp64k_cp_RN2483_ORIGINAL.pat:R
 icsp_pfm_rd_qtp64k_cp_RN2903.pat:R
-icsp_pfm_rd_qtp64K_RN2483.pat:R
+icsp_pfm_rd_qtp64K_RN2483_ORIGINAL.pat:R
 icsp_pfm_rd_qtp64K_RN2903.pat:R
 icsp_pfm_wr_qtp64K_RN2483.pat:R
 icsp_pfm_wr_qtp64K_RN2903.pat:R
@@ -67,5 +67,5 @@ uart_rn2903_tx_cw_off.PAT:R
 K 20
 mchpSVN:CheckOutDate
 V 20
-5/17/2018 7:43:15 PM
+5/17/2018 7:45:05 PM
 END
